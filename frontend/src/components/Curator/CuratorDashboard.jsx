@@ -16,6 +16,7 @@ import {
   FaTags,
   FaWallet,
 } from "react-icons/fa";
+import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
   { name: "Dashboard", href: "/curator", icon: HomeIcon, current: true },
@@ -68,7 +69,7 @@ export default function CuratorDashbaord() {
   return (
     <>
       {/* Account summary component */}
-
+      <PrivateNavbar/>
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -177,6 +178,7 @@ export default function CuratorDashbaord() {
               <Link to="/">
                 <FaBlog className="h-8 w-auto text-orange-500" />
               </Link>
+              <span className="m-5"> Curator</span>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
