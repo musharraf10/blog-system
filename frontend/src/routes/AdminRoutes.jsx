@@ -20,6 +20,10 @@ import AccountVerifiedComponent from "../components/Admin/AccountVerification"
 import CreatePlan from "../components/Plans/CreatePlan"
 import AddCategory from "../components/Category/AddCategory"
 import PostsList from "../components/Posts/PostsList";
+import Dashboard from "../components/Admin/Dashboard/Dashboard";
+import ContentPart from "../components/Admin/Content-Management/ContentModeration";
+import PaymentsDashboard from "../components/Admin/Payments/PaymentsDashboard";
+import UserManagement from "../components/Admin/UserManagement/Usersmanagement";
 
 
 
@@ -35,7 +39,11 @@ const AdminRoutes = () => {
             </AuthRoute>
           }
         >
-          <Route index element={<AccountSummaryDashboard />} />
+          <Route index element={<Dashboard />} />
+          <Route path="content-management" element={<ContentPart/>} />
+          <Route path="user-management" element={<UserManagement/>} />
+          <Route path="payment-management" element={<PaymentsDashboard/>} />
+          <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post" element={<CreatePost />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />

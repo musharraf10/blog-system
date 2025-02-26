@@ -9,7 +9,8 @@ const Rankings = () => {
     queryKey: ["ranking"],
     queryFn: fetchAllEarningsAPI,
   });
-  console.log(data);
+  // console.log(data);
+  console.log(data?.user?.profilePicture.path )
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 py-6 sm:py-12">
       <div className="w-full sm:max-w-xl mx-auto min-h-screen ">
@@ -39,15 +40,14 @@ const Rankings = () => {
                       >
                         {`#${ranking.rank}`}
                       </div>
-                      {ranking?.user?.profilePicture ? (
+                     
+                      {ranking.user.profilePicture && (
                         <img
-                          src={ranking?.user?.profilePicture}
-                          alt="avatar"
+                          src={ranking?.user?.profilePicture?.path}
+                          alt="Musharaf"
                           className="w-12 h-12 rounded-full"
                         />
-                      ) : (
-                        <Avatar />
-                      )}
+                      ) }
                       <div className="text-black font-medium">
                         {ranking.user.username}
                       </div>

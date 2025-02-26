@@ -2,7 +2,7 @@ import React from "react";
 import { FaUserCircle, FaEnvelope, FaKey, FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const Settings = () => {
+const SettingsSubPage = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <div className=" p-8 rounded-lg shadow-md w-full max-w-md">
@@ -42,4 +42,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default SettingsSubPage;

@@ -314,25 +314,25 @@ const userController = {
   updateEmail: asyncHandler(async (req, res) => {
     //email
     const { email } = req.body;
-    //Find the user
-    const user = await User.findById(req.user);
-    //update the user email
+    console.log(email)
+    const user = await User.findById(req.user._id);
+   
     user.email = email;
     user.isEmailVerified = false;
-    //save the user
+    
     await user.save();
-    //use the method from the model
+    
     const token = await user.generateAccVerificationToken();
-    //send the verification email
+  
     sendAccVerificationEmail(user?.email, token);
-    //send the response
+    
     res.json({
       message: `Account verification email sent to ${user?.email} token expires in 10 minutes`,
     });
   }),
-  //! Update profile picture
+  
   updateProfilePic: asyncHandler(async (req, res) => {
-    //Find the user
+    
     await User.findByIdAndUpdate(
       req.user,
       {
@@ -340,7 +340,7 @@ const userController = {
       },
       { new: true }
     );
-    //send the response
+    
     res.json({
       message: "Profile picture updated successfully",
     });
@@ -350,6 +350,8 @@ const userController = {
     await User.findByIdAndDelete(userId)
     res.json({message : "User Deleted Successfully"});
   })
+
+  
 };
 
 module.exports = userController;

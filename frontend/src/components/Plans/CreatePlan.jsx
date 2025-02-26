@@ -5,126 +5,129 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { createPlanAPI } from "../../APIServices/plans/plans";
 import AlertMessage from "../Alert/AlertMessage";
+import { CreditCard, Package, Percent } from "lucide-react";
+
 const CreatePlan = () => {
-  //navigate
   const navigate = useNavigate();
-  // user mutation
+
   const planMutation = useMutation({
-    mutationKey: ["user-registration"],
+    mutationKey: ["create-plan"],
     mutationFn: createPlanAPI,
   });
-  // formik config
+
   const formik = useFormik({
-    // initial data
     initialValues: {
       planName: "",
       features: "",
       price: "",
+      billingCycle: "monthly",
+      discountPercentage: 0,
     },
-    // validation
     validationSchema: Yup.object({
       planName: Yup.string().required("Plan Name is required"),
-      features: Yup.string().required("Features is/are required"),
-
-      price: Yup.string().required("Price  is required"),
+      features: Yup.string().required("Features are required"),
+      price: Yup.number()
+        .required("Price is required")
+        .positive("Price must be a positive number"),
+      billingCycle: Yup.string()
+        .oneOf(["monthly", "yearly"], "Invalid billing cycle")
+        .required("Billing cycle is required"),
+      discountPercentage: Yup.number()
+        .min(0, "Discount must be at least 0")
+        .max(100, "Discount cannot exceed 100"),
     }),
-    // submit
     onSubmit: async (values) => {
-      console.log(values);
-      //prepare the data for creation
       const planData = {
         planName: values.planName,
         features: values.features.split(",").map((feature) => feature.trim()),
-        price: values.price,
+        price: Number(values.price),
+        billingCycle: values.billingCycle,
+        discountPercentage: Number(values.discountPercentage),
       };
 
       planMutation
         .mutateAsync(planData)
-        .then(() => {
-          // redirect
-          navigate("/dashboard");
-        })
+        .then(() => navigate("/admin/dashboard"))
         .catch((err) => console.log(err));
     },
   });
 
-  console.log(planMutation);
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={formik.handleSubmit}
-        className="p-6 mt-8 bg-white rounded shadow-md w-80"
-      >
-        <h2 className="mb-4 text-xl font-semibold text-center text-gray-700">
-          Create Plan
-        </h2>
-        {/* show mesage */}
-        {/* error */}
-        {planMutation.isPending && (
-          <AlertMessage type="loading" message="Loading please wait..." />
-        )}
-        {planMutation.isSuccess && (
-          <AlertMessage type="success" message="Plan created successfully" />
-        )}
-        {planMutation.isError && (
-          <AlertMessage
-            type="error"
-            message={planMutation.error.response.data.message}
-          />
-        )}
-        {/* Type Name Input */}
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700">
-            Type Name:
-          </label>
-          <select
-            id="planName"
-            {...formik.getFieldProps("planName")}
-            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-          >
-            <option value="Free">Free</option>
-            <option value="Premium">Premium</option>
-          </select>
-          {formik.touched.planName && formik.errors.planName && (
-            <div className="text-red-500 mt-1">{formik.errors.planName}</div>
-          )}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700">
-            Features (comma separated):
-          </label>
-          <input
-            type="text"
-            id="features"
-            {...formik.getFieldProps("features")}
-            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-          />
-          {formik.touched.features && formik.errors.features && (
-            <div className="text-red-500 mt-1">{formik.errors.features}</div>
-          )}
-        </div>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+          <div className="px-8 py-6 bg-blue-900 text-white">
+            <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2">
+              <Package className="w-6 h-6" /> Create Subscription Plan
+            </h2>
+          </div>
+          <form onSubmit={formik.handleSubmit} className="px-8 py-6 space-y-6">
+            {planMutation.isPending && <AlertMessage type="loading" message="Loading, please wait..." />}
+            {planMutation.isSuccess && <AlertMessage type="success" message="Plan created successfully" />}
+            {planMutation.isError && (
+              <AlertMessage type="error" message={planMutation.error.response?.data?.message || "An error occurred"} />
+            )}
 
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-bold text-gray-700">
-            Price:
-          </label>
-          <input
-            type="number"
-            id="price"
-            {...formik.getFieldProps("price")}
-            className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-          />
-          {formik.touched.price && formik.errors.price && (
-            <div className="text-red-500 mt-1">{formik.errors.price}</div>
-          )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Plan Name</label>
+              <select id="planName" {...formik.getFieldProps("planName")} className="block w-full px-4 py-3 rounded-lg border">
+                <option value="">Select Plan</option>
+                <option value="Free">Free</option>
+                <option value="basic">Basic</option>
+                <option value="Premium">Premium</option>
+              </select>
+              {formik.touched.planName && formik.errors.planName && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.planName}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Features (comma separated)</label>
+              <input type="text" id="features" {...formik.getFieldProps("features")} className="block w-full px-4 py-3 rounded-lg border" placeholder="e.g., Feature 1, Feature 2, Feature 3" />
+              {formik.touched.features && formik.errors.features && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.features}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                  <CreditCard className="w-4 h-4" /> Price
+                </label>
+                <input type="number" id="price" {...formik.getFieldProps("price")} className="block w-full pl-8 pr-4 py-3 rounded-lg border" placeholder="0.00" />
+                {formik.touched.price && formik.errors.price && (
+                  <p className="mt-1 text-sm text-red-600">{formik.errors.price}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Billing Cycle</label>
+                <select id="billingCycle" {...formik.getFieldProps("billingCycle")} className="block w-full px-4 py-3 rounded-lg border">
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+                {formik.touched.billingCycle && formik.errors.billingCycle && (
+                  <p className="mt-1 text-sm text-red-600">{formik.errors.billingCycle}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                <Percent className="w-4 h-4" /> Discount Percentage
+              </label>
+              <input type="number" id="discountPercentage" {...formik.getFieldProps("discountPercentage")} className="block w-full pr-12 px-4 py-3 rounded-lg border" placeholder="0" />
+              {formik.touched.discountPercentage && formik.errors.discountPercentage && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.discountPercentage}</p>
+              )}
+            </div>
+
+            <button type="submit" className="w-full bg-blue-900 text-white px-6 py-3 rounded-lg" disabled={planMutation.isPending}>
+              {planMutation.isPending ? "Creating Plan..." : "Create Plan"}
+            </button>
+          </form>
         </div>
-        <button
-          type="submit"
-          className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
-        >
-          Create Plan
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
