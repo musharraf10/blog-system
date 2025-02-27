@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
+const { type } = require("os");
 const userSchema = new mongoose.Schema(
   {
     // Basic user information
@@ -10,6 +11,9 @@ const userSchema = new mongoose.Schema(
     profilePicture: {
       type: Object,
       default: null,
+    },
+    phoneNum:{
+      type : String
     },
     email: {
       type: String,

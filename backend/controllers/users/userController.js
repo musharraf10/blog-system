@@ -314,25 +314,25 @@ const userController = {
   updateEmail: asyncHandler(async (req, res) => {
     //email
     const { email } = req.body;
-    //Find the user
-    const user = await User.findById(req.user);
-    //update the user email
+    console.log(email)
+    const user = await User.findById(req.user._id);
+   
     user.email = email;
     user.isEmailVerified = false;
-    //save the user
+    
     await user.save();
-    //use the method from the model
+    
     const token = await user.generateAccVerificationToken();
-    //send the verification email
+  
     sendAccVerificationEmail(user?.email, token);
-    //send the response
+    
     res.json({
       message: `Account verification email sent to ${user?.email} token expires in 10 minutes`,
     });
   }),
-  //! Update profile picture
+  
   updateProfilePic: asyncHandler(async (req, res) => {
-    //Find the user
+    
     await User.findByIdAndUpdate(
       req.user,
       {
@@ -340,7 +340,7 @@ const userController = {
       },
       { new: true }
     );
-    //send the response
+    
     res.json({
       message: "Profile picture updated successfully",
     });
@@ -349,7 +349,37 @@ const userController = {
     const userId = req.params;
     await User.findByIdAndDelete(userId)
     res.json({message : "User Deleted Successfully"});
+  }),
+
+  // update userstatus
+  updateUserStatus: asyncHandler(async (req, res) =>{
+    const { isActive } = req.body;
+    if (typeof isActive !== "boolean") {
+      return res.status(400).json({ message: "isActive field must be a boolean" });
+    }
+    
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, { isActive }, { new: true, runValidators: true });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User status updated successfully", user: updatedUser });
+  }),
+
+  // !getallTheusers
+  
+  getAllUsers: asyncHandler(async (req, res, next) => {
+    const getallusers = await User.find({});
+
+    if (!getallusers || getallusers.length === 0) {
+      return res.status(404).json({ message: "No users found", success: false });
+    }
+
+    res.status(200).json({ success: true, users: getallusers });
+
   })
+
 };
 
 module.exports = userController;
+
+// original

@@ -1,11 +1,8 @@
-import { Fragment, useState } from "react";
+import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import { FaBlog } from "react-icons/fa6";
+import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags } from "react-icons/fa";
+import { MdContentPaste } from "react-icons/md";
 import { Link, Outlet } from "react-router-dom";
 
 import {
@@ -16,60 +13,23 @@ import {
   FaTags,
   FaWallet,
 } from "react-icons/fa";
-import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
-  { name: "Dashboard", href: "/curator", icon: HomeIcon, current: true },
-  {
-    name: "Create New Post",
-    href: "/curator/create-post",
-    icon: FaUserEdit,
-    current: false,
-  },
-  {
-    name: "My Posts",
-    href: "/curator/posts",
-    icon: FaFileAlt,
-    current: false,
-  },
-  {
-    name: "My Followers",
-    href: "/curator/my-followers",
-    icon: FaUsers,
-    current: false,
-  },
-  {
-    name: "My Followings",
-    href: "/curator/my-followings",
-    icon: FaUsers,
-    current: false,
-  },
-  {
-    name: "Add Category",
-    href: "/curator/add-category",
-    icon: FaTags,
-    current: false,
-  },
-  {
-    name: "My Earnings",
-    href: "/curator/my-earnings",
-    icon: FaWallet,
-    current: false,
-  },
+  { name: "Dashboard", href: "/curator", icon: HomeIcon },
+  { name: "Content Editor", href: "/curator/editor", icon: MdContentPaste },
+  { name: "Create Post", href: "/curator/create-post", icon: FaUserEdit },
+  { name: "ContentDashBoard", href: "/curator/ContentDashBoard", icon: MdContentPaste },
+  { name: "Schedule Post", href: "/curator/schedule-post", icon: FaCalendarPlus },
+  { name: "Manage Categories", href: "/curator/manage-categories", icon: FaTags },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function CuratorDashbaord() {
+export default function CuratorDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  //Get the auth user from redux store
 
   return (
     <>
       {/* Account summary component */}
-      <PrivateNavbar/>
+
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -170,15 +130,17 @@ export default function CuratorDashbaord() {
           </Dialog>
         </Transition.Root>
 
-        {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
-            <div className="flex h-16 shrink-0 items-center">
-              {/* Logo */}
-              <Link to="/">
-                <FaBlog className="h-8 w-auto text-orange-500" />
+      <div className="flex min-h-screen">
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200">
+          <Link to="/" className="mb-6 flex items-center justify-center">
+            <FaBlog className="h-8 w-auto text-orange-500" />
+          </Link>
+          <nav>
+            {navigation.map(({ name, href, icon: Icon }) => (
+              <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
               </Link>
-              <span className="m-5"> Curator</span>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">

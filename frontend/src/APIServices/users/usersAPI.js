@@ -101,7 +101,7 @@ export const sendEmailVerificatonTokenAPI = async () => {
 };
 // ! updateEmailAPI
 export const updateEmailAPI = async (email) => {
-  const response = await axios.put(
+  const response = await axios.patch(
     `${BASE_URL}/users/update-email`,
     {
       email,
@@ -110,7 +110,7 @@ export const updateEmailAPI = async (email) => {
       withCredentials: true,
     }
   );
-
+  console.log(response.data);
   return response.data;
 };
 
@@ -141,7 +141,7 @@ export const forgotPasswordAPI = async (email) => {
   return response.data;
 };
 // !upload profile pic
-export const uplaodProfilePicAPI = async (formData) => {
+export const uploadProfilePicAPI = async (formData) => {
   const response = await axios.patch(
     `${BASE_URL}/users/upload-profile-picture`,
     formData,

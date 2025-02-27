@@ -6,13 +6,14 @@ import PostDetails from "../components/Posts/PostDetails"
 
 import {Routes, Route} from "react-router-dom";
 
-
+import PostsList from "../components/Posts/PostsList";
 
 import Register from "../components/Subscribers/Register";
 
 import RequestResetPassword from "../components/Subscribers/RequestResetPassword"
 
-import Rankings from "../components/Subscribers/CreatorsRanking"
+import Rankings from "../components/Admin/CreatorsRanking"
+
 
 
 
@@ -24,6 +25,7 @@ export default function PublicRoutes() {
         <Route element={<Register />} path="/register" />
         <Route element={<RequestResetPassword />} path="/forgot-password" />
         <Route element={<Rankings />} path="/ranking" />
+        <Route element={<PostsList />} path="/posts" />
         <Route path="posts/:postId" element={<AuthRoute allowedRoles={["curator","subscriber","admin"]}> <PostDetails /></AuthRoute>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>

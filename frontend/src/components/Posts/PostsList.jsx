@@ -10,11 +10,16 @@ import { fetchCategoriesAPI } from "../../APIServices/category/categoryAPI";
 import { FaSearch } from "react-icons/fa";
 import { MdClear } from "react-icons/md";
 import truncateString from "../../utils/truncateString";
+import { useLocation } from "react-router-dom";
+import PublicNavbar from "../Navbar/PublicNavbar";
 const PostsList = () => {
   //filtering state
   const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+
+  const location = useLocation();
+  const showHeaderFooter = location.pathname.includes("/posts");
 
   // ! use query
   const { isError, isLoading, data, error, isSuccess, refetch } = useQuery({
@@ -78,6 +83,10 @@ const PostsList = () => {
   // Show messages to the user
 
   return (
+    <>
+     {showHeaderFooter && (
+     <PublicNavbar/>
+    )}
     <section className="overflow-hidden">
       <div className="container px-4 mx-auto">
         <h1 className="text-4xl lg:text-6xl font-bold font-heading mb-6 mt-16">
@@ -201,6 +210,8 @@ const PostsList = () => {
         )}
       </div>
     </section>
+   
+    </>
   );
 };
 

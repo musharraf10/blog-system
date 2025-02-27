@@ -21,6 +21,13 @@ usersRouter.get("/profile", isAuthenticated, userController.profile);
 usersRouter.patch("/update-email", isAuthenticated, userController.updateEmail);
 usersRouter.patch("/upload-profile-picture", isAuthenticated, upload.single("image"), userController.updateProfilePic);
 
+
+// get all users
+usersRouter.get('/getallusers', userController.getAllUsers)
+
+// get active users
+usersRouter.get('/getactiveusers', userController.updateUserStatus)
+
 // Follow & Unfollow Routes
 usersRouter.put("/follow/:followId", isAuthenticated, userController.followUser);
 usersRouter.put("/unfollow/:unfollowId", isAuthenticated, userController.unFollowUser);

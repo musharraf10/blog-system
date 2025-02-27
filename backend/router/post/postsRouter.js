@@ -25,7 +25,10 @@ postRouter.post(
 // List all approved posts
 postRouter.get("/", postController.fetchAllPosts);
 
-// Get a single post (Public access with optional auth for tracking views)
+postRouter.get("/pendingposts", postController.pendingPosts);
+
+postRouter.patch("/updatestatus/:postId", postController.updateStatus);
+
 postRouter.get("/:postId", optionalAuth, postController.getPost);
 
 // Update a post (Restricted to Curators & Admins)
@@ -44,6 +47,7 @@ postRouter.delete(
   roleCheck(["curator", "admin"]),
   postController.delete
 );
+
 
 // Like & Dislike Post
 postRouter.patch("/likes/:postId", isAuthenticated, postController.like);

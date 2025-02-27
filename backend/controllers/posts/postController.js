@@ -112,8 +112,8 @@ const postController = {
   fetchAllPosts: asyncHandler(async (req, res) => {
     const { category, title, page = 1, limit = 300 } = req.query;
     //Basic filter
-    // let filter = {status: "approved"};
-    let filter = {};
+    let filter = {status: "approved"};
+    // let filter = {};
     if (category) {
       filter.category = category;
     }
@@ -130,7 +130,7 @@ const postController = {
     const totalPosts = await Post.countDocuments(filter);
     res.json({
       status: "success",
-      message: "Post fetched successfully",
+      message: " Approved Post fetched successfully",
       posts,
       currentPage: page,
       perPage: limit,
@@ -139,11 +139,11 @@ const postController = {
   }),
   //! get a post
   getPost: asyncHandler(async (req, res) => {
-    //get the post id from params
+    
     const postId = req.params.postId;
     //check for login user
     const userId = req.user ? req.user : null;
-    //find the post
+   
     const postFound = await Post.findById(postId).populate({
       path: "comments",
       populate: {
@@ -172,9 +172,9 @@ const postController = {
   }),
   //! delete
   delete: asyncHandler(async (req, res) => {
-    //get the post id from params
+    
     const postId = req.params.postId;
-    //find the post
+   
     await Post.findByIdAndDelete(postId);
     res.json({
       status: "success",
@@ -192,53 +192,86 @@ const postController = {
     if (!postUpdated) throw new Error("Post not found");
     res.json({ message: "Post updated successfully", postUpdated });
   }),
-  //like post
-  like: asyncHandler(async (req, res) => {
-    //Post id
+
+
+  pendingPosts: asyncHandler(async (req, res) => {
+    const posts = await Post.find({ status: "pending" });
+
+    res.json({
+      status: "success",
+      message: "Pending posts fetched successfully",
+      posts,
+    });
+  }),
+
+  updateStatus: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
-    //user liking a post
+    const { status } = req.body;
+    await Post.findByIdAndUpdate
+    (postId, { status });
+    res.json({
+      status: "success",
+      message: "Post status updated successfully",
+    });
+  }),
+
+  changePrice: asyncHandler(async (req, res) => {
+    const postId = req.params.postId;
+    const { price } = req.body;
+    await Post.findByIdAndUpdate
+    (postId, { price });
+    res.json({
+      status: "success",
+      message: "Post price updated successfully",
+    });
+  }),
+  
+  like: asyncHandler(async (req, res) => {
+    
+    const postId = req.params.postId;
+    
     console.log("psot",postId);
     const userId = req.user._id;
-    //Find the post
+   
     const post = await Post.findById(postId);
-    //Check if a user has already disliked the post
+   
     if (post?.dislikes.includes(userId)) {
       post?.dislikes?.pull(userId);
     }
-    //Check if a user has already liked the post
+    
     if (post?.likes.includes(userId)) {
       post?.likes?.pull(userId);
     } else {
       post?.likes?.push(userId);
     }
-    //resave the post
+   
     await post.save();
-    //send the response
+   
     res.json({
       message: "Post Liked",
     });
   }),
-  //like post
+  
   dislike: asyncHandler(async (req, res) => {
-    //Post id
+    
     const postId = req.params.postId;
-    //user liking a post
+    
     const userId = req.user;
-    //Find the post
+   
     const post = await Post.findById(postId);
-    //Check if a user has already liked the post
+    
     if (post?.likes.includes(userId)) {
       post?.likes?.pull(userId);
     }
-    //Check if a user has already disliked the post
+   
     if (post?.dislikes.includes(userId)) {
       post?.dislikes?.pull(userId);
     } else {
       post?.dislikes?.push(userId);
     }
-    //resave the post
+   
     await post.save();
-    //send the response
+   
     res.json({
       message: "Post Disliked",
     });
