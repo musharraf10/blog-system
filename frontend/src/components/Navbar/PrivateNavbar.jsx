@@ -24,7 +24,7 @@ export default function PrivateNavbar() {
 
   if (isLoading) return <AuthCheckingComponent />;
   const userRole = data?.role;
-  console.log(data.profilePicture.path);
+  // console.log(data.profilePicture.path);
   const logoutHandler = async () => {
     try {
       await logoutMutation.mutateAsync();
@@ -77,7 +77,7 @@ export default function PrivateNavbar() {
                 {/* Profile Dropdown */}
                 <Menu as="div" className="relative">
                   <Menu.Button className="flex text-sm rounded-full focus:ring-2 focus:ring-indigo-500">
-                    {data.profilePicture.path !==null  ? (
+                    {data.profilePicture !==null  ? (
                       <img className="h-10 w-10 rounded-full" src={data.profilePicture.path} alt="Profile" />
                     ) : (
                       <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
