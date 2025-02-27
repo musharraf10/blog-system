@@ -17,6 +17,7 @@ import Notifications from "../components/Notification/NotificationLists"
 import AccountVerifiedComponent from "../components/Curator/AccountVerification"
 import AddCategory from "../components/Category/AddCategory"
 import ContentEditor from "../components/Curator/contentEditor/ContentEditor"
+import ContentDashBoard from "../components/Curator/ContentDashBoard";
 
 
 
@@ -32,6 +33,8 @@ const CuratorRoutes = () => {
           }
         >
           <Route path="editor" element={<ContentEditor />} />
+          <Route path="contentdashBoard" element={<ContentDashBoard />} />
+          
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post" element={<CreatePost />} />
           <Route path="posts" element={<DashboardPosts />} />

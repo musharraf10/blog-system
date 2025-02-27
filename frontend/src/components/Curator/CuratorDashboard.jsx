@@ -10,6 +10,7 @@ const navigation = [
   { name: "Dashboard", href: "/curator", icon: HomeIcon },
   { name: "Content Editor", href: "/curator/editor", icon: MdContentPaste },
   { name: "Create Post", href: "/curator/create-post", icon: FaUserEdit },
+  { name: "ContentDashBoard", href: "/curator/ContentDashBoard", icon: MdContentPaste },
   { name: "Schedule Post", href: "/curator/schedule-post", icon: FaCalendarPlus },
   { name: "Manage Categories", href: "/curator/manage-categories", icon: FaTags },
 ];
