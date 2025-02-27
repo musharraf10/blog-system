@@ -10,6 +10,7 @@ import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 import { Navigate } from "react-router-dom";
 import AuthCheckingComponent from "../Templates/AuthCheckingComponent";
 
+// Export the default function PublicNavbar
 export default function PublicNavbar() {
 
   const { isLoading, data } = useQuery({
@@ -19,7 +20,7 @@ export default function PublicNavbar() {
 if (isLoading) return <AuthCheckingComponent />;
 const userRole = data?.role; 
   return (
-    <Disclosure as="nav" className="bg-white shadow">
+    <Disclosure as="nav" className="bg-white shadow sticky top-0 z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

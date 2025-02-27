@@ -24,7 +24,11 @@ export default function PrivateNavbar() {
 
   if (isLoading) return <AuthCheckingComponent />;
   const userRole = data?.role;
+<<<<<<< HEAD
   // console.log(data.profilePicture.path);
+=======
+
+>>>>>>> ce97efabeabff8bdfb7d1c44635fb81d76bccafd
   const logoutHandler = async () => {
     try {
       await logoutMutation.mutateAsync();
@@ -42,17 +46,16 @@ export default function PrivateNavbar() {
   ].filter(Boolean);
 
   return (
-    <Disclosure as="nav" className="bg-white shadow">
-      {({ open }) => (
+<Disclosure as="nav" className="bg-white sticky top-0 z-50 border-b border-gray-300 shadowmd">
+
+{({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between items-center">
-              {/* Mobile Menu Button */}
               <Disclosure.Button className="md:hidden p-2 text-gray-400 hover:text-gray-600 focus:ring-2 focus:ring-indigo-500">
                 {open ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
               </Disclosure.Button>
 
-              {/* Navigation Links */}
               <div className="hidden md:flex md:space-x-8">
                 {navLinks.map(({ name, path }) => (
                   <Link key={name} to={path} className="text-sm font-medium text-gray-500 hover:text-gray-700">
@@ -61,7 +64,6 @@ export default function PrivateNavbar() {
                 ))}
               </div>
 
-              {/* User Controls */}
               <div className="flex items-center space-x-4">
                 <Link to={`/${userRole}`} className="bg-orange-600 text-white px-3 py-2 rounded-md hover:bg-indigo-500">
                   <MdOutlineDashboard className="inline mr-1" /> Dashboard
@@ -74,10 +76,13 @@ export default function PrivateNavbar() {
                 </button>
                 <NotificationCounts />
 
-                {/* Profile Dropdown */}
                 <Menu as="div" className="relative">
                   <Menu.Button className="flex text-sm rounded-full focus:ring-2 focus:ring-indigo-500">
+<<<<<<< HEAD
                     {data.profilePicture !==null  ? (
+=======
+                    {data.profilePicture.path !== null ? (
+>>>>>>> ce97efabeabff8bdfb7d1c44635fb81d76bccafd
                       <img className="h-10 w-10 rounded-full" src={data.profilePicture.path} alt="Profile" />
                     ) : (
                       <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
@@ -123,7 +128,6 @@ export default function PrivateNavbar() {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
           <Disclosure.Panel className="md:hidden px-2 pt-2 pb-3 space-y-1">
             {navLinks.map(({ name, path }) => (
               <Link key={name} to={path} className="block text-gray-700 hover:bg-gray-100 p-2 rounded-md">
