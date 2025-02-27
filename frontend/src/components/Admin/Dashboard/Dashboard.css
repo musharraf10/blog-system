@@ -19,7 +19,7 @@
   background-position: -100% 0 !important;
   transform: scale(1.2);
   color: white !important;
-  z-index: 999;
+  /* z-index: 999; */
   -webkit-transform: scale(1.1);
   -moz-transform: scale(1.2);
   -ms-transform: scale(1.2);
@@ -38,3 +38,6 @@
 .navlinkoflogout:hover{
   background-color: white !important;
 }
+
+
+/* original  */
