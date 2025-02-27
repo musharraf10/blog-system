@@ -16,6 +16,7 @@ import MyEarnings from "../components/Curator/MyEarnings"
 import Notifications from "../components/Notification/NotificationLists"
 import AccountVerifiedComponent from "../components/Curator/AccountVerification"
 import AddCategory from "../components/Category/AddCategory"
+import ContentEditor from "../components/Curator/contentEditor/ContentEditor"
 
 
 
@@ -30,7 +31,8 @@ const CuratorRoutes = () => {
             </AuthRoute>
           }
         >
-          <Route index element={<AccountSummaryDashboard />} />
+          <Route path="editor" element={<ContentEditor />} />
+          <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post" element={<CreatePost />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
