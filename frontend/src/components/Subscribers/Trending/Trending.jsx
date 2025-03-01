@@ -11,21 +11,21 @@ const Trending = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   const loadTrending = async () => {
-  //     try {
-  //       const data = await fetchTrendingContent();
-  //       console.log(data)
-  //       setTrendingData({data});
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const loadTrending = async () => {
+      try {
+        const data = await fetchTrendingContent();
+        console.log(data)
+        setTrendingData({data});
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   loadTrending();
-  // }, []);
+    loadTrending();
+  }, []);
 
   if (loading)
     return (

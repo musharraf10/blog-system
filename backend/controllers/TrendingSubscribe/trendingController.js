@@ -1,4 +1,4 @@
-const Content = require('../../models/TrendingSubscribe/Content');
+const Content = require('../../models/Content/Content');
 
 const getTrendingContent = async (req, res) => {
   try {
