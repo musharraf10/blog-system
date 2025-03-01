@@ -38,7 +38,7 @@ export default function PrivateNavbar() {
   const navLinks = [
     { name: "Latest Posts", path: `${userRole}/latestposts`},
     { name: "Creators Ranking", path: "/ranking" },
-    userRole !== "admin" && { name: "Pricing", path: `${userRole}/pricing` },
+    userRole !== "admin" && { name: "Pricing", path: `/${userRole}/pricing` },
   ].filter(Boolean);
 
   return (
@@ -74,7 +74,7 @@ export default function PrivateNavbar() {
 
                 <Menu as="div" className="relative">
                   <Menu.Button className="flex text-sm rounded-full focus:ring-2 focus:ring-indigo-500">
-                    {data.profilePicture.path !== null ? (
+                    {data.profilePicture !==null  ? (
                       <img className="h-10 w-10 rounded-full" src={data.profilePicture.path} alt="Profile" />
                     ) : (
                       <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">

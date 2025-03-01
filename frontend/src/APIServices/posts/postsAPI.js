@@ -80,6 +80,7 @@ export const useFetchPendingPosts = () => {
 
 //! Update Post Status
 export const updatePostStatusAPI = async ({ postId, status }) => {
+  console.log("PostId", postId, status);
   const response = await axios.patch(
     `${BASE_URL}/updatestatus/${postId}`,
     { status },
@@ -111,3 +112,9 @@ export const useDeletePost = () => {
     },
   });
 };
+
+
+export const fetchPostAnalytics = async () => {
+  const response = await axios.get(`${BASE_URL}/analytics`);
+  return response.data;
+}

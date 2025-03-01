@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     googleId: {
       type: String,
-      required: false, // Required only for users logging in with Google
+      required: false, 
     },
     role: {
       type: String,
@@ -39,7 +39,18 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: "local",
     },
-
+    channelName: {
+      type: String,
+      default: null,
+    },
+    GovtId: {
+      type: String,
+      default: null,
+    },
+    GovtIdType: {
+      type: String,
+      default: null,
+    },
     accountVerificationToken: {
       type: String,
       default: null,
