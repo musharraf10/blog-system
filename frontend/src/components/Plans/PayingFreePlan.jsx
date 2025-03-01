@@ -35,7 +35,7 @@ const PayingFreePlan = () => {
           <p className="mt-2 text-center text-gray-500">
             Proceed to activate your free plan.
           </p>
-          <Link to="/dashboard/create-post">
+          <Link to="/subscriber">
             <button className="mt-8 w-full py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
               Start Creating
             </button>

@@ -5,7 +5,7 @@ const notificationController = require("../../controllers/notifications/notifica
 const notificationRouter = express.Router();
 
 // Fetch Notifications (User must be authenticated)
-notificationRouter.get("/", isAuthenticated, notificationController.fetchNotifications);
+notificationRouter.get("/",  notificationController.fetchNotifications);
 
 // Mark Notification as Read
 notificationRouter.patch("/:notificationId", isAuthenticated, notificationController.readNotification);

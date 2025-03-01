@@ -167,3 +167,41 @@ export const resetPasswordAPI = async (data) => {
 
   return response.data;
 };
+
+export const changePasswordAPI = async (data) => {  
+  const response = await axios.put(
+    `${BASE_URL}/users/change-password`,
+    {
+      oldPassword: data?.oldPassword,
+      newPassword: data?.newPassword,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};
+
+
+
+
+export const becomeCreatorAPI = async (formData) => {
+  try {
+    console.log("formData", formData);
+    const response = await axios.post(
+      `${BASE_URL}/users/become-creator`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", 
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error submitting application:", error);
+    throw error;
+  }
+};

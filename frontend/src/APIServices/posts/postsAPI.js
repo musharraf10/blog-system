@@ -118,3 +118,19 @@ export const fetchPostAnalytics = async () => {
   const response = await axios.get(`${BASE_URL}/analytics`);
   return response.data;
 }
+
+
+const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+
+
+  export const getallpostsdata = async () => {
+    try {
+      const response = await axios.get(
+        `${BackendServername}/posts/getallpublishedposts`
+      );
+      return response.data.posts; 
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };

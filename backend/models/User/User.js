@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema(
       type: Object,
       default: null,
     },
-    phoneNum:{
-      type : String
+    phoneNum: {
+      type: String
     },
     email: {
       type: String,
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     googleId: {
       type: String,
-      required: false, // Required only for users logging in with Google
+      required: false, 
     },
     role: {
       type: String,
@@ -39,7 +39,18 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: "local",
     },
-
+    channelName: {
+      type: String,
+      default: null,
+    },
+    GovtId: {
+      type: String,
+      default: null,
+    },
+    GovtIdType: {
+      type: String,
+      default: null,
+    },
     accountVerificationToken: {
       type: String,
       default: null,
@@ -82,13 +93,14 @@ const userSchema = new mongoose.Schema(
     },
     subscriptionStartDate: { type: Date },
     subscriptionEndDate: { type: Date },
-    
+
     purchasedContent: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Content",  // Reference to the content (article, video)
-      purchaseDate: { type: Date, default: Date.now },
+      ref: "Content",
+      purchaseDate: { type: Date, default: Date.now }
     }],
-    
+
+
 
     // User relationships
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Link to other users

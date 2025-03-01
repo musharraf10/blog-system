@@ -6,12 +6,17 @@ const roleCheck = require("../../middlewares/roleCheck");
 const earningsRouter = express.Router();
 
 // Fetch all earnings (Admin only)
-earningsRouter.get("/", isAuthenticated, roleCheck(["admin", "curator"]) , earningsController.fetchAllEarnings);
+earningsRouter.get("/fetchAllEarnings", isAuthenticated, roleCheck(["admin", "curator"]), earningsController.fetchAllEarnings);
 
 // Fetch logged-in user's earnings
-earningsRouter.get("/my-earnings", isAuthenticated,  earningsController.getUserEarnings);
+earningsRouter.get("/my-earnings", isAuthenticated, earningsController.getUserEarnings);
 
 // Fetch earnings by date range
 earningsRouter.get("/filter", isAuthenticated, earningsController.filterEarningsByDate);
+
+// earningsRouter.get(
+//   "/dashboard-stats",
+//   earningsController.getDashboardStats
+// );
 
 module.exports = earningsRouter;
