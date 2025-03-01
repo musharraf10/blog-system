@@ -17,7 +17,6 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
     bookmarkedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    
     price: { type: Number, default: 0 },
     status: {
       type: String,
