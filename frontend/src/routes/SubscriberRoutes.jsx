@@ -22,6 +22,9 @@ import BecomeCreator from "../components/Subscribers/Settings/BecomeCreator";
 import { SettingsPhone } from "@mui/icons-material";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
+import Trending from "../components/Subscribers/Trending/Trending";
+
+
 
 const SubscriberRoutes = () => {
     return (
@@ -40,6 +43,7 @@ const SubscriberRoutes = () => {
           <Route index path="profilesettings" element={<SettingsSubPage/>} /> 
           <Route path="plan" element={<Plan />} />
           {/* <Route path="webinars" element={<SearchFilter />} /> */}
+          <Route path="trendingcontent" element={<Trending />} />
           <Route path="billing" element={<Billing />} />
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
@@ -55,6 +59,7 @@ const SubscriberRoutes = () => {
             path="account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
+          
         </Route>
       </Routes>
     );
