@@ -1,219 +1,144 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { FaTimesCircle } from "react-icons/fa";
-import Select from "react-select";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createPostAPI } from "../../APIServices/posts/postsAPI";
-import AlertMessage from "../Alert/AlertMessage";
-import { fetchCategoriesAPI } from "../../APIServices/category/categoryAPI";
+import { Box, Button, TextField, Typography, Container, Paper, Grid, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme, Chip, IconButton, InputAdornment } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
+import { styled } from "@mui/material/styles";
 
-const CreatePost = () => {
-  // state for wysiwg
-  const [description, setDescription] = useState("");
-  //File upload state
-  const [imageError, setImageErr] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
+const VisuallyHiddenInput = styled("input")({ clip: "rect(0 0 0 0)", clipPath: "inset(50%)", height: 1, overflow: "hidden", position: "absolute", bottom: 0, left: 0, whiteSpace: "nowrap", width: 1 });
+const StyledTabButton = styled(Button)(({ theme, active }) => ({
+    textTransform: "capitalize", fontSize: "16px", fontWeight: "bold", borderRadius: theme.spacing(1), padding: theme.spacing(1, 3), transition: "all 0.3s ease",
+    ...(active ? { backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText, "&:hover": { backgroundColor: theme.palette.primary.dark } }
+        : { borderColor: theme.palette.primary.main, color: theme.palette.primary.main, "&:hover": { backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText } })
+}));
+const ContentPaper = styled(Paper)(({ theme }) => ({ padding: theme.spacing(3), borderRadius: theme.spacing(2), boxShadow: theme.shadows[4], backgroundColor: theme.palette.background.paper, [theme.breakpoints.down("sm")]: { padding: theme.spacing(2) } }));
 
-  // post mutation
-  const postMutation = useMutation({
-    mutationKey: ["create-post"],
-    mutationFn: createPostAPI,
-  });
-  const formik = useFormik({
-    // initial data
-    initialValues: {
-      description: "",
-      image: "",
-      category: "",
-    },
-    // validation
-    validationSchema: Yup.object({
-      description: Yup.string().required("Description is required"),
-      image: Yup.string().required("image is required"),
-      category: Yup.string().required("Category is required"),
-    }),
-    // submit
-    onSubmit: (values) => {
-      console.log(values);
-      //form data
-      const formData = new FormData();
-      formData.append("description", description);
-      formData.append("image", values.image);
-      formData.append("category", values.category);
-      postMutation.mutate(formData);
-    },
-  });
-  // Fetch categories
-  const { data } = useQuery({
-    queryKey: ["category-lists"],
-    queryFn: fetchCategoriesAPI,
-  });
+const ContentManager = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const [activeTab, setActiveTab] = useState(null);
+    const [scheduling, setScheduling] = useState("no");
+    const [content, setContent] = useState({ title: "", description: "", image: null, videoFile: null, startTime: "", endTime: "", hashtags: [] });
+    const [hashtagInput, setHashtagInput] = useState("");
 
-  //!===== File upload logics====
-  //! Handle fileChange
-  const handleFileChange = (event) => {
-    //get the file selected
-    const file = event.currentTarget.files[0];
-    //Limit file size
-    if (file.size > 1048576) {
-      setImageErr("File size exceed 1MB");
-      return;
-    }
-    // limit the file types
-    if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
-      setImageErr("Invalid file type");
-    }
-    //set the image preview
-    formik.setFieldValue("image", file);
-    setImagePreview(URL.createObjectURL(file));
-  };
-  //!remove image
-  const removeImage = () => {
-    formik.setFieldValue("image", null);
-    setImagePreview(null);
-  };
-  //get loading state
-  const isLoading = postMutation.isPending;
-  //isErr
-  const isError = postMutation.isError;
-  //success
-  const isSuccess = postMutation.isSuccess;
-  //Error
-  const errorMsg = postMutation?.error?.response?.data?.message;
-  console.log(postMutation);
-  return (
-    <div className="flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 m-4">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
-          Add New Post
-        </h2>
-        {/* show alert */}
+    const handleTabChange = (tab) => { setActiveTab(activeTab === tab ? null : tab); setScheduling("no"); setContent({ title: "", description: "", image: null, videoFile: null, startTime: "", endTime: "", hashtags: [] }); };
+    const handleInputChange = (e) => { const { name, value, files } = e.target; setContent((prevState) => ({ ...prevState, [name]: files ? files[0] : value })); };
+    const handleAddHashtag = () => { if (hashtagInput.trim() && !content.hashtags.includes(hashtagInput.trim())) { setContent((prevState) => ({ ...prevState, hashtags: [...prevState.hashtags, hashtagInput.trim()] })); setHashtagInput(""); } };
+    const handleRemoveHashtag = (hashtag) => { setContent((prevState) => ({ ...prevState, hashtags: prevState.hashtags.filter((tag) => tag !== hashtag) })); };
+    const handleRemoveAllHashtags = () => { setContent((prevState) => ({ ...prevState, hashtags: [] })); };
+    const handleClearHashtagInput = () => { setHashtagInput(""); };
 
-        {isLoading && (
-          <AlertMessage type="loading" message="Loading please wait" />
-        )}
-        {isSuccess && (
-          <AlertMessage type="success" message="Post created successfully" />
-        )}
-        {isError && <AlertMessage type="error" message={errorMsg} />}
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          {/* Description Input - Using ReactQuill for rich text editing */}
-          <div className="mb-10">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <ReactQuill
-              value={formik.values.description}
-              onChange={(value) => {
-                setDescription(value);
-                formik.setFieldValue("description", value);
-              }}
-              className="h-40"
-            />
-            {/* display err msg */}
-            {formik.touched.description && formik.errors.description && (
-              <span style={{ color: "red" }}>{formik.errors.description}</span>
-            )}
-          </div>
+    const renderUploadedFile = () => {
+        if (content.image) {
+            return (
+                <Box sx={{ mt: 2, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", height: isMobile ? "200px" : "300px" }}>
+                    <Typography variant="h6" sx={{ mb: 1, color: theme.palette.text.primary }}>Uploaded Image:</Typography>
+                    <img src={URL.createObjectURL(content.image)} alt="Uploaded" style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: theme.spacing(1), objectFit: "contain" }} />
+                </Box>
+            );
+        } else if (content.videoFile) {
+            return (
+                <Box sx={{ mt: 2, textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center", height: isMobile ? "200px" : "300px" }}>
+                    <Typography variant="h6" sx={{ mb: 1, color: theme.palette.text.primary }}>Uploaded Video:</Typography>
+                    <video controls style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: theme.spacing(1), objectFit: "contain" }}>
+                        <source src={URL.createObjectURL(content.videoFile)} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </Box>
+            );
+        }
+        return null;
+    };
 
-          {/* Category Input - Dropdown for selecting post category */}
-          <div>
-            <label
-              htmlFor="category"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Category
-            </label>
-            <Select
-              name="category"
-              options={data?.categories?.map((category) => {
-                return {
-                  value: category._id,
-                  label: category.categoryName,
-                };
-              })}
-              onChange={(option) => {
-                return formik.setFieldValue("category", option.value);
-              }}
-              value={data?.categories?.find(
-                (option) => option.value === formik.values.category
-              )}
-              className="mt-1 block w-full"
-            />
-            {/* display error */}
-            {formik.touched.category && formik.errors.category && (
-              <p className="text-sm text-red-600">{formik.errors.category}</p>
-            )}
-          </div>
+    const handlePublish = () => {
+        if (!content.title || !content.description || (activeTab !== "webinar" && !content.image && !content.videoFile)) {
+            alert("Please fill all the required fields before publishing or scheduling.");
+            return;
+        }
+        if (scheduling === "yes" && (!content.startTime || !content.endTime)) {
+            alert("Please provide both start and end times for scheduling.");
+            return;
+        }
+        alert(scheduling === "yes" ? "Content successfully scheduled!" : "Content successfully published!");
+        setContent({ title: "", description: "", image: null, videoFile: null, startTime: "", endTime: "", hashtags: [] });
+        setScheduling("no");
+        setActiveTab(null);
+    };
 
-          {/* Image Upload Input - File input for uploading images */}
-          <div className="flex flex-col items-center justify-center bg-gray-50 p-4 shadow rounded-lg">
-            <label
-              htmlFor="images"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Upload Image
-            </label>
-            <div className="flex justify-center items-center w-full">
-              <input
-                id="images"
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <label
-                htmlFor="images"
-                className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-              >
-                Choose a file
-              </label>
-            </div>
-            {/* Display error message */}
-            {formik.touched.image && formik.errors.image && (
-              <p className="text-sm text-red-600">{formik.errors.image}</p>
-            )}
-
-            {/* error message */}
-            {imageError && <p className="text-sm text-red-600">{imageError}</p>}
-
-            {/* Preview image */}
-
-            {imagePreview && (
-              <div className="mt-2 relative">
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="mt-2 h-24 w-24 object-cover rounded-full"
-                />
-                <button
-                  onClick={removeImage}
-                  className="absolute right-0 top-0 transform translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1"
-                >
-                  <FaTimesCircle className="text-red-500" />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Submit Button - Button to submit the form */}
-          <button
-            type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-500 hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Add Post
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+    return (
+        <Container maxWidth="100%" sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 }, minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <Paper sx={{ p: { xs: 2, sm: 3, md: 4 }, borderRadius: 3, boxShadow: 3, backgroundColor: theme.palette.background.default, flexGrow: 1, display: "flex", flexDirection: "column", overflow: "auto" }}>
+                <Typography variant={isMobile ? "h5" : "h4"} gutterBottom sx={{ fontWeight: "bold", textAlign: "center", mb: 2, color: theme.palette.text.primary }}>Content Creation</Typography>
+                <Box sx={{ mb: 3, display: "flex", justifyContent: "center", gap: { xs: 1, sm: 2 }, flexWrap: { xs: "wrap", md: "nowrap" } }}>
+                    {["articles", "videos", "webinar", "tutorial"].map((tab) => (
+                        <StyledTabButton key={tab} variant={activeTab === tab ? "contained" : "outlined"} onClick={() => handleTabChange(tab)} active={activeTab === tab ? 1 : 0} sx={{ minWidth: { xs: '110px', sm: '120px' }, mb: { xs: 1, md: 0 } }}>
+                            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        </StyledTabButton>
+                    ))}
+                </Box>
+                {activeTab && (
+                    <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ flexGrow: 1, alignItems: "stretch" }}>
+                        <Grid item xs={12} md={6}>
+                            <ContentPaper sx={{ height: "100%" }}>
+                                <Typography variant={isMobile ? "h6" : "h5"} sx={{ fontWeight: "bold", mb: 2, textAlign: "center", color: theme.palette.text.primary }}>
+                                    {activeTab === "articles" ? "Create New Article" : "Upload New Content"}
+                                </Typography>
+                                <TextField fullWidth label="Title" name="title" value={content.title} onChange={handleInputChange} margin="normal" variant="outlined" sx={{ mb: 2 }} />
+                                <TextField fullWidth label="Description" name="description" value={content.description} onChange={handleInputChange} margin="normal" variant="outlined" multiline rows={4} sx={{ mb: 2 }} />
+                                <Box sx={{ mb: 2 }}>
+                                    <TextField fullWidth label="Enter Hashtags" value={hashtagInput} onChange={(e) => setHashtagInput(e.target.value)} margin="normal" variant="outlined" onKeyPress={(e) => { if (e.key === "Enter") handleAddHashtag(); }} InputProps={{ endAdornment: hashtagInput && (<InputAdornment position="end"><IconButton aria-label="clear hashtag input" onClick={handleClearHashtagInput} edge="end"><ClearIcon /></IconButton></InputAdornment>) }} />
+                                    <Button variant="contained" onClick={handleAddHashtag} sx={{ mt: 1, width: { xs: '100%', sm: 'auto' } }}>Add Hashtag</Button>
+                                </Box>
+                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2, alignItems: "center" }}>
+                                    {content.hashtags.map((hashtag, index) => (<Chip key={index} label={`#${hashtag}`} onDelete={() => handleRemoveHashtag(hashtag)} sx={{ backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText }} />))}
+                                    {content.hashtags.length > 0 && (<IconButton onClick={handleRemoveAllHashtags} color="error" size="small" sx={{ ml: 1 }}><DeleteIcon /></IconButton>)}
+                                </Box>
+                                {activeTab !== "webinar" && (
+                                    <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} sx={{ mt: 2, mb: 2, width: { xs: '100%', sm: 'auto' } }}>
+                                        Upload File
+                                        <VisuallyHiddenInput type="file" name={activeTab === "videos" ? "videoFile" : "image"} onChange={handleInputChange} accept={activeTab === "videos" ? "video/*" : "image/*"} />
+                                    </Button>
+                                )}
+                                <Typography variant="h6" sx={{ mt: 2, mb: 1, color: theme.palette.text.primary }}>Schedule Content?</Typography>
+                                <ToggleButtonGroup color="primary" value={scheduling} exclusive onChange={(e, newValue) => setScheduling(newValue || "no")} sx={{ mb: 2, display: 'flex', width: { xs: '100%', sm: 'auto' } }}>
+                                    <ToggleButton value="yes" sx={{ flex: { xs: 1, sm: 'none' }, py: 1 }}>Yes</ToggleButton>
+                                    <ToggleButton value="no" sx={{ flex: { xs: 1, sm: 'none' }, py: 1 }}>No</ToggleButton>
+                                </ToggleButtonGroup>
+                                {scheduling === "yes" && (
+                                    <Grid container spacing={2} sx={{ mt: 1, mb: 2 }}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField fullWidth label="Start Time" name="startTime" type="datetime-local" value={content.startTime} onChange={handleInputChange} InputLabelProps={{ shrink: true }} variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField fullWidth label="End Time" name="endTime" type="datetime-local" value={content.endTime} onChange={handleInputChange} InputLabelProps={{ shrink: true }} variant="outlined" />
+                                        </Grid>
+                                    </Grid>
+                                )}
+                                <Button variant="contained" color="primary" sx={{ mt: 2, borderRadius: 2, width: { xs: '100%', sm: 'auto' } }} onClick={handlePublish}>
+                                    {scheduling === "yes" ? `Schedule ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}` : "Publish"}
+                                </Button>
+                            </ContentPaper>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <ContentPaper sx={{ height: "100%" }}>
+                                <Typography variant={isMobile ? "h6" : "h5"} sx={{ fontWeight: "bold", mb: 2, textAlign: "center", color: theme.palette.text.primary }}>Preview</Typography>
+                                <Typography variant="h6" sx={{ mt: 2, color: theme.palette.text.primary }}>Title:</Typography>
+                                <Typography sx={{ mb: 2, color: theme.palette.text.secondary }}>{content.title || "N/A"}</Typography>
+                                <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>Description:</Typography>
+                                <Typography sx={{ mb: 2, color: theme.palette.text.secondary }}>{content.description || "N/A"}</Typography>
+                                <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>Hashtags:</Typography>
+                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2, alignItems: "center" }}>
+                                    {content.hashtags.map((hashtag, index) => (<Chip key={index} label={`#${hashtag}`} sx={{ backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText }} />))}
+                                    {content.hashtags.length > 0 && (<IconButton onClick={handleRemoveAllHashtags} color="error" size="small" sx={{ ml: 1 }}><DeleteIcon /></IconButton>)}
+                                </Box>
+                                {renderUploadedFile()}
+                            </ContentPaper>
+                        </Grid>
+                    </Grid>
+                )}
+            </Paper>
+        </Container>
+    );
 };
 
-export default CreatePost;
+export default ContentManager;
