@@ -22,6 +22,7 @@ import BecomeCreator from "../components/Subscribers/Settings/BecomeCreator";
 import { SettingsPhone } from "@mui/icons-material";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
+import PayingFreePlan from "../components/Plans/PayingFreePlan";
 
 const SubscriberRoutes = () => {
     return (
@@ -51,6 +52,8 @@ const SubscriberRoutes = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="latestposts" element={<DashboardPosts/>} />
           <Route path="pricing" element={<Pricing/>} />
+          <Route path="free-subscription" element={<PayingFreePlan/>} />
+
           <Route
             path="account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}

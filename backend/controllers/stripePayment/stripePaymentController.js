@@ -49,13 +49,40 @@ const stripePaymentController = {
 
   free: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    // console.log("Hello",user);
-    if (!user) throw new Error("User not found");
+    const plan = await Plan.findOne({ planName: "Free" }); 
     
+    if (!user) throw new Error("User not found");
+    if (!plan) throw new Error("Free plan not found");
+  
+    if (!plan.activeSubscribers.includes(user._id)) {
+      console.log("Adding user to free plan");
+      plan.activeSubscribers.push(user._id);
+    }
+    console.log("User has selected free plan",user._id);
     user.hasSelectedPlan = true;
+    user.plan = plan._id;
+  
+    await plan.save();
     await user.save();
+  
     res.json({ status: true, message: "User updated to free plan" });
   }),
+
+
+  CurrentUserPlan: asyncHandler(async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id).populate("plan");
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.status(200).json({ plan: user.plan });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  }),
 };
+  
 
 module.exports = stripePaymentController;
