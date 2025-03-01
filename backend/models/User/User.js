@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema(
       type: Object,
       default: null,
     },
-    phoneNum:{
-      type : String
+    phoneNum: {
+      type: String
     },
     email: {
       type: String,
@@ -93,13 +93,14 @@ const userSchema = new mongoose.Schema(
     },
     subscriptionStartDate: { type: Date },
     subscriptionEndDate: { type: Date },
-    
+
     purchasedContent: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Content",  // Reference to the content (article, video)
-      purchaseDate: { type: Date, default: Date.now },
+      ref: "Content",
+      purchaseDate: { type: Date, default: Date.now }
     }],
-    
+
+
 
     // User relationships
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Link to other users

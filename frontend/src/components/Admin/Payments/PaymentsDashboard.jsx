@@ -1,6 +1,6 @@
 import { Share, Search, Settings, Calendar } from 'lucide-react';
 import BarGraph from './BarGraph';
-
+import { useState } from 'react';
 // Sample data for charts
 const monthlyData = [
   { name: 'Aug', value: 2000 },
@@ -32,16 +32,21 @@ const CardWrapper = ({ children, className = '' }) => (
 );
 
 const PaymentsDashboard = () => {
+  const [today, setToday] = useState(123456);
+  const [sixmonthsData, setSixmonthsData] = useState(54783658);
+  const [monthly, setMonthly] = useState(34.56836);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm overflow-hidden border border-gray-200">
-        <div className="grid grid-cols-6 h-full">
+      <div className="overflow-hidden bg-white border border-gray-200 shadow-sm">
+        <div className="grid h-full grid-cols-6">
           {/* Sidebar */}
-          <CardWrapper className="col-span-1 border-r border-gray-200 rounded-none h-full">
+
+          <CardWrapper className="h-full col-span-1 border-r border-gray-200 rounded-none">
             <div className="mb-6">
-              <h2 className="text-black font-semibold mb-4">Generic</h2>
+              <h2 className="mb-4 font-semibold text-black">Generic</h2>
               <nav className="space-y-4">
-                <div className="flex items-center gap-3 text-gray-600 bg-gray-100 rounded-lg p-2">
+                <div className="flex items-center gap-3 p-2 text-gray-600 bg-gray-100 rounded-lg">
                   <Calendar size={18} />
                   <span>Monthly</span>
                 </div>
@@ -50,29 +55,26 @@ const PaymentsDashboard = () => {
           </CardWrapper>
 
           {/* Main Content */}
-          <div className="col-span-5 p-6 bg-gray-50">
+          <div className="col-span-5 p-6 bg-gray-50 max-w-[100vw]">
             {/* Header */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center justify-between mb-6">
               <div className="flex gap-4">
-                <button
-                  className="bg-black text-white px-4 py-2 rounded-lg 
-                  transition-all duration-300 hover:bg-gray-800"
-                >
+                <button className="px-4 py-2 text-white transition-all duration-300 bg-black rounded-lg hover:bg-gray-800">
                   PaymentsDashboard
                 </button>
               </div>
               <div className="flex gap-6 text-gray-600">
                 <Share
                   size={20}
-                  className="hover:text-black transition-colors cursor-pointer"
+                  className="transition-colors cursor-pointer hover:text-black"
                 />
                 <Settings
                   size={20}
-                  className="hover:text-black transition-colors cursor-pointer"
+                  className="transition-colors cursor-pointer hover:text-black"
                 />
                 <Search
                   size={20}
-                  className="hover:text-black transition-colors cursor-pointer"
+                  className="transition-colors cursor-pointer hover:text-black"
                 />
               </div>
             </div>
@@ -80,46 +82,49 @@ const PaymentsDashboard = () => {
             {/* Top Stats */}
             <div className="grid grid-cols-4 gap-4 mb-6">
               <CardWrapper>
-                <div className="text-gray-600 text-sm">Basic User Revenue</div>
+                <div className="text-sm text-gray-600">Basic User Revenue</div>
                 <div className="text-2xl font-bold text-black">20,51305</div>
               </CardWrapper>
               <CardWrapper>
-                <div className="text-gray-600 text-sm">Pro Premium Revenue</div>
+                <div className="text-sm text-gray-600">Pro Premium Revenue</div>
                 <div className="text-2xl font-bold text-black">20,51305</div>
               </CardWrapper>
               <CardWrapper>
-                <div className="text-gray-600 text-sm">Features</div>
+                <div className="text-sm text-gray-600">Features</div>
                 <div className="text-2xl font-bold text-black">1</div>
               </CardWrapper>
               <CardWrapper>
-                <div className="text-gray-600 text-sm">Month</div>
+                <div className="text-sm text-gray-600">Month</div>
                 <div className="text-2xl font-bold text-black">325%</div>
-                <div className="text-gray-600 text-xs">Last month</div>
+                <div className="text-xs text-gray-600">Last month</div>
               </CardWrapper>
             </div>
 
             {/* Middle Stats */}
             <div className="grid grid-cols-3 gap-4 mb-6">
               <CardWrapper>
-                <div className="text-gray-600 text-sm">Today Revenue</div>
-                <div className="text-3xl font-bold text-black">0,133</div>
-                <div className="text-gray-600 text-xs">Last / Series</div>
+                <div className="text-sm text-gray-600">Today Revenue</div>
+                <div className="text-3xl font-bold text-black">{today}</div>
+                <div className="text-xs text-gray-600">Last / Series</div>
               </CardWrapper>
               <CardWrapper>
-                <div className="text-gray-600 text-sm">Six Months</div>
-                <div className="text-3xl font-bold text-black">461730</div>
-                <div className="text-gray-600 text-xs">Pro 1 Series</div>
+                <div className="text-sm text-gray-600">Six Months</div>
+                <div className="text-3xl font-bold text-black">
+                  {sixmonthsData}
+                </div>
+                <div className="text-xs text-gray-600">Pro 1 Series</div>
               </CardWrapper>
               <CardWrapper>
-                <div className="flex justify-between items-center">
-                  <div className="bg-gray-200 text-black px-3 py-1 rounded-full text-sm">
-                    Last/Month
+                <div className="flex items-center justify-between">
+                  <div className="px-3 py-1 text-sm text-black bg-gray-200 rounded-full">
+                    Last / Month
                   </div>
-                  <div className="text-gray-600 text-sm">Last Monthly</div>
+                  <div className="text-sm text-gray-600">Last Monthly</div>
                 </div>
                 <div className="flex items-end gap-2 mt-2">
-                  <div className="text-3xl font-bold text-black">44,</div>
-                  <div className="text-gray-600 mb-1">Type</div>
+                  <div className="text-3xl font-bold text-black">{monthly}</div>
+
+                  <div className="mb-1 text-gray-600">Type</div>
                 </div>
               </CardWrapper>
             </div>
@@ -127,8 +132,6 @@ const PaymentsDashboard = () => {
             {/* Bottom Charts - Stacked */}
 
             <BarGraph barData={barData} monthlyData={monthlyData} />
-
-          
           </div>
         </div>
       </div>
