@@ -1,127 +1,243 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
-    Card, CardContent, Button, Select, MenuItem, FormControl, InputLabel,
-    Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Snackbar
-} from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Snackbar,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
+import { Edit, Delete, Close } from '@mui/icons-material';
 
-const UserManagement = () => {
-    const [filterRole, setFilterRole] = useState("All");
-    const [users, setUsers] = useState([
-        { id: 1, name: "Alice Johnson", designation: "Manager", role: "Admin", status: "Active" },
-        { id: 2, name: "Bob Smith", designation: "Editor", role: "Content Curator", status: "Active" },
-        { id: 3, name: "Charlie Davis", designation: "Subscriber", role: "Subscriber", status: "Active", date: "2025-02-18", time: "10:00 AM", endTime: "6:00 PM", notification: "Monthly", ads: "Yes" },
-        { id: 4, name: "David Williams", designation: "Assistant", role: "Content Curator", status: "Active" },
-        { id: 5, name: "Emma Brown", designation: "Support", role: "Admin", status: "Active" },
-        { id: 6, name: "Frank Thomas", designation: "Viewer", role: "Subscriber", status: "Active", date: "2025-03-01", time: "9:30 AM", endTime: "5:30 PM", notification: "Yearly", ads: "No" },
-        { id: 7, name: "Grace White", designation: "Analyst", role: "Content Curator", status: "Active" },
-        { id: 8, name: "Henry Green", designation: "Subscriber", role: "Subscriber", status: "Active", date: "2025-02-25", time: "11:00 AM", endTime: "7:00 PM", notification: "Monthly", ads: "Yes" },
-    ]);
+const UserManagementTable = () => {
+  const [users, setUsers] = useState([]);
+  const [editUser, setEditUser] = useState(null);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [filterRole, setFilterRole] = useState('All');
 
-    const [editUser, setEditUser] = useState(null);
-    const [openEdit, setOpenEdit] = useState(false);
-    const [openAlert, setOpenAlert] = useState(false);
+  // Fetch all users
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:5000/api/v1/users/getallusers',
+      );
+      if (response.data && response.data.users) {
+        setUsers(response.data.users);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      showSnackbar('Failed to fetch users.');
+    }
+  };
 
-    const handleDelete = (id) => {
-        setUsers(users.filter(user => user.id !== id));
-    };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-    const handleEditClick = (user) => {
-        setEditUser(user);
-        setOpenEdit(true);
-    };
+  // Snackbar Handler
+  const showSnackbar = (message) => {
+    setSnackbarMessage(message);
+    setOpenSnackbar(true);
+  };
 
-    const handleEditChange = (e) => {
-        setEditUser({ ...editUser, [e.target.name]: e.target.value });
-    };
+  // Edit Handler
+  const handleEditClick = (user) => {
+    setEditUser({ ...user });
+    setOpenEdit(true);
+  };
 
-    const handleSaveEdit = () => {
-        setUsers(users.map(user => user.id === editUser.id ? editUser : user));
-        setOpenEdit(false);
-        setOpenAlert(true);
-    };
+  const handleEditChange = (e) => {
+    setEditUser({ ...editUser, [e.target.name]: e.target.value });
+  };
 
-    const handleToggleStatus = (id) => {
-        setUsers(users.map(user => 
-            user.id === id ? { ...user, status: user.status === "Active" ? "Inactive" : "Active" } : user
-        ));
-    };
+  const handleSaveEdit = async () => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/v1/users/update-user/${editUser._id}`,
+        editUser,
+      );
+      setUsers(
+        users.map((user) => (user._id === editUser._id ? editUser : user)),
+      );
+      setOpenEdit(false);
+      showSnackbar('User updated successfully.');
+    } catch (error) {
+      console.error('Failed to update user:', error);
+      showSnackbar('Failed to update user.');
+    }
+  };
 
-    const filteredUsers = filterRole === "All" ? users : users.filter(user => user.role === filterRole);
+  // Delete Handler
+  const handleDelete = async (userId) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/v1/users/delete-user/${userId}`,
+      );
+      setUsers(users.filter((user) => user._id !== userId));
+      showSnackbar('User deleted successfully.');
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+      showSnackbar('Failed to delete user.');
+    }
+  };
 
-    return (
-        <Card sx={{ p: 3, maxWidth: "100%", mx: "auto", mt: 3, boxShadow: 3 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>User & Content Management</h2>
-                <FormControl size="small" sx={{ minWidth: 150 }}>
-                    <InputLabel  sx={{padding:4,pt:0,mt:-0.8}} >Filter By Role</InputLabel>
-                    <Select value={filterRole} onChange={(e) => setFilterRole(e.target.value)}>
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="Admin">Admin</MenuItem>
-                        <MenuItem value="Content Curator">Content Curator</MenuItem>
-                        <MenuItem value="Subscriber">Subscriber</MenuItem>
-                    </Select>
-                </FormControl>
-            </div>
-            <CardContent>
-                <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #ccc", fontSize: "0.875rem" }}>
-                    <thead>
-                        <tr style={{ backgroundColor: "#f5f5f5", textAlign: "left" }}>
-                            <th style={{ padding: "8px", border: "1px solid #ddd" }}>ID</th>
-                            <th style={{ padding: "8px", border: "1px solid #ddd" }}>Name</th>
-                            <th style={{ padding: "8px", border: "1px solid #ddd" }}>Designation</th>
-                            <th style={{ padding: "8px", border: "1px solid #ddd" }}>Role</th>
-                            <th style={{ padding: "8px", border: "1px solid #ddd" }}>Status</th>
-                            <th style={{ padding: "8px", border: "1px solid #ddd" }}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredUsers.map((user) => (
-                            <tr key={user.id} style={{ textAlign: "center" }}>
-                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>{user.id}</td>
-                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>{user.name}</td>
-                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>{user.designation}</td>
-                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>{user.role}</td>
-                                <td 
-                                    style={{ 
-                                      padding: "8px", border: "1px solid #ddd", cursor: "pointer", fontWeight: "bold", color: user.status === "Active" ? "green" : "red" }}
-                                    onClick={() => handleToggleStatus(user.id)}
-                                >
-                                    {user.status}
-                                </td>
-                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    <IconButton color="primary" onClick={() => handleEditClick(user)}>
-                                        <Edit />
-                                    </IconButton>
-                                    <IconButton color="error" onClick={() => handleDelete(user.id)}>
-                                        <Delete />
-                                    </IconButton>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </CardContent>
+  // Filter Logic
+  const filteredUsers =
+    filterRole === 'All'
+      ? users
+      : users.filter((user) => user.role === filterRole);
 
-            <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
-                <DialogTitle>Edit User</DialogTitle>
-                <DialogContent>
-                    {editUser && (
-                        <>
-                            <TextField label="Name" name="name" fullWidth margin="dense" value={editUser.name} onChange={handleEditChange} />
-                            <TextField label="Designation" name="designation" fullWidth margin="dense" value={editUser.designation} onChange={handleEditChange} />
-                        </>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
-                    <Button variant="contained" color="primary" onClick={handleSaveEdit}>Save</Button>
-                </DialogActions>
-            </Dialog>
+  return (
+    <div style={{ padding: '20px' }}>
+      <h2>User Management</h2>
 
-            <Snackbar open={openAlert} autoHideDuration={3000} onClose={() => setOpenAlert(false)} message="User details updated successfully!" />
-        </Card>
-    );
+      {/* Filter Role Dropdown */}
+      <FormControl style={{ marginBottom: '30px', minWidth: 200 }}>
+        <InputLabel style={{ margin: '10px' }}>Filter by Role</InputLabel>
+        <Select
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+        >
+          <MenuItem value="All">All</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+          <MenuItem value="subscriber">Subscriber</MenuItem>
+          <MenuItem value="curator">curator</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* User Table */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <strong>Username</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Email</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Role</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Subscription Status</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredUsers.map((user) => (
+              <TableRow key={user._id}>
+                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role}</TableCell>
+                <TableCell>{user.subscriptionStatus}</TableCell>
+                <TableCell>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleEditClick(user)}
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDelete(user._id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+            {filteredUsers.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No users found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Edit User Dialog */}
+      {editUser && (
+        <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
+          <DialogTitle>Edit User</DialogTitle>
+          <DialogContent>
+            <TextField
+              fullWidth
+              margin="dense"
+              label="Username"
+              name="username"
+              value={editUser.username}
+              onChange={handleEditChange}
+            />
+            <TextField
+              fullWidth
+              margin="dense"
+              label="Email"
+              name="email"
+              value={editUser.email}
+              onChange={handleEditChange}
+            />
+            <FormControl fullWidth margin="dense">
+              <InputLabel>Role</InputLabel>
+              <Select
+                name="role"
+                value={editUser.role}
+                onChange={handleEditChange}
+              >
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="subscriber">Subscriber</MenuItem>
+                <MenuItem value="curator">curator</MenuItem>
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
+            <Button onClick={handleSaveEdit} variant="contained">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
+      {/* Snackbar Notification */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        message={snackbarMessage}
+        action={
+          <IconButton
+            size="small"
+            color="inherit"
+            onClick={() => setOpenSnackbar(false)}
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        }
+      />
+    </div>
+  );
 };
 
-export default UserManagement;
+export default UserManagementTable;

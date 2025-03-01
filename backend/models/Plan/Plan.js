@@ -26,7 +26,7 @@ const planSchema = new mongoose.Schema(
     }],
     isArchived: {
       type: Boolean,
-      default: false, // Archive plans instead of deleting them
+      default: false, 
     },
   },
   {

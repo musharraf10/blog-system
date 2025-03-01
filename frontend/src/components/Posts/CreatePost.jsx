@@ -1,201 +1,197 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { FaTimesCircle } from "react-icons/fa";
-import Select from "react-select";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createPostAPI } from "../../APIServices/posts/postsAPI";
-import AlertMessage from "../Alert/AlertMessage";
-import { fetchCategoriesAPI } from "../../APIServices/category/categoryAPI";
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { FaTimesCircle, FaSpinner } from 'react-icons/fa';
+import Select from 'react-select';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createPostAPI } from '../../APIServices/posts/postsAPI';
+import AlertMessage from '../Alert/AlertMessage';
+import { fetchCategoriesAPI } from '../../APIServices/category/categoryAPI';
 
 const CreatePost = () => {
-  // state for wysiwg
-  const [description, setDescription] = useState("");
-  //File upload state
-  const [imageError, setImageErr] = useState("");
+  const [description, setDescription] = useState('');
+  const [imageError, setImageErr] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
 
-  // post mutation
+  // Post mutation
   const postMutation = useMutation({
-    mutationKey: ["create-post"],
+    mutationKey: ['create-post'],
     mutationFn: createPostAPI,
   });
+
+  // Formik setup
   const formik = useFormik({
-    // initial data
     initialValues: {
-      description: "",
-      image: "",
-      category: "",
+      description: '',
+      image: '',
+      category: '',
     },
-    // validation
     validationSchema: Yup.object({
-      description: Yup.string().required("Description is required"),
-      image: Yup.string().required("image is required"),
-      category: Yup.string().required("Category is required"),
+      description: Yup.string().required('Description is required'),
+      image: Yup.string().required('Image is required'),
+      category: Yup.string().required('Category is required'),
     }),
-    // submit
     onSubmit: (values) => {
-      console.log(values);
-      //form data
       const formData = new FormData();
-      formData.append("description", description);
-      formData.append("image", values.image);
-      formData.append("category", values.category);
+      formData.append('description', description);
+      formData.append('image', values.image);
+      formData.append('category', values.category);
       postMutation.mutate(formData);
     },
   });
+
   // Fetch categories
   const { data } = useQuery({
-    queryKey: ["category-lists"],
+    queryKey: ['category-lists'],
     queryFn: fetchCategoriesAPI,
   });
 
-  //!===== File upload logics====
-  //! Handle fileChange
+  // Handle file upload
   const handleFileChange = (event) => {
-    //get the file selected
     const file = event.currentTarget.files[0];
-    //Limit file size
     if (file.size > 1048576) {
-      setImageErr("File size exceed 1MB");
+      setImageErr('File size exceeds 1MB');
       return;
     }
-    // limit the file types
-    if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
-      setImageErr("Invalid file type");
+    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+      setImageErr('Invalid file type. Only JPEG, JPG, and PNG are allowed.');
+      return;
     }
-    //set the image preview
-    formik.setFieldValue("image", file);
+    formik.setFieldValue('image', file);
     setImagePreview(URL.createObjectURL(file));
+    setImageErr('');
   };
-  //!remove image
+
+  // Remove image
   const removeImage = () => {
-    formik.setFieldValue("image", null);
+    formik.setFieldValue('image', null);
     setImagePreview(null);
   };
-  //get loading state
-  const isLoading = postMutation.isPending;
-  //isErr
-  const isError = postMutation.isError;
-  //success
-  const isSuccess = postMutation.isSuccess;
-  //Error
-  const errorMsg = postMutation?.error?.response?.data?.message;
-  console.log(postMutation);
-  return (
-    <div className="flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 m-4">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
-          Add New Post
-        </h2>
-        {/* show alert */}
 
+  // Mutation states
+  const isLoading = postMutation.isPending;
+  const isError = postMutation.isError;
+  const isSuccess = postMutation.isSuccess;
+  const errorMsg = postMutation?.error?.response?.data?.message;
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+          Create a New Post
+        </h2>
+
+        {/* Alert Messages */}
         {isLoading && (
-          <AlertMessage type="loading" message="Loading please wait" />
+          <AlertMessage
+            type="loading"
+            message={
+              <div className="flex items-center gap-2">
+                <FaSpinner className="animate-spin" /> Loading, please wait...
+              </div>
+            }
+          />
         )}
         {isSuccess && (
-          <AlertMessage type="success" message="Post created successfully" />
+          <AlertMessage type="success" message="Post created successfully!" />
         )}
         {isError && <AlertMessage type="error" message={errorMsg} />}
+
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          {/* Description Input - Using ReactQuill for rich text editing */}
-          <div className="mb-10">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
+          {/* Description Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Description
             </label>
             <ReactQuill
               value={formik.values.description}
               onChange={(value) => {
                 setDescription(value);
-                formik.setFieldValue("description", value);
+                formik.setFieldValue('description', value);
               }}
-              className="h-40"
+              placeholder="Write your post content here..."
+              className="h-48 mb-2"
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, false] }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ list: 'ordered' }, { list: 'bullet' }],
+                  ['link', 'image'],
+                  ['clean'],
+                ],
+              }}
             />
-            {/* display err msg */}
             {formik.touched.description && formik.errors.description && (
-              <span style={{ color: "red" }}>{formik.errors.description}</span>
+              <p className="text-sm text-red-600 mt-1">
+                {formik.errors.description}
+              </p>
             )}
           </div>
 
-          {/* Category Input - Dropdown for selecting post category */}
+          {/* Category Input */}
           <div>
-            <label
-              htmlFor="category"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Category
             </label>
             <Select
               name="category"
-              options={data?.categories?.map((category) => {
-                return {
-                  value: category._id,
-                  label: category.categoryName,
-                };
-              })}
-              onChange={(option) => {
-                return formik.setFieldValue("category", option.value);
-              }}
+              options={data?.categories?.map((category) => ({
+                value: category._id,
+                label: category.categoryName,
+              }))}
+              onChange={(option) =>
+                formik.setFieldValue('category', option.value)
+              }
               value={data?.categories?.find(
-                (option) => option.value === formik.values.category
+                (option) => option.value === formik.values.category,
               )}
-              className="mt-1 block w-full"
+              placeholder="Select a category"
+              className="mt-1"
             />
-            {/* display error */}
             {formik.touched.category && formik.errors.category && (
-              <p className="text-sm text-red-600">{formik.errors.category}</p>
+              <p className="text-sm text-red-600 mt-1">
+                {formik.errors.category}
+              </p>
             )}
           </div>
 
-          {/* Image Upload Input - File input for uploading images */}
-          <div className="flex flex-col items-center justify-center bg-gray-50 p-4 shadow rounded-lg">
-            <label
-              htmlFor="images"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+          {/* Image Upload */}
+          <div className="flex flex-col items-center justify-center bg-gray-50 p-6 rounded-lg border-2 border-dashed border-gray-300">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Upload Image
             </label>
-            <div className="flex justify-center items-center w-full">
-              <input
-                id="images"
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <label
-                htmlFor="images"
-                className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-              >
-                Choose a file
-              </label>
-            </div>
-            {/* Display error message */}
-            {formik.touched.image && formik.errors.image && (
-              <p className="text-sm text-red-600">{formik.errors.image}</p>
+            <input
+              id="images"
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="images"
+              className="cursor-pointer bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition-colors"
+            >
+              Choose a file
+            </label>
+            <p className="text-sm text-gray-500 mt-2">
+              JPEG, JPG, or PNG (Max 1MB)
+            </p>
+            {imageError && (
+              <p className="text-sm text-red-600 mt-2">{imageError}</p>
             )}
-
-            {/* error message */}
-            {imageError && <p className="text-sm text-red-600">{imageError}</p>}
-
-            {/* Preview image */}
-
             {imagePreview && (
-              <div className="mt-2 relative">
+              <div className="mt-4 relative">
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="mt-2 h-24 w-24 object-cover rounded-full"
+                  className="h-32 w-32 object-cover rounded-lg"
                 />
                 <button
                   onClick={removeImage}
-                  className="absolute right-0 top-0 transform translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1"
+                  className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100 transition-colors"
                 >
                   <FaTimesCircle className="text-red-500" />
                 </button>
@@ -203,12 +199,19 @@ const CreatePost = () => {
             )}
           </div>
 
-          {/* Submit Button - Button to submit the form */}
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-500 hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            disabled={isLoading}
+            className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors disabled:bg-blue-300"
           >
-            Add Post
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <FaSpinner className="animate-spin" /> Creating Post...
+              </div>
+            ) : (
+              'Create Post'
+            )}
           </button>
         </form>
       </div>
