@@ -104,7 +104,6 @@ const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes');
 connectDB();
 // calculateEarnings();
 
-// Schedule earnings calculation at 23:59 on the last day of every month
 cron.schedule(
   "59 23 * * *",
   async () => {
