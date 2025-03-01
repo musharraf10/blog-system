@@ -16,7 +16,7 @@ const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
 //call the db
 connectDB();
-// calculateEarnings();
+// calculateEarnings(); 
 //Schedule the task to run at 23:59 on the last day of every month
 cron.schedule(
   "59 23 * * * ",
