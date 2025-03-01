@@ -18,6 +18,8 @@ import AccountVerifiedComponent from "../components/Curator/AccountVerification"
 import AddCategory from "../components/Category/AddCategory"
 import ContentEditor from "../components/Curator/contentEditor/ContentEditor"
 import ContentDashBoard from "../components/Curator/ContentDashBoard";
+import DashBoard from "../components/Curator/contentEditor/DashBoard";
+import Analytics from "../components/Curator/contentEditor/Analytics";
 
 
 
@@ -34,7 +36,10 @@ const CuratorRoutes = () => {
         >
           <Route path="editor" element={<ContentEditor />} />
           <Route path="contentdashBoard" element={<ContentDashBoard />} />
-          
+          <Route path="DashBoard" element={<DashBoard />} />
+          <Route path="Analytics" element={<Analytics />} />
+          <Route path="AddCategory" element={<AddCategory />} />
+
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post" element={<CreatePost />} />
           <Route path="posts" element={<DashboardPosts />} />
@@ -46,6 +51,7 @@ const CuratorRoutes = () => {
           <Route path="my-followers" element={<MyFollowers />} />
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
+
           <Route
             path="account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
