@@ -35,10 +35,12 @@ usersRouter.put("/unfollow/:unfollowId", isAuthenticated, userController.unFollo
 // Account Verification
 usersRouter.put("/send-verification-email", isAuthenticated, userController.verifyEmailAccount);
 usersRouter.put("/verify-account/:verifyToken", userController.verifyEmailAcc);
+usersRouter.post("/become-creator", isAuthenticated, upload.single("govID"), userController.BecomeCreator);
 
 // Password Reset
 usersRouter.post("/forgot-password", userController.forgotPassword);
 usersRouter.post("/reset-password/:verifyToken", userController.resetPassword);
+usersRouter.put("/change-password", isAuthenticated, userController.changePassword);
 
 // Admin Privileges
 // Admin Privileges

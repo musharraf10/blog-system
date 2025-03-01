@@ -44,7 +44,7 @@ const Pricing = () => {
               </div>
 
               <Link
-                to="/free-subscription"
+                to="/subscriber/free-subscription"
                 className="h-14 inline-flex items-center justify-center w-full text-center py-4 px-6 rounded-full border border-gray-200 shadow text-sm font-semibold hover:bg-gray-50 focus:ring focus:ring-orange-200 transition duration-200 mb-10"
               >
                 <span>Sign up today</span>

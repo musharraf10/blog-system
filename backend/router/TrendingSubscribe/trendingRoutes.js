@@ -5,7 +5,7 @@ const getTrendingContent = require('../../controllers/TrendingSubscribe/trending
 const trendingRouter = express.Router();
 
 //trending middleware
-trendingRouter.get('/', getTrendingContent)
+trendingRouter.get('/',isAuthenticated, getTrendingContent)
 
 module.exports = trendingRouter;
 

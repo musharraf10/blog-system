@@ -38,7 +38,7 @@ export default function PrivateNavbar() {
   const navLinks = [
     { name: "Latest Posts", path: `${userRole}/latestposts`},
     { name: "Creators Ranking", path: "/ranking" },
-    userRole !== "admin" && { name: "Pricing", path: `${userRole}/pricing` },
+    userRole !== "admin" && { name: "Pricing", path: `/${userRole}/pricing` },
   ].filter(Boolean);
 
   return (

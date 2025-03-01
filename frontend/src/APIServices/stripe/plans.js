@@ -29,3 +29,12 @@ export const freePlanAPI = async () => {
   });
   return response.data;
 };
+
+//!Get user plan
+export const getUserPlanAPI = async () => {
+  const response = await axios.get(`${BASE_URL}/current-plan`, {
+    withCredentials: true,
+  });
+  console.log("User Plan", response.data);
+  return response.data;
+};

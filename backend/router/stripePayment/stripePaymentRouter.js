@@ -13,4 +13,6 @@ stripePaymentRouter.get("/verify/:paymentId", isAuthenticated, stripePaymentCont
 
 stripePaymentRouter.get("/free-plan", isAuthenticated, stripePaymentController.free);
 
+stripePaymentRouter.get("/current-plan", isAuthenticated, checkUserPlan, stripePaymentController.CurrentUserPlan); 
+
 module.exports = stripePaymentRouter;

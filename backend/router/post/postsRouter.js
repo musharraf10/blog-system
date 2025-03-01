@@ -39,6 +39,7 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
+postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
 
 ////
 

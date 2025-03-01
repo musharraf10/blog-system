@@ -102,7 +102,7 @@ const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes');
 
 // Connect to Database
 connectDB();
-// calculateEarnings();
+// calculateEarnings(); 
 
 cron.schedule(
   "59 23 * * *",

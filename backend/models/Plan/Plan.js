@@ -6,10 +6,10 @@ const planSchema = new mongoose.Schema(
       type: String, 
       required: true, 
       unique: true,
-      index: true // Optimize search queries
+      index: true 
     },
     features: [{ type: String }],
-    price: { type: Number, required: true },
+    price: { type: Number, required: true, default: 0 },
     billingCycle: {
       type: String,
       enum: ["monthly", "yearly"],
@@ -22,11 +22,20 @@ const planSchema = new mongoose.Schema(
     },
     activeSubscribers: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Track active users on this plan
+      ref: "User",
     }],
     isArchived: {
       type: Boolean,
       default: false, 
+    },
+    expirationDate: {
+      type: Date,
+      default: function () {
+        const now = new Date();
+        return this.billingCycle === "monthly"
+          ? new Date(now.setMonth(now.getMonth() + 1)) 
+          : new Date(now.setFullYear(now.getFullYear() + 1));
+      },
     },
   },
   {
