@@ -30,6 +30,7 @@
     "formik": "^2.4.5",
     "html-to-text": "^9.0.5",
     "install": "^0.13.0",
+    "jodit-react": "^5.2.15",
     "lucide-react": "^0.476.0",
     "moment": "^2.30.1",
     "npm": "^11.1.0",

@@ -15,7 +15,8 @@ planRouter.get("/", planController.lists);
 planRouter.get("/:planId", planController.getPlan);
 
 // Update Plan (Only Admins)
-planRouter.patch("/:planId", isAuthenticated, roleCheck(["admin"]), planController.update);
+planRouter.patch("/:planId", isAuthenticated, planController.update);
+
 
 // Delete Plan (Only Admins)
 planRouter.delete("/:planId", isAuthenticated, roleCheck(["admin"]), planController.delete);

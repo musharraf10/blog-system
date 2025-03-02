@@ -229,16 +229,38 @@ const postController = {
       postFound,
     });
   }),
+
+
   //! delete
   delete: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
+    const userId = req.user._id; // this comes from isAuthenticated middleware
+
+    const post = await Post.findById(postId);
+
+    if (!post) {
+        return res.status(404).json({
+            status: "error",
+            message: "Post not found",
+        });
+    }
+
+    // Check if the logged-in user is the creator of the post
+    if (post.author.toString() !== userId) {  // Make sure your Post model has 'author' field (or createdBy, owner, etc.)
+        return res.status(403).json({
+            status: "error",
+            message: "You are not allowed to delete this post",
+        });
+    }
 
     await Post.findByIdAndDelete(postId);
+
     res.json({
-      status: "success",
-      message: "Post deleted successfully",
+        status: "success",
+        message: "Post deleted successfully",
     });
-  }),
+}),
+
   //! pdate post
   update: asyncHandler(async (req, res) => {
     const { postId } = req.params;

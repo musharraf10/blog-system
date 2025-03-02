@@ -60,7 +60,7 @@ const userController = {
         username: user?.username,
         email: user?.email,
         _id: user?._id,
-        role : user?.role
+        role: user?.role
       });
     })(req, res, next);
   }),
@@ -114,10 +114,10 @@ const userController = {
           _id: user?._id,
           username: user?.username,
           profilePicture: user?.profilePicture,
-          role : user?.role
+          role: user?.role
         });
       }
-    } catch (error) {}
+    } catch (error) { }
     return res.status(401).json({ isAuthenticated: false, error });
   }),
   // ! Logout
@@ -316,23 +316,23 @@ const userController = {
     const { email } = req.body;
     console.log(email)
     const user = await User.findById(req.user._id);
-   
+
     user.email = email;
     user.isEmailVerified = false;
-    
+
     await user.save();
-    
+
     const token = await user.generateAccVerificationToken();
-  
+
     sendAccVerificationEmail(user?.email, token);
-    
+
     res.json({
       message: `Account verification email sent to ${user?.email} token expires in 10 minutes`,
     });
   }),
-  
+
   updateProfilePic: asyncHandler(async (req, res) => {
-    
+
     await User.findByIdAndUpdate(
       req.user,
       {
@@ -340,24 +340,24 @@ const userController = {
       },
       { new: true }
     );
-    
+
     res.json({
       message: "Profile picture updated successfully",
     });
   }),
-  deleteUser: asyncHandler(async (req, res) =>{
+  deleteUser: asyncHandler(async (req, res) => {
     const userId = req.params;
     await User.findByIdAndDelete(userId)
-    res.json({message : "User Deleted Successfully"});
+    res.json({ message: "User Deleted Successfully" });
   }),
 
   // update userstatus
-  updateUserStatus: asyncHandler(async (req, res) =>{
+  updateUserStatus: asyncHandler(async (req, res) => {
     const { isActive } = req.body;
     if (typeof isActive !== "boolean") {
       return res.status(400).json({ message: "isActive field must be a boolean" });
     }
-    
+
     const updatedUser = await User.findByIdAndUpdate(req.params.id, { isActive }, { new: true, runValidators: true });
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -366,12 +366,12 @@ const userController = {
   }),
 
   // !getallTheusers
-  
-  deleteUser: asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-    await User.findByIdAndDelete(userId)
-    res.json({ message: "User Deleted Successfully" });
-  }),
+
+  // deleteUser: asyncHandler(async (req, res) => {
+  //   const { userId } = req.params;
+  //   await User.findByIdAndDelete(userId)
+  //   res.json({ message: "User Deleted Successfully" });
+  // }),
   // !getallTheusers
   getAllUsers: asyncHandler(async (req, res, next) => {
     const getallusers = await User.find({});
@@ -408,8 +408,22 @@ const userController = {
     });
   }),
 
+  deleteUser: asyncHandler(async (req, res) => {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+  
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+  
+    await Post.deleteMany({ author: userId });
+    await User.findByIdAndDelete(userId);
+  
+    res.json({
+      message: "User deleted successfully"
+    });
+  })
+  
 };
 
 module.exports = userController;
-
-// original

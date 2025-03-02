@@ -21,28 +21,23 @@ postRouter.post(
   upload.single("image"),
   postController.createPost
 );
-
 // List all approved posts
 postRouter.get("/", postController.fetchAllPosts);
-
 postRouter.get("/pendingposts", postController.pendingPosts);
-
-
-
-
-
 postRouter.patch("/updatestatus/:postId", postController.updateStatus);
-
-
-
 ///gettingposts in conetnetmaganement in adminpanel
-
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
-
-////
-
+// Get a specific post
 postRouter.get("/:postId", optionalAuth, postController.getPost);
+
+postRouter.delete(
+  "/:postId",
+  isAuthenticated,
+  roleCheck(["curator", "admin"]),
+  postController.delete
+);
+
 
 
 
