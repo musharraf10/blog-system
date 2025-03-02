@@ -1,31 +1,117 @@
+// require("dotenv").config();
+// const corse = require("cors");
+// const passport = require("./utils/passport-config");
+// const express = require("express");
+// const cron = require("node-cron");
+// const cookieParser = require("cookie-parser");
+// const connectDB = require("./utils/connectDB");
+
+
+// const postRouter = require("./router/post/postsRouter");
+// const usersRouter = require("./router/user/usersRouter");
+// const categoriesRouter = require("./router/category/categoriesRouter");
+// const planRouter = require("./router/plan/planRouter");
+// const stripePaymentRouter = require("./router/stripePayment/stripePaymentRouter");
+// const calculateEarnings = require("./utils/calculateEarnings");
+// const earningsRouter = require("./router/earnings/earningsRouter");
+// const notificationRouter = require("./router/notification/notificationRouter");
+// const commentRouter = require("./router/comments/commentRouter");
+// //call the db
+// connectDB();
+// calculateEarnings();
+// //Schedule the task to run at 23:59 on the last day of every month
+// cron.schedule(
+//   "59 23 * * * ",
+//   async () => {
+//     const today = new Date();
+//     const tomorrow = new Date(today);
+//     tomorrow.setDate(tomorrow.getDate() + 1);
+//     if (today.getMonth() !== tomorrow.getMonth()) {
+//       calculateEarnings(); //calc earnings
+//     }
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "America/New_York",
+//   }
+// );
+// const app = express();
+// //! PORT
+// const PORT = 5000;
+
+// //Middlewares
+// app.use(express.json()); //Pass json data
+// // corse middleware
+// const corsOptions = {
+//   origin: ["http://localhost:5173"],
+//   credentials: true,
+// };
+// app.use(corse(corsOptions));
+// // Passport middleware
+// app.use(passport.initialize());
+// app.use(cookieParser()); //automattically parses the cookie
+// //!---Route handlers
+// app.use("/api/v1/posts", postRouter);
+// app.use("/api/v1/users", usersRouter);
+// app.use("/api/v1/categories", categoriesRouter);
+// app.use("/api/v1/plans", planRouter);
+// app.use("/api/v1/stripe", stripePaymentRouter);
+// app.use("/api/v1/earnings", earningsRouter);
+// app.use("/api/v1/notifications", notificationRouter);
+// app.use("/api/v1/comments", commentRouter);
+
+// //!Not found
+// app.use((req, res, next) => {
+//   res.status(404).json({ message: "Route not found on our server" });
+// });
+// //! Error handdling middleware
+// app.use((err, req, res, next) => {
+//   //prepare the error message
+//   const message = err.message;
+//   const stack = err.stack;
+//   res.status(500).json({
+//     message,
+//     stack,
+//   });
+// });
+
+// //!Start the server
+// app.listen(PORT, console.log(`Server is up and running on port ${PORT}`));
+
+
 require("dotenv").config();
-const corse = require("cors");
+const cors = require("cors"); // Fixed typo: "corse" → "cors"
 const passport = require("./utils/passport-config");
 const express = require("express");
 const cron = require("node-cron");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./utils/connectDB");
+const calculateEarnings = require("./utils/calculateEarnings");
+
+// Import Routers
 const postRouter = require("./router/post/postsRouter");
 const usersRouter = require("./router/user/usersRouter");
 const categoriesRouter = require("./router/category/categoriesRouter");
 const planRouter = require("./router/plan/planRouter");
 const stripePaymentRouter = require("./router/stripePayment/stripePaymentRouter");
-const calculateEarnings = require("./utils/calculateEarnings");
 const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
-//call the db
+const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
+
+
+// Connect to Database
 connectDB();
-// calculateEarnings();
+calculateEarnings();
 //Schedule the task to run at 23:59 on the last day of every month
 cron.schedule(
-  "59 23 * * * ",
+  "59 23 * * *",
   async () => {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     if (today.getMonth() !== tomorrow.getMonth()) {
-      calculateEarnings(); //calc earnings
+      calculateEarnings();
     }
   },
   {
@@ -33,22 +119,24 @@ cron.schedule(
     timezone: "America/New_York",
   }
 );
-const app = express();
-//! PORT
-const PORT = 5000;
 
-//Middlewares
-app.use(express.json()); //Pass json data
-// corse middleware
+// Initialize Express App
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middlewares
+app.use(express.json()); // Parse JSON data
+app.use(cookieParser()); // Parse cookies
+app.use(passport.initialize()); // Initialize Passport for authentication
+
+// ✅ CORS Configuration
 const corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173"], // Update this in production
   credentials: true,
 };
-app.use(corse(corsOptions));
-// Passport middleware
-app.use(passport.initialize());
-app.use(cookieParser()); //automattically parses the cookie
-//!---Route handlers
+app.use(cors(corsOptions));
+
+// Routes
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/categories", categoriesRouter);
@@ -57,21 +145,20 @@ app.use("/api/v1/stripe", stripePaymentRouter);
 app.use("/api/v1/earnings", earningsRouter);
 app.use("/api/v1/notifications", notificationRouter);
 app.use("/api/v1/comments", commentRouter);
+app.use("/api/v1/trending", trendingRouter);
 
-//!Not found
+// Not Found Route
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found on our server" });
 });
-//! Error handdling middleware
+
+// Error Handling Middleware
 app.use((err, req, res, next) => {
-  //prepare the error message
-  const message = err.message;
-  const stack = err.stack;
   res.status(500).json({
-    message,
-    stack,
+    message: err.message,
+    stack: err.stack,
   });
 });
 
-//!Start the server
-app.listen(PORT, console.log(`Server is up and running on port ${PORT}`));
+// Start Server
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
