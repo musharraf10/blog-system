@@ -10,7 +10,8 @@ export const createPostAPI = async (postData) => {
   });
   return response.data;
 };
-//!update post api
+
+
 export const updatePostAPI = async ({ formData, postId }) => {
   const response = await axios.patch(
     `${BASE_URL}/${postId}`,
@@ -149,3 +150,19 @@ export const fetchBookmarkedPostsAPI = async () => {
   
   return response.data;
 };
+
+const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+
+
+  export const getallpostsdata = async () => {
+    try {
+      const response = await axios.get(
+        `${BackendServername}/posts/getallpublishedposts`
+      );
+      return response.data.posts; 
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+

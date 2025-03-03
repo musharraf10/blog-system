@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Content = require("../Content/Content");
 
 const postSchema = new mongoose.Schema(
   {
@@ -7,7 +8,7 @@ const postSchema = new mongoose.Schema(
     description: { type: String, required: true, trim: true },
     image: { type: Object },
     video: {
-      type: Object, // Store video file metadata or URL
+      type: Object,
       default: null,
     },
     author: {

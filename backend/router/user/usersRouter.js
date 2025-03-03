@@ -23,7 +23,7 @@ usersRouter.patch("/upload-profile-picture", isAuthenticated, upload.single("ima
 
 
 // get all users
-usersRouter.get('/getallusers', userController.getAllUsers)
+// usersRouter.get('/getallusers', userController.getAllUsers)
 
 // get active users
 usersRouter.get('/getactiveusers', userController.updateUserStatus)
@@ -43,6 +43,9 @@ usersRouter.post("/reset-password/:verifyToken", userController.resetPassword);
 usersRouter.put("/change-password", isAuthenticated, userController.changePassword);
 
 // Admin Privileges
-usersRouter.delete("/delete-user/:userId", isAuthenticated, roleCheck(["admin"]), userController.deleteUser);
+// Admin Privileges
+usersRouter.delete("/delete-user/:userId", userController.deleteUser);
+usersRouter.put("/update-user/:userId", userController.updateUser);
+usersRouter.get('/getallusers', userController.getAllUsers)
 
 module.exports = usersRouter;

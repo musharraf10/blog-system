@@ -39,7 +39,9 @@ const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 const sendNotificatiomMsg = require("../../utils/sendNotificatiomMsg");
 
+
 const postController = {
+
   //!Create post
   createPost: asyncHandler(async (req, res) => {
     //get the payload
@@ -92,7 +94,7 @@ const postController = {
       postCreated,
     });
   }),
-
+  
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     await Post.findByIdAndUpdate(postId, { status: "approved" });
@@ -163,6 +165,31 @@ const postController = {
     }
   }),
 
+
+  getallpublishedpostscontroller: asyncHandler(async (req, res) => {
+    try {
+      const postsdata = await Post.find({ status: "approved" }) 
+        .populate("author")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "author",
+          },
+        });
+  
+      console.log(postsdata);
+  
+      res.status(200).json({
+        status: "success",
+        message: "Approved Posts fetched successfully",
+        posts: postsdata,
+      });
+    } catch (error) {
+      console.error("Error fetching approved posts:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }),
+  
   updatePostStatus: asyncHandler(async (req, res) => {
     try {
       const { id } = req.params;
@@ -438,3 +465,5 @@ const postController = {
 };
 
 module.exports = postController;
+
+//OG
