@@ -18,7 +18,7 @@ postRouter.post(
   roleCheck(["curator", "admin"]),
   checkUserPlan,
   isAccountVerified,
-  upload.single("image"),
+  // upload.single("image"),
   postController.createPost
 );
 
@@ -39,6 +39,7 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
+postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
 
 ////
 

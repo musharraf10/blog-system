@@ -3,7 +3,7 @@ const Earnings = require("../../models/Earning/Earnings");
 
 const earningsController = {
   fetchAllEarnings: asyncHandler(async (req, res) => {
-    console.log("e",req.user._id)
+    // console.log("e",req.user._id)
     let earnings = await Earnings.aggregate([
       {
         $group: {

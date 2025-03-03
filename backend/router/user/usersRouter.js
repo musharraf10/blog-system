@@ -23,7 +23,7 @@ usersRouter.patch("/upload-profile-picture", isAuthenticated, upload.single("ima
 
 
 // get all users
-usersRouter.get('/getallusers', userController.getAllUsers)
+// usersRouter.get('/getallusers', userController.getAllUsers)
 
 // get active users
 usersRouter.get('/getactiveusers', userController.updateUserStatus)
@@ -35,12 +35,17 @@ usersRouter.put("/unfollow/:unfollowId", isAuthenticated, userController.unFollo
 // Account Verification
 usersRouter.put("/send-verification-email", isAuthenticated, userController.verifyEmailAccount);
 usersRouter.put("/verify-account/:verifyToken", userController.verifyEmailAcc);
+usersRouter.post("/become-creator", isAuthenticated, upload.single("govID"), userController.BecomeCreator);
 
 // Password Reset
 usersRouter.post("/forgot-password", userController.forgotPassword);
 usersRouter.post("/reset-password/:verifyToken", userController.resetPassword);
+usersRouter.put("/change-password", isAuthenticated, userController.changePassword);
 
 // Admin Privileges
-usersRouter.delete("/delete-user/:userId", isAuthenticated, roleCheck(["admin"]), userController.deleteUser);
+// Admin Privileges
+usersRouter.delete("/delete-user/:userId", userController.deleteUser);
+usersRouter.put("/update-user/:userId", userController.updateUser);
+usersRouter.get('/getallusers', userController.getAllUsers)
 
 module.exports = usersRouter;

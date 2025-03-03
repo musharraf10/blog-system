@@ -8,6 +8,7 @@ const sendAccVerificationEmail = require("../../utils/sendAccVerificationEmail")
 const sendPasswordEmail = require("../../utils/sendPasswordEmail");
 const { console } = require("inspector");
 
+
 //-----User Controller---
 
 const userController = {
@@ -367,6 +368,12 @@ const userController = {
 
   // !getallTheusers
   
+  deleteUser: asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    await User.findByIdAndDelete(userId)
+    res.json({ message: "User Deleted Successfully" });
+  }),
+  // !getallTheusers
   getAllUsers: asyncHandler(async (req, res, next) => {
     const getallusers = await User.find({});
 
@@ -376,9 +383,66 @@ const userController = {
 
     res.status(200).json({ success: true, users: getallusers });
 
-  })
+  }),
+  // updateuser
+  updateUser: asyncHandler(async (req, res) => {
+    const { userId } = req.params;
 
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: req.body,
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully',
+      user: updatedUser,
+    });
+  }),
+
+
+
+  changePassword: asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    //check if old password is correct
+    const isMatch = await bcrypt.compare(oldPassword, user.password); 
+    if (!isMatch) {
+      throw new Error("Old password is incorrect");
+    }
+    //change the password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+    res.json({ message: "Password successfully changed" });
+  }),
+
+  BecomeCreator: asyncHandler(async (req, res) => {
+    const { phone, channelName, GovtIdType} = req.body;
+    const govID = req.file ? req.file.path : null;
+    const user = await User.findById(req.user._id);
+    user.phone = phone;
+    user.channelName = channelName;
+    user.GovtIdType = GovtIdType;
+    user.GovtId = govID;
+    user.role = "creator";
+    await user.save();
+    res.json({ message: "Application submitted successfully!" });
+  }),
 };
+
 
 module.exports = userController;
 

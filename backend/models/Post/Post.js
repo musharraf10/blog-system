@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Content = require("../Content/Content");
 
 const postSchema = new mongoose.Schema(
   {
@@ -7,7 +8,7 @@ const postSchema = new mongoose.Schema(
     description: { type: String, required: true, trim: true },
     image: { type: Object },
     video: {
-      type: Object, // Store video file metadata or URL
+      type: Object,
       default: null,
     },
     author: {
@@ -15,22 +16,24 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    bookmarkedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     price: { type: Number, default: 0 },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-    category: {
+    category:[ {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: true,
-    },
+      // required: true,
+    }],
     nextEarningDate: {
       type: Date,
       default: () =>
         new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1), // Default to the first day of the next month
     },
+    publisheddate:{type:Date},
     thisMonthEarnings: { type: Number, default: 0 },
     totalEarnings: { type: Number, default: 0 },
     lastCalculatedViewsCount: { type: Number, default: 0 },
@@ -40,8 +43,10 @@ const postSchema = new mongoose.Schema(
     viewers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     isBlocked: { type: Boolean, default: false },
+    sample  : { type: String},
   },
-  { timestamps: true }
+  { timestamps: true },
+
 );
 
 module.exports = mongoose.model("Post", postSchema);

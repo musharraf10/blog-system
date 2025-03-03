@@ -1,15 +1,8 @@
-import React from 'react';
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from 'recharts';
-import { ChevronDown } from 'lucide-react';
+import { Share, Search, Settings, Calendar } from 'lucide-react';
+import BarGraph from './BarGraph';
+import { useState } from 'react';
 
+// Reusable card component with a clean black and white design
 const CardWrapper = ({ children, className = '' }) => (
   <div
     className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 
@@ -19,103 +12,142 @@ const CardWrapper = ({ children, className = '' }) => (
   </div>
 );
 
-const BarGraph = ({barData,monthlyData}) => {
+const earningsData = [
+  {
+    _id: '67bb18cb463b532bff3522f6',
+    totalAmount: 0.07,
+    rank: 1,
+    user: {
+      username: 'musharaf',
+      email: 'skmusharaf01@gmail.com',
+      profilePicture:
+        'https://res.cloudinary.com/dspnqdbs1/image/upload/v1740631592/blog-project/yvqpbgoxmmgxl4yu0hws.jpg',
+      role: 'admin',
+    },
+  },
+  {
+    _id: '67c1597c5b4d21280d877a0d',
+    totalAmount: 0.02,
+    rank: 2,
+    user: {
+      username: 'A2',
+      email: 'abcd@gmail.com',
+      profilePicture: null,
+      role: 'curator',
+    },
+  },
+  {
+    _id: '67bc1b276dbfa82e13e3dcac',
+    totalAmount: 0,
+    rank: 3,
+    user: {
+      username: 'shiva',
+      email: 'shivaprasadgunaganti1@gmail.com',
+      profilePicture:
+        'https://res.cloudinary.com/dspnqdbs1/image/upload/v1740381810/blog-project/gpggdx766duxjhcsqqc4.jpg',
+      role: 'curator',
+    },
+  },
+];
+
+const PaymentsDashboard = () => {
+  const [today, setToday] = useState(123456);
+  const [sixmonthsData, setSixmonthsData] = useState(54783658);
+  const [monthly, setMonthly] = useState(34.56836);
+
   return (
-    <div>
-      <div className="space-y-4">
-        <CardWrapper>
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <div className="text-gray-600 text-sm">Total Monthly Revenue</div>
-              <div className="text-2xl font-bold text-black">223,332</div>
-              <div className="text-gray-600 text-xs">Previous Bonus</div>
-            </div>
-          </div>
-          <LineChart
-            width={800}
-            height={250}
-            data={monthlyData}
-            className="w-full"
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#000000"
-              strokeWidth={2}
-              dot={false}
-            />
-            <XAxis dataKey="name" stroke="#6b7280" />
-            <YAxis stroke="#6b7280" />
-            <Tooltip
-              contentStyle={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-                borderRadius: '0.5rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              }}
-            />
-          </LineChart>
-        </CardWrapper>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm overflow-hidden border border-gray-200">
+        <div className="grid grid-cols-6 h-full">
+          {/* Sidebar */}
+          {/* Add your sidebar here if needed */}
 
-        <CardWrapper>
-          <div className="flex justify-between items-center mb-4">
-            <div className="text-gray-600">Premium Members</div>
-            <div className="flex gap-2">
-              <ChevronDown size={20} className="text-gray-600" />
+          {/* Main content */}
+          <div className="col-span-6 p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold">Payments Dashboard</h1>
+              <div className="flex space-x-4">
+                <Search />
+                <Calendar />
+                <Settings />
+                <Share />
+              </div>
             </div>
-          </div>
-          <BarChart
-            width={800}
-            height={250}
-            data={barData}
-            className="w-full"
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <Bar dataKey="value" fill="#000000" radius={[4, 4, 0, 0]} />
-            <XAxis dataKey="month" stroke="#6b7280" />
-            <YAxis stroke="#6b7280" />
-            <Tooltip
-              contentStyle={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-                borderRadius: '0.5rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              }}
-            />
-          </BarChart>
-        </CardWrapper>
 
-        <CardWrapper>
-          <div className="flex justify-between items-center mb-4">
-            <div className="text-gray-600">Basic Members</div>
-            <div className="flex gap-2">
-              <ChevronDown size={20} className="text-gray-600" />
+            {/* Earnings Table */}
+            <CardWrapper className="mb-6">
+              <h2 className="text-xl font-semibold mb-4">Top Earners</h2>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200">
+                  <thead>
+                    <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                      <th className="py-3 px-6 text-left">Rank</th>
+                      <th className="py-3 px-6 text-left">Profile</th>
+                      <th className="py-3 px-6 text-left">Username</th>
+                      <th className="py-3 px-6 text-left">Email</th>
+                      <th className="py-3 px-6 text-left">Role</th>
+                      <th className="py-3 px-6 text-left">Total Earnings</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-600 text-sm font-light">
+                    {earningsData.map((entry) => (
+                      <tr
+                        key={entry._id}
+                        className="border-b border-gray-200 hover:bg-gray-100"
+                      >
+                        <td className="py-3 px-6">{entry.rank}</td>
+                        <td className="py-3 px-6">
+                          {entry.user.profilePicture ? (
+                            <img
+                              src={entry.user.profilePicture}
+                              alt={entry.user.username}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 bg-gray-300 flex items-center justify-center rounded-full">
+                              <span className="text-xs text-gray-600">N/A</span>
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-3 px-6">{entry.user.username}</td>
+                        <td className="py-3 px-6">{entry.user.email}</td>
+                        <td className="py-3 px-6">{entry.user.role}</td>
+                        <td className="py-3 px-6">
+                          ${entry.totalAmount.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardWrapper>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-6 mb-6">
+              <CardWrapper>
+                <h3 className="text-lg font-semibold">Today's Earnings</h3>
+                <p className="text-2xl font-bold">${today}</p>
+              </CardWrapper>
+              <CardWrapper>
+                <h3 className="text-lg font-semibold">6 Months Earnings</h3>
+                <p className="text-2xl font-bold">${sixmonthsData}</p>
+              </CardWrapper>
+              <CardWrapper>
+                <h3 className="text-lg font-semibold">Monthly Earnings</h3>
+                <p className="text-2xl font-bold">${monthly}</p>
+              </CardWrapper>
             </div>
+
+            {/* Bar Graph */}
+            <CardWrapper>
+              <h3 className="text-lg font-semibold mb-4">Earnings Over Time</h3>
+              <BarGraph />
+            </CardWrapper>
           </div>
-          <BarChart
-            width={800}
-            height={250}
-            data={barData}
-            className="w-full"
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <Bar dataKey="value" fill="#000000" radius={[4, 4, 0, 0]} />
-            <XAxis dataKey="month" stroke="#6b7280" />
-            <YAxis stroke="#6b7280" />
-            <Tooltip
-              contentStyle={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-                borderRadius: '0.5rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              }}
-            />
-          </BarChart>
-        </CardWrapper>
+        </div>
       </div>
     </div>
   );
 };
 
-export default BarGraph;
+export default PaymentsDashboard;
