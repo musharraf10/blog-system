@@ -19,9 +19,10 @@ import Billing from "../components/Subscribers/Settings/Billing";
 import ChangePassword from "../components/Subscribers/Settings/ChangePassword";
 import BecomeCreator from "../components/Subscribers/Settings/BecomeCreator";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
-import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
 import Trending from "../components/Subscribers/Trending/Trending"; // Ensure this is correctly imported
+import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
+import UpcomingEvents from "../components/Subscribers/UpcomingEvents";
 
 const SubscriberRoutes = () => {
   return (
@@ -35,6 +36,8 @@ const SubscriberRoutes = () => {
         }
       >
         <Route path="feed" element={<PostsList />} />
+        <Route path="webinars" element={<SearchFilter/>}/>
+        <Route path="upcomingevents" element={<UpcomingEvents/>}/>
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route index path="profilesettings" element={<SettingsSubPage />} />
@@ -42,6 +45,7 @@ const SubscriberRoutes = () => {
           <Route path="trendingcontent" element={<Trending />} />
           <Route path="billing" element={<Billing />} />
           <Route path="security" element={<ChangePassword />} />
+          
           <Route path="become-creator" element={<BecomeCreator />} />
         </Route>
         <Route path="profile" element={<AccountSummaryDashboard />} />
@@ -53,11 +57,14 @@ const SubscriberRoutes = () => {
         <Route path="pricing" element={<Pricing />} />
         <Route path="free-subscription" element={<PayingFreePlan />} />
 
+       
+
         <Route
           path="account-verification/:verifyToken"
           element={<AccountVerifiedComponent />}
         />
       </Route>
+
     </Routes>
   );
 };
