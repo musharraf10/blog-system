@@ -99,42 +99,6 @@ const ContentPart = () => {
     (page + 1) * postsPerPage
   );
 
-  // const [page, setPage] = useState(0);
-  // const postsPerPage = 5;
-  // const [totalPages, setTotalPages] = useState(1);
-
-  // useEffect(() => {
-  //   fetchPosts(0);
-  // }, []);
-
-  // const fetchPosts = async (currentPage) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${BackendServername}/posts/getallposts?page=${currentPage}&limit=${postsPerPage}`
-  //     );
-  //     setallpostsdata(response.data.posts);
-  //     setfilteredposts(response.data.posts);
-  //     setTotalPages(Math.ceil(response.data.totalCount / postsPerPage));
-  //   } catch (error) {
-  //     console.error("Error fetching posts:", error);
-  //   }
-  // };
-
-  // const handlePrevPage = () => {
-  //   if (page > 0) {
-  //     const newPage = page - 1;
-  //     setPage(newPage);
-  //     fetchPosts(newPage);
-  //   }
-  // };
-
-  // const handleNextPage = () => {
-  //   if (page < totalPages - 1) {
-  //     const newPage = page + 1;
-  //     setPage(newPage);
-  //     fetchPosts(newPage);
-  //   }
-  // };
 
   const [statusFilter, setStatusFilter] = useState("All");
 
@@ -148,6 +112,7 @@ const ContentPart = () => {
 
     setfilteredposts(filteredData);
     setStatusFilter(selectedStatus);
+    setPage(0);
   };
 
   const [searchQueryofposts, setSearchQueryofposts] = useState("");
@@ -166,6 +131,7 @@ const ContentPart = () => {
     );
 
     setfilteredposts(filteredResults);
+    setPage(0);
   };
   const [dateFilter, setDateFilter] = useState("All");
   const [startDate, setStartDate] = useState("");
@@ -182,23 +148,6 @@ const ContentPart = () => {
     }
   };
 
-  const handleStartDateChange = (e) => {
-    const newStartDate = e.target.value;
-    setStartDate(newStartDate);
-
-    if (dateFilter === "custom" && endDate) {
-      applyDateFilter("custom", newStartDate, endDate);
-    }
-  };
-
-  const handleEndDateChange = (e) => {
-    const newEndDate = e.target.value;
-    setEndDate(newEndDate);
-
-    if (dateFilter === "custom" && startDate) {
-      applyDateFilter("custom", startDate, newEndDate);
-    }
-  };
 
   const applyDateFilter = (filterType, start, end) => {
     const now = new Date();
