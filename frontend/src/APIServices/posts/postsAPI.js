@@ -118,3 +118,34 @@ export const fetchPostAnalytics = async () => {
   const response = await axios.get(`${BASE_URL}/analytics`);
   return response.data;
 }
+
+
+export const bookmarkPostAPI = async (postId) => {
+  console.log("Post", postId);
+  const response = await axios.post(`${BASE_URL}/${postId}/bookmark`,
+    {},
+    {
+      withCredentials: true,
+    }
+);
+  return response.data;
+};
+
+export const unbookmarkPostAPI = async (postId) => {
+  const response = await axios.post(`${BASE_URL}/${postId}/unbookmark`,{},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
+
+export const fetchBookmarkedPostsAPI = async () => {
+  const response = await axios.get(`${BASE_URL}/bookmarked`,
+    {
+      withCredentials: true,
+    }
+  );
+  
+  return response.data;
+};

@@ -15,6 +15,7 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    bookmarkedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     price: { type: Number, default: 0 },
     status: {
       type: String,
@@ -31,6 +32,7 @@ const postSchema = new mongoose.Schema(
       default: () =>
         new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1), // Default to the first day of the next month
     },
+    publisheddate:{type:Date},
     thisMonthEarnings: { type: Number, default: 0 },
     totalEarnings: { type: Number, default: 0 },
     lastCalculatedViewsCount: { type: Number, default: 0 },

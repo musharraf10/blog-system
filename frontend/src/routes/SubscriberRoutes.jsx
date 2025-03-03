@@ -23,6 +23,7 @@ import { SettingsPhone } from "@mui/icons-material";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
+import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 const SubscriberRoutes = () => {
     return (
@@ -45,6 +46,7 @@ const SubscriberRoutes = () => {
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
           </Route>
+          <Route path="bookmarks" element={<BookmarkPost />} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="my-followings" element={<MyFollowing />} />
           <Route path="my-followers" element={<MyFollowers />} />
