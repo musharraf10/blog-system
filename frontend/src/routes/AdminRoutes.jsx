@@ -24,6 +24,8 @@ import Dashboard from "../components/Admin/Dashboard/Dashboard";
 import ContentPart from "../components/Admin/Content-Management/ContentModeration";
 import PaymentsDashboard from "../components/Admin/Payments/PaymentsDashboard";
 import UserManagement from "../components/Admin/UserManagement/Usersmanagement";
+import ManageData from "../components/Posts/Managedata";
+import WebinarForm from "../components/Posts/WebinarForm";
 import ResetPassword from "../components/Subscribers/ResetPassword";
 
 
@@ -45,7 +47,9 @@ const AdminRoutes = () => {
           <Route path="user-management" element={<UserManagement/>} />
           <Route path="payment-management" element={<PaymentsDashboard/>} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
-          <Route path="create-post" element={<CreatePost />} />
+          <Route path="create-post/articles" element={<CreatePost />} />
+          <Route path="create-post/webinar" element={<WebinarForm />} />
+          <Route path="manage-content" element={<ManageData />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />

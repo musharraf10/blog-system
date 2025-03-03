@@ -20,8 +20,14 @@ import ChangePassword from "../components/Subscribers/Settings/ChangePassword";
 import BecomeCreator from "../components/Subscribers/Settings/BecomeCreator";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
+
+import { Webinars } from "../components/Webinar/Webinars";
+
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
-import Trending from "../components/Subscribers/Trending/Trending";
+import Trending from "../components/Subscribers/Trending/Trending"; // Ensure this is correctly imported
+
+
+
 import ResetPassword from "../components/Subscribers/ResetPassword";
 const SubscriberRoutes = () => {
   return (
@@ -39,11 +45,14 @@ const SubscriberRoutes = () => {
         <Route path="settings" element={<Settings />}>
           <Route index path="profilesettings" element={<SettingsSubPage />} />
           <Route path="plan" element={<Plan />} />
-          <Route path="trendingcontent" element={<Trending />} />
+
+          {/* <Route path="webinars" element={<SearchFilter />} /> */}
+        
           <Route path="billing" element={<Billing />} />
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
           </Route>
+          <Route path="webinars" element={<Webinars/>}/>
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="my-followings" element={<MyFollowing />} />
           <Route path="my-followers" element={<MyFollowers />} />
@@ -51,16 +60,31 @@ const SubscriberRoutes = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="latestposts" element={<DashboardPosts/>} />
           <Route path="pricing" element={<Pricing/>} />
-          <Route path="free-subscription" element={<PayingFreePlan/>} />
           <Route
             path="account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
-          <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
-          <Route path="trendingcontent"element={<Trending/>}/>
-        </Route>
-      </Routes>
-    );
-  };
-  
-  export default SubscriberRoutes;
+
+          <Route path="trendingcontent" element={<Trending />} />
+          <Route path="billing" element={<Billing />} />
+          <Route path="security" element={<ChangePassword />} />
+          <Route path="become-creator" element={<BecomeCreator />} />
+
+        <Route path="profile" element={<AccountSummaryDashboard />} />
+        <Route path="my-followings" element={<MyFollowing />} />
+        <Route path="my-followers" element={<MyFollowers />} />
+        <Route path="add-email" element={<AddEmailComponent />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route path="latestposts" element={<DashboardPosts />} />
+        <Route path="pricing" element={<Pricing />} />
+        <Route path="free-subscription" element={<PayingFreePlan />} />
+        <Route path="account-verification/:verifyToken" element={<AccountVerifiedComponent />}/>
+          </Route>
+        <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
+    </Routes>
+  );
+};
+
+export default SubscriberRoutes;
+
+     

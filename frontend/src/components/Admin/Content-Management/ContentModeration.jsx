@@ -71,7 +71,9 @@ const ContentForm = () => {
     };
 
     fetchData();
-  }, []);
+  }, [publishedContent]);
+
+
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
