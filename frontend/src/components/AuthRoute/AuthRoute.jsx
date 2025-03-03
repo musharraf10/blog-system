@@ -44,7 +44,7 @@ const AuthRoute = ({ children, allowedRoles }) => {
   console.log(userRole)
   console.log(allowedRoles.includes(userRole))
   if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/unauthorize" />; 
+    return <Navigate to="/" />; 
   }
 
   return children;
