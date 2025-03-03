@@ -21,6 +21,8 @@ import BecomeCreator from "../components/Subscribers/Settings/BecomeCreator";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
+import Trending from "../components/Subscribers/Trending/Trending";
+import {BookmarkPost} from "../components/Posts/BookmarkPost";
 
 const SubscriberRoutes = () => {
   return (
@@ -38,11 +40,12 @@ const SubscriberRoutes = () => {
         <Route path="settings" element={<Settings />}>
           <Route  path="profilesettings" element={<SettingsSubPage />} />
           <Route path="plan" element={<Plan />} />
-          <Route path="trendingcontent" element={<Trending />} />
+          <Route path="trendingcontent" element={<Trending/>} />
           <Route path="billing" element={<Billing />} />
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
           </Route>
+          <Route path="bookmarks" element={<BookmarkPost />} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="my-followings" element={<MyFollowing />} />
           <Route path="my-followers" element={<MyFollowers />} />
