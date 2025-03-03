@@ -3,12 +3,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { loginAPI, registerAPI } from "../../APIServices/users/usersAPI";
 import AlertMessage from "../Alert/AlertMessage";
 
 const Login = () => {
   //navigate
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   // user mutation
   const userMutation = useMutation({
     mutationKey: ["user-registration"],
@@ -30,26 +33,37 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const response = await userMutation.mutateAsync(values);
-        
+    
+        if (!response) {
+          console.log("Login failed: No response from server");
+          return;
+        }
+    
         // Extract user role from API response
-        const userRole = response?.role;  
+        const userRole = response?.role;
+    
+        // Invalidate old authentication data and refetch latest user state
+        await queryClient.invalidateQueries(["user-auth"]);
     
         // Redirect based on role
-        if (userRole === "admin") {
-          navigate("/admin");
-        } else if (userRole === "curator") {
-          navigate("/curator");
-        } else if (userRole === "subscriber") {
-          navigate("/subscriber");
-        } else {
-          navigate("/unauthorized");
+        switch (userRole) {
+          case "admin":
+            navigate("/admin");
+            break;
+          case "curator":
+            navigate("/curator");
+            break;
+          case "subscriber":
+            navigate("/subscriber");
+            break;
+          default:
+            navigate("/unauthorized");
         }
       } catch (error) {
-        console.log(error);
+        console.error("Login error:", error);
       }
     },
-    
-  });
+  });    
   console.log(userMutation);
   return (
     <div className="flex flex-wrap pb-24">
