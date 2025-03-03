@@ -102,13 +102,10 @@ const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes');
 
 // Connect to Database
 connectDB();
-<<<<<<< HEAD
 // calculateEarnings();
 //Schedule the task to run at 23:59 on the last day of every month
-=======
 // calculateEarnings(); 
 
->>>>>>> f023bb80dc00be31ae3d37a2f8b744485cdc4293
 cron.schedule(
   "59 23 * * *",
   async () => {
@@ -165,13 +162,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
-//!Start the server
-app.listen(PORT, console.log(`Server is up and running on port ${PORT}`));
-
-
-// original
-=======
 // Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
->>>>>>> f023bb80dc00be31ae3d37a2f8b744485cdc4293

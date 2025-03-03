@@ -23,11 +23,8 @@ import { SettingsPhone } from "@mui/icons-material";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
-<<<<<<< HEAD
-
-=======
 import Trending from "../components/Subscribers/Trending/Trending";
->>>>>>> f023bb80dc00be31ae3d37a2f8b744485cdc4293
+import ResetPassword from "../components/Subscribers/ResetPassword";
 const SubscriberRoutes = () => {
     return (
       <Routes>
@@ -58,15 +55,12 @@ const SubscriberRoutes = () => {
           <Route path="latestposts" element={<DashboardPosts/>} />
           <Route path="pricing" element={<Pricing/>} />
           <Route path="free-subscription" element={<PayingFreePlan/>} />
-<<<<<<< HEAD
-=======
-
->>>>>>> f023bb80dc00be31ae3d37a2f8b744485cdc4293
           <Route
             path="account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
-          
+          <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
+          <Route path="trendingcontent"element={<Trending/>}/>
         </Route>
       </Routes>
     );
