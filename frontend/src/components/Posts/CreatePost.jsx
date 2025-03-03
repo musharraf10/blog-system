@@ -38,6 +38,7 @@ const CreatePost = () => {
       formData.append('description', description);
       formData.append('image', values.image);
       formData.append('category', values.category);
+      console.log(formData);
       postMutation.mutate(formData);
     },
   });
@@ -218,4 +219,5 @@ const CreatePost = () => {
     </div>
   );
 };
+
 export default CreatePost;

@@ -1,7 +1,7 @@
 import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { FaBlog, FaUserEdit, FaFileAlt, FaUsers, FaCalendarPlus, FaTags, FaWallet } from "react-icons/fa";
+import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags } from "react-icons/fa";
 import { MdContentPaste, MdPayment } from "react-icons/md";
 import { FaUsersCog } from "react-icons/fa";
 import { Link, Outlet } from "react-router-dom";
@@ -46,20 +46,23 @@ export default function AdminDashboard() {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex w-64 flex-col bg-white p-4 shadow-lg">
+              <Dialog.Panel className="relative flex w-64 flex-col bg-white p-4 shadow-lg h-full">
                 <button className="absolute top-4 right-4 text-gray-700" onClick={() => setSidebarOpen(false)}>
                   <XMarkIcon className="h-6 w-6" />
                 </button>
                 <Link to="/" className="mb-6 flex items-center justify-center">
                   <FaBlog className="h-8 w-auto text-orange-500" />
                 </Link>
-                <nav className="space-y-2">
+                <nav className="space-y-2 flex-1">
                   {navigation.map(({ name, href, icon: Icon }) => (
                     <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
                       <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
                     </Link>
                   ))}
                 </nav>
+                <Link to="/subscriber/settings" className="mt-auto flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                  <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
+                </Link>
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -67,12 +70,12 @@ export default function AdminDashboard() {
       </Transition.Root>
 
       <div className="flex min-h-screen">
-        {/* Sidebar for desktop */}
-        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200 shadow-md">
+        {/* Sidebar for desktop - Sticky and does not scroll */}
+        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200 shadow-md fixed top-15 left-0 h-[100vh]">
           <Link to="/subscriber" className="mb-6 flex items-center justify-center">
             <FaBlog className="h-8 w-auto text-orange-500" />
           </Link>
-          <nav className="space-y-2">
+          <nav className="space-y-2 flex-1">
             {navigation.map(({ name, href, icon: Icon }) => (
               <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
                 <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
@@ -85,7 +88,7 @@ export default function AdminDashboard() {
         </aside>
 
         {/* Main content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 lg:ml-72">
           <button className="lg:hidden mb-4 text-orange-500" onClick={() => setSidebarOpen(true)}>
             ☰ Open Sidebar
           </button>

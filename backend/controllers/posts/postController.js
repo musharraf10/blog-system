@@ -39,7 +39,9 @@ const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 const sendNotificatiomMsg = require("../../utils/sendNotificatiomMsg");
 
+
 const postController = {
+
   //!Create post
   createPost: asyncHandler(async (req, res) => {
     //get the payload
@@ -92,7 +94,7 @@ const postController = {
       postCreated,
     });
   }),
-
+  
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     await Post.findByIdAndUpdate(postId, { status: "approved" });
@@ -406,6 +408,63 @@ const postController = {
       message: "Post Disliked",
     });
   }),
+
+
+  BookMarkPost: asyncHandler(async (req, res) => {
+    try {
+    const {postId} = req.params;
+    const userId = req.user;
+
+    const post = await Post.findById(postId);
+    if (post?.bookmarkedBy?.includes(userId)) {
+      return res.status(400).json({ message: "Post already bookmarked" });
+    }
+    post?.bookmarkedBy?.push(userId);
+
+    await post.save();
+
+    res.json({
+      message: "Post Bookmarked",
+    });
+      
+    } catch (error) {
+      console.error("Error bookmarking post:", error);
+      res.status(500).json({ message: error.message});
+    }
+  }),
+
+  unBookMarkPost: asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+
+    post?.bookmarkedBy?.pull(userId);
+
+    await post.save();
+
+    res.json({
+      message: "Post Unbookmarked",
+    });
+  }),
+
+  getBookmarkedPosts : asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user;
+      const posts = await Post.find({ bookmarkedBy: userId });
+      // console.log(posts);
+  
+      res.status(200).json({
+        message: "Bookmarked Posts Fetched",
+        posts,
+      });
+    } catch (error) {
+      console.error("Error fetching bookmarked posts:", error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  })
 };
 
 module.exports = postController;
+
+//OG

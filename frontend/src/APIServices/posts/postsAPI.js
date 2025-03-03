@@ -10,7 +10,8 @@ export const createPostAPI = async (postData) => {
   });
   return response.data;
 };
-//!update post api
+
+
 export const updatePostAPI = async ({ formData, postId }) => {
   const response = await axios.patch(
     `${BASE_URL}/${postId}`,
@@ -134,3 +135,4 @@ const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
       return [];
     }
   };
+

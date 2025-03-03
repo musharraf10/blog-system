@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment , useEffect} from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -23,17 +23,22 @@ export default function PrivateNavbar() {
   const logoutMutation = useMutation({ mutationKey: ["logout"], mutationFn: logoutAPI });
 
   if (isLoading) return <AuthCheckingComponent />;
-  const userRole = data?.role;
+  let userRole = data?.role;
 
   const logoutHandler = async () => {
     try {
       await logoutMutation.mutateAsync();
+      await logoutMutation.invalidateQueries(["user-auth"]);
       dispatch(logout());
       navigate("/login");
+      
     } catch (error) {
       console.log(error);
     }
   };
+  useEffect(() => {
+    if (!data) navigate("/login"); // Redirect if user is logged out
+  }, [data]); 
 
   const navLinks = [
     { name: "Latest Posts", path: `${userRole}/latestposts`},
