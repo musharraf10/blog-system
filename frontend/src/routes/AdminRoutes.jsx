@@ -26,6 +26,7 @@ import PaymentsDashboard from "../components/Admin/Payments/PaymentsDashboard";
 import UserManagement from "../components/Admin/UserManagement/Usersmanagement";
 import ManageData from "../components/Posts/Managedata";
 import WebinarForm from "../components/Posts/WebinarForm";
+import ResetPassword from "../components/Subscribers/ResetPassword";
 
 
 
@@ -65,6 +66,7 @@ const AdminRoutes = () => {
           />
           <Route path="create-plan" element={<CreatePlan />} />
           <Route path="add-category" element={<AddCategory />} />
+          <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         </Route>
       </Routes>
     );

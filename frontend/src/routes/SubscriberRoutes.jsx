@@ -27,6 +27,8 @@ import PayingFreePlan from "../components/Plans/PayingFreePlan";
 import Trending from "../components/Subscribers/Trending/Trending"; // Ensure this is correctly imported
 
 
+
+import ResetPassword from "../components/Subscribers/ResetPassword";
 const SubscriberRoutes = () => {
   return (
     <Routes>
@@ -68,7 +70,6 @@ const SubscriberRoutes = () => {
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
 
-        </Route>
         <Route path="profile" element={<AccountSummaryDashboard />} />
         <Route path="my-followings" element={<MyFollowing />} />
         <Route path="my-followers" element={<MyFollowers />} />
@@ -77,14 +78,13 @@ const SubscriberRoutes = () => {
         <Route path="latestposts" element={<DashboardPosts />} />
         <Route path="pricing" element={<Pricing />} />
         <Route path="free-subscription" element={<PayingFreePlan />} />
-
-        <Route
-          path="account-verification/:verifyToken"
-          element={<AccountVerifiedComponent />}
-        />
-      </Route>
+        <Route path="account-verification/:verifyToken" element={<AccountVerifiedComponent />}/>
+          </Route>
+        <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
     </Routes>
   );
 };
 
 export default SubscriberRoutes;
+
+     
