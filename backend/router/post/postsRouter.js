@@ -19,6 +19,7 @@ postRouter.post(
   checkUserPlan,
   isAccountVerified,
   upload.single("file"), 
+  // upload.single("image"),
   postController.createPost
 );
 

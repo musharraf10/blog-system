@@ -12,7 +12,8 @@ const navigation = [
   { name: "Content Management", href: "/admin/content-management", icon: MdContentPaste },
   { name: "User Management", href: "/admin/user-management", icon: FaUsersCog },
   { name: "Payment Management", href: "/admin/payment-management", icon: MdPayment },
-  { name: "Create New Post", href: "/admin/create-post", icon: FaUserEdit },
+  // { name: "Create New Post", href: "/admin/create-post", icon: FaUserEdit },
+  { name: "Manage Content", href: "/admin/manage-content", icon: FaUserEdit },
   { name: "Create Plan", href: "/admin/create-plan", icon: FaCalendarPlus },
   { name: "Add Category", href: "/admin/add-category", icon: FaTags },
 ];

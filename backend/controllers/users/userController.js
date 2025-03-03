@@ -124,7 +124,6 @@ const userController = {
   // ! Logout
   logout: asyncHandler(async (req, res) => {
     res.cookie("token", "", { maxAge: 1 });
-    navigator("http://localhost:5173/login");
     res.status(200).json({ message: "Logout success" });
   }),
   //! Profile

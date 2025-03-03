@@ -88,6 +88,7 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./utils/connectDB");
 const calculateEarnings = require("./utils/calculateEarnings");
 
+
 // Import Routers
 const postRouter = require("./router/post/postsRouter");
 const usersRouter = require("./router/user/usersRouter");
@@ -98,6 +99,8 @@ const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
 const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
+const webinarRouter = require("./router/webinar/webinar");
+const articleRouter = require("./router/article/article");
 
 
 // Connect to Database
@@ -143,6 +146,10 @@ app.use("/api/v1/earnings", earningsRouter);
 app.use("/api/v1/notifications", notificationRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
+app.use("/api/v1/webinar", webinarRouter);
+app.use("/api/v1/article", articleRouter);
+
+
 
 // Not Found Route
 app.use((req, res, next) => {

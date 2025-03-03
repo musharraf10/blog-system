@@ -8,7 +8,7 @@ const AuthRoute = ({ children, allowedRoles }) => {
   const { isLoading, data } = useQuery({
     queryKey: ["user-auth"],
     queryFn: checkAuthStatusAPI,
-    refetchOnWindowFocus: true, // Refetch data when the window gains focus
+    refetchOnWindowFocus: true, 
   });
 
   if (isLoading) return <AuthCheckingComponent />;
@@ -18,9 +18,9 @@ const AuthRoute = ({ children, allowedRoles }) => {
 
   // Check if the user's role is allowed
   const userRole = data?.role;
-  if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/unauthorize" />;
-  }
+  // if (!allowedRoles.includes(userRole)) {
+  //   return <Navigate to="/unauthorize" />;
+  // }
 
   return children;
 };
