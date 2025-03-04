@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginAPI } from "../../APIServices/users/usersAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +10,7 @@ import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
 
   const userMutation = useMutation({
@@ -29,19 +30,33 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const response = await userMutation.mutateAsync(values);
+
+        if (!response) {
+          console.log("Login failed: No response from server");
+          return;
+        }
+
         const userRole = response?.role;
 
-        if (userRole === "admin") {
-          navigate("/admin");
-        } else if (userRole === "curator") {
-          navigate("/curator");
-        } else if (userRole === "subscriber") {
-          navigate("/subscriber");
-        } else {
-          navigate("/unauthorized");
+        // Invalidate old authentication data
+        await queryClient.invalidateQueries(["user-auth"]);
+
+        // Redirect based on role
+        switch (userRole) {
+          case "admin":
+            navigate("/admin");
+            break;
+          case "curator":
+            navigate("/curator");
+            break;
+          case "subscriber":
+            navigate("/subscriber");
+            break;
+          default:
+            navigate("/unauthorized");
         }
       } catch (error) {
-        console.log(error);
+        console.error("Login error:", error);
       }
     },
   });
@@ -105,5 +120,3 @@ const Login = () => {
 };
 
 export default Login;
-
-// npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core    dependency for the eye icon

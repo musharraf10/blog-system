@@ -18,18 +18,16 @@ postRouter.post(
   roleCheck(["curator", "admin"]),
   checkUserPlan,
   isAccountVerified,
+  upload.single("file"), 
   // upload.single("image"),
   postController.createPost
 );
+
 
 // List all approved posts
 postRouter.get("/", postController.fetchAllPosts);
 
 postRouter.get("/pendingposts", postController.pendingPosts);
-
-
-
-
 
 postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 
@@ -41,25 +39,17 @@ postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
 
-////
+postRouter.get("/bookmarked", isAuthenticated, postController.getBookmarkedPosts);
+postRouter.get("/:postId", isAuthenticated, optionalAuth, postController.getPost);
 
-postRouter.get("/:postId", optionalAuth, postController.getPost);
+postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPost);
+postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);
+
+
 
 
 
 //newly added routes
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Update a post (Restricted to Curators & Admins)
@@ -87,5 +77,9 @@ postRouter.get("/analytics", postController.fetchPostAnalytics);
 // Like & Dislike Post
 postRouter.patch("/likes/:postId", isAuthenticated, postController.like);
 postRouter.patch("/dislikes/:postId", isAuthenticated, postController.dislike);
+
+
+
+
 
 module.exports = postRouter;
