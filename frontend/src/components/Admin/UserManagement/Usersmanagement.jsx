@@ -193,7 +193,7 @@ const UserManagementTable = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            USER MANAGEMENT
+          <b>  USER MANAGEMENT</b>
           </Typography>
         </Box>
 
