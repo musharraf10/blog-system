@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "blog-project",
     resource_type: "auto", 
-    allowedFormats: ["jpg", "png", "jpeg", "pdf", "docx"], 
+    allowedFormats: ["jpg", "png", "jpeg", "pdf", "docx", "mp4", "mov" , "mkv", "avi"], 
     transformation: [{ width: 500, height: 500, crop: "limit" }], 
   },
 });

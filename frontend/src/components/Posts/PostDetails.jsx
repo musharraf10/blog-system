@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { FaThumbsUp, FaThumbsDown, FaEye, FaComment } from "react-icons/fa";
+import { FaThumbsUp, FaThumbsDown, FaEye, FaComment, FaBookmark } from "react-icons/fa";
 import { RiUserUnfollowFill, RiUserFollowLine } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -9,6 +9,8 @@ import {
   dislikePostAPI,
   fetchPost,
   likePostAPI,
+  bookmarkPostAPI,
+  unbookmarkPostAPI,
 } from "../../APIServices/posts/postsAPI";
 import {
   followUserAPI,
@@ -29,17 +31,26 @@ const PostDetails = () => {
     queryKey: ["profile"],
     queryFn: () => userProfileAPI(),
   });
-
+  console.log(data);
+  console.log(profileData);
   const targetId = data?.postFound?.author;
   const userId = profileData?.user?._id;
+  console.log("Target",targetId);
+  console.log("User",userId);
   const isFollowing = profileData?.user?.following?.some(
     (user) => user?._id?.toString() === targetId?.toString()
+  );
+
+  const isBookmarked = data?.postFound?.bookmarkedBy?.some(
+    (id) => id.toString() === userId?.toString()
   );
 
   const followUserMutation = useMutation({ mutationFn: followUserAPI });
   const unfollowUserMutation = useMutation({ mutationFn: unfollowUserAPI });
   const likePostMutation = useMutation({ mutationFn: likePostAPI });
   const dislikePostMutation = useMutation({ mutationFn: dislikePostAPI });
+  const bookmarkMutation = useMutation({ mutationFn: bookmarkPostAPI });
+  const unbookmarkMutation = useMutation({ mutationFn: unbookmarkPostAPI });
   const commentMutation = useMutation({ mutationFn: createCommentAPI });
 
   const followUserHandler = async () => {
@@ -56,6 +67,14 @@ const PostDetails = () => {
 
   const dislikesPostHandler = async () => {
     dislikePostMutation.mutateAsync(postId).then(() => refetchPost());
+  };
+
+  const bookmarkPostHandler = async () => {
+    bookmarkMutation.mutateAsync(postId).then(() => refetchPost());
+  };
+
+  const unbookmarkPostHandler = async () => {
+    unbookmarkMutation.mutateAsync(postId).then(() => refetchPost());
   };
 
   const formik = useFormik({
@@ -81,6 +100,8 @@ const PostDetails = () => {
           className="w-full h-72 object-cover rounded-lg mb-4"
         />
 
+        {data?.postFound?.description}
+
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-4 items-center">
             <span className="flex items-center gap-1 cursor-pointer" onClick={likePostHandler}>
@@ -92,19 +113,28 @@ const PostDetails = () => {
             <span className="flex items-center gap-1">
               <FaEye /> {data?.postFound?.viewers?.length || 0}
             </span>
+            <span
+              className={`flex items-center gap-1 cursor-pointer ${
+                isBookmarked ? "text-blue-600" : "text-gray-600"
+              }`}
+              onClick={isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler}
+            >
+              <FaBookmark /> 
+            </span>
+           
           </div>
-          
+
           {isFollowing ? (
             <button
               onClick={unfollowUserHandler}
-              className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700 flex items-center gap-2"
+              className="px-2 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 flex items-center gap-1"
             >
               <RiUserUnfollowFill /> Unfollow
             </button>
           ) : (
             <button
               onClick={followUserHandler}
-              className="px-4 py-2 border border-black text-black bg-transparent rounded-md hover:bg-black hover:text-white flex items-center gap-2"
+              className="px-2 py-2 border border-black text-black bg-transparent rounded-md hover:bg-black hover:text-white flex items-center gap-1"
             >
               <RiUserFollowLine /> Follow
             </button>
@@ -126,7 +156,7 @@ const PostDetails = () => {
             <button
               type="submit"
               className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-              >
+            >
               <FaComment className="inline mr-1" /> Add Comment
             </button>
           </form>
@@ -151,5 +181,3 @@ const PostDetails = () => {
 };
 
 export default PostDetails;
-
-// edited comments 

@@ -82,13 +82,13 @@ export default function AdminDashboard() {
           </Link>
           <nav>
             {navigation.map(({ name, href, icon: Icon }) => (
-              <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
+              <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-black p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black-100 rounded-md">
                 <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
               </Link>
             ))}
           </nav>
           <div className="mt-auto mb-[30%]">
-            <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
+            <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-black p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black-100 rounded-md">
               <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
             </Link>
           </div>

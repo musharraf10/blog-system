@@ -59,9 +59,10 @@ const CreatePlan = () => {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
           <div className="px-8 py-6 bg-blue-900 text-white">
-            <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2">
-              <Package className="w-6 h-6" /> Create Subscription Plan
-            </h2>
+          <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2 text-white">
+  <Package className="w-6 h-6" /> Create Subscription Plan
+</h2>
+
           </div>
           <form onSubmit={formik.handleSubmit} className="px-8 py-6 space-y-6">
             {planMutation.isPending && <AlertMessage type="loading" message="Loading, please wait..." />}

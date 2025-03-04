@@ -1,54 +1,34 @@
-// import React from "react";
-// import Login from "../User/Login";
-// import { useQuery } from "@tanstack/react-query";
-// import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
-// import { Navigate } from "react-router-dom";
-// import AuthCheckingComponent from "../Templates/AuthCheckingComponent";
-
-// const AuthRoute = ({ children }) => {
-//   const { isError, isLoading, data, error, isSuccess, refetch } = useQuery({
-//     queryKey: ["user-auth"],
-//     queryFn: checkAuthStatusAPI,
-//   });
-
-//   //for loading
-//   if (isLoading) return <AuthCheckingComponent />;
-//   //in case a user is not login
-//   if (!data) {
-//     return <Navigate to="/login" />;
-//   }
-//   //render
-//   return children;
-// };
-
-// export default AuthRoute;
-
-
-
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 import { Navigate } from "react-router-dom";
 import AuthCheckingComponent from "../Templates/AuthCheckingComponent";
 
 const AuthRoute = ({ children, allowedRoles }) => {
-  const { isLoading, data } = useQuery({
+  const queryClient = useQueryClient(); // React Query client instance
+
+  const { isLoading, data, refetch } = useQuery({
     queryKey: ["user-auth"],
     queryFn: checkAuthStatusAPI,
+    refetchOnWindowFocus: true,
+    staleTime: 0,  
+    cacheTime: 0,  
   });
 
+  useEffect(() => {
+    refetch(); // Ensure fresh authentication data when component mounts
+  }, [refetch]);
+
   if (isLoading) return <AuthCheckingComponent />;
+
   if (!data) return <Navigate to="/login" />;
 
-  const userRole = data?.role; 
-  console.log(userRole)
-  console.log(allowedRoles.includes(userRole))
+  const userRole = data?.role;
   if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/unauthorize" />; 
+    return <Navigate to="/" />;
   }
 
   return children;
 };
 
 export default AuthRoute;
-

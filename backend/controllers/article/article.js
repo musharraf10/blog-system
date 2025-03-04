@@ -1,8 +1,5 @@
-// import Article from "../../models/article/article.js";
-// import Category from "../../models/Category/Category.js";
+const Article = require("../../models/article/article.js");
 
-const Article = require('../../models/article/article.js')
-const Category = require('../../models/Category/Category.js')
 
 const addarticleconroller = async (req, res) => {
   const { title, content, status, tags } = req.body;
@@ -63,4 +60,4 @@ const addarticleconroller = async (req, res) => {
   }
 };
 
-module.exports={addarticleconroller}
+module.exports = {addarticleconroller};

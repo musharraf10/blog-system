@@ -1,6 +1,6 @@
-// import Webinar from "../../models/webinar/webinar.js";
+const Webinar = require("../../models/webinar/webinar.js");
 
-export const addwebinarconroller = async (req, res) => {
+const addwebinarconroller = async (req, res) => {
   try {
     const { title, link, date, time, description } = req.body;
 
@@ -33,3 +33,6 @@ export const addwebinarconroller = async (req, res) => {
     });
   }
 };
+
+
+module.exports = {addwebinarconroller};
