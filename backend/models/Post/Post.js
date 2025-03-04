@@ -23,11 +23,11 @@ const postSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-    category: {
+    category:[ {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: true,
-    },
+      // required: true,
+    }],
     nextEarningDate: {
       type: Date,
       default: () =>
@@ -43,8 +43,10 @@ const postSchema = new mongoose.Schema(
     viewers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     isBlocked: { type: Boolean, default: false },
+    sample  : { type: String},
   },
-  { timestamps: true }
+  { timestamps: true },
+
 );
 
 module.exports = mongoose.model("Post", postSchema);

@@ -39,7 +39,7 @@ export const checkAuthStatusAPI = async () => {
   const response = await axios.get(`${BASE_URL}/users/check-auth`, {
     withCredentials: true,
   });
-
+  console.log(response.data);
   return response.data;
 };
 // ! user profile

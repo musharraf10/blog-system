@@ -147,14 +147,6 @@ const PostsList = () => {
                       <div className="py-1 px-2 rounded-md border border-gray-100 text-xs font-medium text-gray-700 inline-block">
                         {post?.category?.categoryName}
                       </div>
-                      <button
-                        onClick={() => toggleBookmark(post._id)}
-                        className={`text-gray-500 hover:text-orange-500 ml-auto ${
-                          bookmarkedPosts.includes(post._id) ? "text-orange-500" : ""
-                        }`}
-                      >
-                        <FaBookmark className="h-5 w-5" />
-                      </button>
                     </div>
                   </div>
                 </div>

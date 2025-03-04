@@ -39,60 +39,96 @@ const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 const sendNotificatiomMsg = require("../../utils/sendNotificatiomMsg");
 
+
 const postController = {
+
   //!Create post
   createPost: asyncHandler(async (req, res) => {
-    //get the payload
-    const { description, category } = req.body;
-    // find the category
-    const categoryFound = await Category.findById(category);
-    if (!categoryFound) {
-      throw new Error("Category not found");
-    }
-    // find the user
-    const userFound = await User.findById(req.user._id);
-    if (!userFound) {
-      throw new Error("User not found");
-    }
-    const postCreated = await Post.create({
-      description,
-      image: req.file.path,
-      author: req.user,
-      category,
-      status: "pending",
-    });
+    const {content}=req.body
+    console.log(req.user)
+    res.send(content)
 
-    categoryFound.posts.push(categoryFound?._id);
-    //resave the category
-    await categoryFound.save();
-    //push the posts into user
-    userFound.posts.push(postCreated?._id);
-    await userFound.save();
-    //Create notification
-    await Notification.create({
-      userId: req.user,
-      postId: postCreated._id,
-      message: `New post created by ${userFound.username}`,
-    });
+    // try {
+    //   const { title, description, category } = req.body;
 
-    //Send email to all hus/her followers
-    userFound.followers.forEach(async (follower) => {
-      //find the users by ids
-      const users = await User.find({ _id: follower });
-      //loop through the users
-      users.forEach((user) => {
-        //send email
-        sendNotificatiomMsg(user.email, postCreated._id);
-      });
-    });
+    //   const postCreated = await Post.create({
+    //     title,
+    //     description,
+    //     author: req.user,
+    //     status: "pending",
+    //   });
+  
+    //   const categoryIds = []; 
+
+    //   for (const { categoryName } of category) {
+    //     let categoryFound = await Category.findOne({ categoryName });
+  
+    //     if (!categoryFound) {
+    //       categoryFound = await Category.create({
+    //         categoryName,
+    //         posts: [postCreated._id],
+    //         createdBy: req.user._id,
+    //       });
+    //     } else {
+    //       await categoryFound.updateOne({ $push: { posts: postCreated._id } });
+    //     }
+  
+    //     categoryIds.push(categoryFound._id); 
+    //     await categoryFound.save();
+    //   }
+  
+    //   await postCreated.updateOne({ $set: { category: categoryIds } });
+  
+  
+  
+  
+    //   // Find the user
+    //   const userFound = await User.findById(req.user);
+    //   if (!userFound) {
+    //     throw new Error("User not found");
+    //   }
+  
+    //   // Ensure `posts` array exists before pushing
+    //   if (!userFound.posts) {
+    //     userFound.posts = [];
+    //   }
+    //   userFound.posts.push(postCreated._id);
+    //   await userFound.save();
+  
+    //   //Create notification
+    //   await Notification.create({
+    //     userId: req.user,
+    //     postId: postCreated._id,
+    //     message: `New post created by ${userFound.username}`,
+    //   });
+  
+    //   //Send email to all hus/her followers
+    //   userFound.followers.forEach(async (follower) => {
+    //     //find the users by ids
+    //     const users = await User.find({ _id: follower });
+    //     //loop through the users
+    //     users.forEach((user) => {
+    //       //send email
+    //       sendNotificatiomMsg(user.email, postCreated._id);
+    //     });
+    //   });
+    // } catch (error) {
+    //   console.error("Error creating post:", error);
+    // res.status(500).json({
+    //   status: "error",
+    //   message: "Something went wrong while creating the post",
+    //   error: error.message,
+    // });
+    // }
+  
 
     res.json({
       status: "success",
       message: "Post created successfully",
-      postCreated,
+      
     });
   }),
-
+  
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     await Post.findByIdAndUpdate(postId, { status: "approved" });
@@ -147,10 +183,9 @@ const postController = {
           populate: {
             path: "author",
           },
-        })
-        // .limit(1);
+        });
+      // .limit(1);
 
-      console.log(postsdata);
 
       res.status(200).json({
         status: "success",
@@ -163,10 +198,9 @@ const postController = {
     }
   }),
 
-
   getallpublishedpostscontroller: asyncHandler(async (req, res) => {
     try {
-      const postsdata = await Post.find({ status: "approved" }) 
+      const postsdata = await Post.find({ status: "approved" })
         .populate("author")
         .populate({
           path: "comments",
@@ -174,9 +208,8 @@ const postController = {
             path: "author",
           },
         });
-  
-      console.log(postsdata);
-  
+
+
       res.status(200).json({
         status: "success",
         message: "Approved Posts fetched successfully",
@@ -187,7 +220,7 @@ const postController = {
       res.status(500).json({ status: "error", message: error.message });
     }
   }),
-  
+
   updatePostStatus: asyncHandler(async (req, res) => {
     try {
       const { id } = req.params;
@@ -291,9 +324,9 @@ const postController = {
   }),
 
   updateStatus: asyncHandler(async (req, res) => {
-    const {postId} = req.params;
+    const { postId } = req.params;
     const { status } = req.body;
-    await Post.findByIdAndUpdate(postId, { status },{new : true});
+    await Post.findByIdAndUpdate(postId, { status }, { new: true });
     res.json({
       status: "success",
       message: "Post status updated successfully",
@@ -310,35 +343,52 @@ const postController = {
     });
   }),
 
-
   fetchPostAnalytics: async (req, res) => {
     try {
       const currentDate = new Date();
       const startOfToday = new Date(currentDate.setHours(0, 0, 0, 0));
       const startOfYesterday = new Date(startOfToday);
       startOfYesterday.setDate(startOfYesterday.getDate() - 1);
-  
-      const startOfThisMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const startOfLastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-  
-      
+
+      const startOfThisMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
+      const startOfLastMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        1
+      );
+
       const allPosts = await Post.find({});
-  
+
       // Calculate counts
       const totalPosts = allPosts.length;
-      const approvedPosts = allPosts.filter(post => post.status === "approved").length;
-      const pendingPosts = allPosts.filter(post => post.status === "pending").length;
-      const rejectedPosts = allPosts.filter(post => post.status === "rejected").length;
-  
-      const thisMonthPosts = allPosts.filter(post => post.createdAt >= startOfThisMonth).length;
-      const lastMonthPosts = allPosts.filter(post => 
-        post.createdAt >= startOfLastMonth && post.createdAt < startOfThisMonth
+      const approvedPosts = allPosts.filter(
+        (post) => post.status === "approved"
       ).length;
-  
-      const yesterdayPosts = allPosts.filter(post => 
-        post.createdAt >= startOfYesterday && post.createdAt < startOfToday
+      const pendingPosts = allPosts.filter(
+        (post) => post.status === "pending"
       ).length;
-  
+      const rejectedPosts = allPosts.filter(
+        (post) => post.status === "rejected"
+      ).length;
+
+      const thisMonthPosts = allPosts.filter(
+        (post) => post.createdAt >= startOfThisMonth
+      ).length;
+      const lastMonthPosts = allPosts.filter(
+        (post) =>
+          post.createdAt >= startOfLastMonth &&
+          post.createdAt < startOfThisMonth
+      ).length;
+
+      const yesterdayPosts = allPosts.filter(
+        (post) =>
+          post.createdAt >= startOfYesterday && post.createdAt < startOfToday
+      ).length;
+
       res.status(200).json({
         success: true,
         data: {
@@ -353,15 +403,15 @@ const postController = {
       });
     } catch (error) {
       console.error("Error fetching post analytics:", error);
-      res.status(500).json({ success: false, message: "Failed to fetch post analytics" });
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to fetch post analytics" });
     }
   },
-  
 
   like: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
 
-    console.log("psot", postId);
     const userId = req.user._id;
 
     const post = await Post.findById(postId);
@@ -406,6 +456,62 @@ const postController = {
       message: "Post Disliked",
     });
   }),
+
+  BookMarkPost: asyncHandler(async (req, res) => {
+    try {
+    const {postId} = req.params;
+    const userId = req.user;
+
+    const post = await Post.findById(postId);
+    if (post?.bookmarkedBy?.includes(userId)) {
+      return res.status(400).json({ message: "Post already bookmarked" });
+    }
+    post?.bookmarkedBy?.push(userId);
+
+    await post.save();
+
+    res.json({
+      message: "Post Bookmarked",
+    });
+      
+    } catch (error) {
+      console.error("Error bookmarking post:", error);
+      res.status(500).json({ message: error.message});
+    }
+  }),
+
+  unBookMarkPost: asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+
+    post?.bookmarkedBy?.pull(userId);
+
+    await post.save();
+
+    res.json({
+      message: "Post Unbookmarked",
+    });
+  }),
+
+  getBookmarkedPosts : asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user;
+      const posts = await Post.find({ bookmarkedBy: userId });
+      // console.log(posts);
+  
+      res.status(200).json({
+        message: "Bookmarked Posts Fetched",
+        posts,
+      });
+    } catch (error) {
+      console.error("Error fetching bookmarked posts:", error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  })
 };
 
 module.exports = postController;
+
+//OG
