@@ -1,47 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Features from "./Features";
 import CallToAction from "./CallToAction";
 import { Link } from "react-router-dom";
-import PublicnavBar from "../Navbar/PublicNavbar"
+import PublicnavBar from "../Navbar/PublicNavbar";
 
 const Home = () => {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
+
   return (
     <>
-    <PublicnavBar/>
-    <section className="overflow-hidden pb-24">
-      <div className="hidden navbar-menu fixed top-0 left-0 bottom-0 w-4/6 sm:max-w-xs z-50">
-        <div className="navbar-backdrop fixed inset-0 bg-gray-800 opacity-80" />
-      </div>
-      <div className="container px-4 mx-auto relative">
-        <div className="relative z-20">
-          <h1 className="text-center text-5xl lg:text-7xl font-bold font-heading mb-6 mt-14 max-w-2xl mx-auto">
-            <span>Explore the Power of</span>
-            <span className="block text-orange-600">Shared Wisdom</span>
-          </h1>
-          <p className="text-center text-lg mb-10 max-w-lg mx-auto">
-            Embark on a journey of discovery and growth. Connect, collaborate,
-            and create with a global network of enthusiastic learners and
-            thinkers.
-          </p>
-          <div className="flex justify-center lg:pb-56">
-            <Link
-              to="/register"
-              className="w-full sm:w-auto h-16 inline-flex items-center justify-center text-center py-4 px-6 rounded-full bg-orange-600 border border-orange-700 shadow font-bold font-heading text-white hover:bg-orange-800 focus:ring focus:ring-blue-200 transition duration-200"
+      <PublicnavBar />
+      <section className="overflow-hidden pb-24 bg-gradient-to-b from-gray-50 to-white text-gray-900">
+        <div className="container px-6 md:px-12 mx-auto relative text-center">
+          <div className="max-w-4xl mx-auto py-16 md:py-24">
+          <h1
+  className={`text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.2] tracking-wide mt-5 text-gray-800 text-center transition-all duration-1000 ease-out transform ${
+    animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+  }`}
+>
+  Explore the Power of  
+  <span className="block mt-4 text-transparent bg-clip-text bg-gradient-to-r from-[#1565C0] to-[#42A5F5]">
+    Shared Wisdom
+  </span>
+</h1>
+
+            <p
+              className={`text-lg md:text-xl text-gray-600 mt-5 max-w-3xl mx-auto transition-opacity duration-1000 delay-200 ${
+                animate ? "opacity-100" : "opacity-0"
+              }`}
             >
-              Get Started
-            </Link>
+              Embark on a journey of discovery and growth. Connect, collaborate, and create with a global network of enthusiastic learners and thinkers.
+            </p>
+            <div
+              className={`mt-8 transition-transform duration-1000 ease-in-out delay-300 ${
+                animate ? "opacity-100 scale-100" : "opacity-0 scale-90"
+              }`}
+            >
+              <Link
+                to="/register"
+                className="inline-block bg-gradient-to-r from-[#1565C0] to-[#42A5F5] hover:from-[#0D47A1] hover:to-[#1E88E5] transition-all duration-300 text-white font-semibold text-lg px-8 py-2.3 md:px-10 md:py-4 rounded-full shadow-lg transform hover:scale-105 hover:shadow-xl"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Featured Post */}
-      {/* <FeaturedPost post={featuredPost} /> */}
-      {/* Features */}
-      <Features />
-      {/* Call to action */}
-      <CallToAction />
-    </section>
+        {/* Features Section */}
+        <div className="container mx-auto px-6 md:px-12 mt-16">
+          <Features />
+        </div>
 
+        {/* Call to Action Section */}
+        <div className="container mx-auto px-6 md:px-12 mt-20 text-center">
+          <CallToAction />
+        </div>
+      </section>
     </>
   );
 };
