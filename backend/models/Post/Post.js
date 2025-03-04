@@ -2,14 +2,15 @@ const mongoose = require("mongoose");
 const Content = require("../Content/Content");
 
 const postSchema = new mongoose.Schema(
-  {
-    title: { type: String},
-
-    description: { type: String, required: true, trim: true },
-    image: { type: Object },
-    video: {
-      type: Object,
-      default: null,
+  { 
+    contentData:{
+      type:String,
+      enum:["Article","Webinar"],
+    },
+    refId:{
+      type:mongoose.Schema.Types.ObjectId,
+      required:true,
+      refPath:'contentData'
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
@@ -20,13 +21,11 @@ const postSchema = new mongoose.Schema(
     price: { type: Number, default: 0 },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected","draft"],
       default: "pending",
     },
     category:[ {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      // required: true,
+        enum:["article","webinar","video","step-by-step-guide","video-tutorials"]
     }],
     nextEarningDate: {
       type: Date,

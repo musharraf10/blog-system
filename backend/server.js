@@ -100,7 +100,7 @@ const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
 const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
 const webinarRouter = require("./router/webinar/webinar");
-const articleRouter = require("./router/article/article");
+const articleRouter = require("./router/article/articleRouter");
 
 
 // Connect to Database

@@ -40,7 +40,7 @@ const SubscriberRoutes = () => {
           </AuthRoute>
         }
       >
-        <Route path="feed" element={<PostsList />} />
+        <Route path="feed" element={<PostsList/>} />
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route index path="profilesettings" element={<SettingsSubPage />} />

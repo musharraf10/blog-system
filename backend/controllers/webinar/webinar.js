@@ -1,6 +1,6 @@
-import Webinar from "../../models/webinar/webinar.js";
-
-export const addwebinarconroller = async (req, res) => {
+const Webinar = require("../../models/webinar/webinar.js");
+const Post = require("../../models/Post/Post.js");
+ const addwebinarconroller = async (req, res) => {
   try {
     const { title, link, date, time, description } = req.body;
 
@@ -11,16 +11,18 @@ export const addwebinarconroller = async (req, res) => {
       date,
       time,
       description,
-      //unable to get user id req.user issue
-      // hostedBy:req.user,
-
-      updatedAt: Date.now()
+     
     });
 
-    console.log(newWebinar)
+    const createPost=new Post({
+      author:req.user,
+      contentData: "Webinar",  
+      refId: newWebinar._id
+    })
 
+    
     await newWebinar.save();
-
+    await createPost.save();
     res.status(201).json({
       message: 'Webinar added successfully',
       webinar: newWebinar
@@ -33,3 +35,4 @@ export const addwebinarconroller = async (req, res) => {
     });
   }
 };
+module.exports=addwebinarconroller
