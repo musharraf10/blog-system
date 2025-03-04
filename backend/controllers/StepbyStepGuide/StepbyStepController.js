@@ -144,4 +144,4 @@ const addStepbyStepGuide = async (req, res) => {
     }
 };
 
-module.exports = { addStepbyStepGuide };
+module.exports =  addStepbyStepGuide ;

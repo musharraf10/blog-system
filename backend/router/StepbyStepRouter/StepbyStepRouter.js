@@ -1,6 +1,6 @@
 const express = require('express');
 const upload = require('../../utils/fileupload'); // Ensure correct path
-const { addStepbyStepGuide } = require('../../controllers/StepbyStepGuide/StepbyStepController');
+const  addStepbyStepGuide = require('../../controllers/StepbyStepGuide/StepbyStepController');
 const multer = require('multer');
 
 const VideoGuideRouter = express.Router();
