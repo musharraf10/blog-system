@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table } from "react-bootstrap";
+import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import {
   FaUsers,
   FaMoneyBillWave,
@@ -10,92 +10,72 @@ import {
   FaFileAlt,
   FaVideo,
 } from "react-icons/fa";
-import { Line } from "react-chartjs-2";
 import MyChart from "./CanvasHandiler";
 import SubscriptionStats from "./SubscriptionStats";
-import "./Dashboard.css"
-const Dashboard = ({ props }) => {
+import "./Dashboard.css";
+
+const Dashboard = () => {
   const [stats, setStats] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(3);
 
   useEffect(() => {
-    // Generate dynamic numbers on load
     const generateStats = [
-      {
-        title: "Total Users",
-        value: Math.floor(Math.random() * 5000) + 1000,
-        icon: <FaUsers />,
-        bg: "#000000", // Solid black
-        color: "#FFFFFF", // White text
-      },
-      {
-        title: "Total Revenue",
-        value: `${(Math.random() * 50000 + 5000).toFixed(2)}`,
-        icon: <FaMoneyBillWave />,
-        bg: "#FFFFFF", // Solid white
-        color: "#000000", // Black text
-      },
-      {
-        title: "New Subscriptions",
-        value: Math.floor(Math.random() * 500) + 50,
-        icon: <FaClipboardList />,
-        bg: "#000000", // Solid black
-        color: "#FFFFFF", // White text
-      },
-      {
-        title: "Active Users",
-        value: Math.floor(Math.random() * 3000) + 500,
-        icon: <FaCheckCircle />,
-        bg: "#FFFFFF", // Solid white
-        color: "#000000", // Black text
-      },
-      {
-        title: "Inactive Users",
-        value: Math.floor(Math.random() * 1000) + 200,
-        icon: <FaTimesCircle />,
-        bg: "#000000", // Solid black
-        color: "#FFFFFF", // White text
-      },
-      {
-        title: "Paid Subscribers",
-        value: Math.floor(Math.random() * 4000) + 500,
-        icon: <FaDollarSign />,
-        bg: "#FFFFFF", // Solid white
-        color: "#000000", // Black text
-      },
-      {
-        title: "Unpaid Subscribers",
-        value: Math.floor(Math.random() * 1000) + 100,
-        icon: <FaClipboardList />,
-        bg: "#000000", // Solid black
-        color: "#FFFFFF", // White text
-      },
-      {
-        title: "Published Articles",
-        value: Math.floor(Math.random() * 1000) + 100,
-        icon: <FaFileAlt />,
-        bg: "#FFFFFF", // Solid white
-        color: "#000000", // Black text
-      },
-      {
-        title: "Published Videos",
-        value: Math.floor(Math.random() * 500) + 50,
-        icon: <FaVideo />,
-        bg: "#000000", // Solid black
-        color: "#FFFFFF", // White text
-      },
+      { title: "Total Users", value: Math.floor(Math.random() * 5000) + 1000, icon: <FaUsers /> },
+      { title: "Total Revenue", value: `$${(Math.random() * 50000 + 5000).toFixed(2)}`, icon: <FaMoneyBillWave /> },
+      { title: "New Subscriptions", value: Math.floor(Math.random() * 500) + 50, icon: <FaClipboardList /> },
+      { title: "Active Users", value: Math.floor(Math.random() * 3000) + 500, icon: <FaCheckCircle /> },
+      { title: "Inactive Users", value: Math.floor(Math.random() * 1000) + 200, icon: <FaTimesCircle /> },
+      { title: "Paid Subscribers", value: Math.floor(Math.random() * 4000) + 500, icon: <FaDollarSign /> },
+      { title: "Unpaid Subscribers", value: Math.floor(Math.random() * 1000) + 100, icon: <FaClipboardList /> },
+      { title: "Published Articles", value: Math.floor(Math.random() * 1000) + 100, icon: <FaFileAlt /> },
+      { title: "Published Videos", value: Math.floor(Math.random() * 500) + 50, icon: <FaVideo /> },
     ];
-    
-    
-    
     setStats(generateStats);
+
+    // Adjust visible cards based on screen width
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setVisibleCards(1);
+      } else if (width < 992) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(3);
+      }
+    };
+
+    // Call once on mount and add event listener
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // const transactions = [
-  //   { id: 1, user: "John Doe", amount: "$50", status: "Completed" },
-  //   { id: 2, user: "Jane Smith", amount: "$30", status: "Pending" },
-  //   { id: 3, user: "Alice Brown", amount: "$100", status: "Failed" },
-  //   { id: 4, user: "Bob Johnson", amount: "$75", status: "Completed" },
-  // ];
+  // Auto-rotate carousel every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStartIndex((prevIndex) =>
+        prevIndex + visibleCards >= stats.length ? 0 : prevIndex + 1
+      );
+    }, 3000);
+
+    // Clean up interval on unmount
+    return () => clearInterval(interval);
+  }, [stats.length, visibleCards]);
+
+  const handleNext = () => {
+    if (startIndex + visibleCards < stats.length) {
+      setStartIndex(startIndex + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (startIndex > 0) {
+      setStartIndex(startIndex - 1);
+    }
+  };
 
   const chartData = {
     labels: ["January", "February", "March", "April", "May", "June"],
@@ -110,52 +90,83 @@ const Dashboard = ({ props }) => {
     ],
   };
 
-  return (
-    <div>
-      <h2 className="mb-4 text-dark text-center fs-1 mt-5 mb-5 ">Welcome, <span className="text-primary">Musharaf</span></h2>
+  // Chart options with responsive: true
+  const chartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
 
-      {/* Dashboard Stats */}
-      <div className="d-flex gap-3 flex-wrap align-items-center justify-content-center justify-content-md-evenly">
-        {stats.map((stat, index) => (
-          <Card
-            key={index}
-            className="cardsdata p-3 border-0 text-capitalize my-3"
-            style={{
-              width: "18rem",
-              // background: stat.bg,
-              borderRadius: "12px",
-              // color: stat.color,
-            }}
-          >
-            <Card.Body className="d-flex align-items-center justify-content-between">
-              <div>
-                <Card.Title>{stat.title}</Card.Title>
-                <Card.Text className="fs-3 ">{stat.value}</Card.Text>
-              </div>
-              <div className="fs-2">{stat.icon}</div>
+  return (
+    <Container fluid className="px-3 px-md-4">
+      <h2 className="fs-2 fw-bold text-primary text-start text-center mt-2 mb-5">
+        Welcome To Admin Dashboard
+      </h2>
+
+      <div className="stats-carousel-container">
+        <Button
+          variant="dark"
+          onClick={handlePrev}
+          disabled={startIndex === 0}
+          className="carousel-btn me-2"
+        >
+          ◀
+        </Button>
+
+        <div className="stats-carousel">
+          {stats.slice(startIndex, startIndex + visibleCards).map((stat, index) => (
+            <Card
+              key={index}
+              className="cardsdata p-3 border-0 text-capitalize"
+            >
+              <Card.Body className="d-flex align-items-center justify-content-between">
+                <div>
+                  <Card.Title>{stat.title}</Card.Title>
+                  <Card.Text className="fs-3">{stat.value}</Card.Text>
+                </div>
+                <div className="fs-2">{stat.icon}</div>
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
+
+        <Button
+          variant="dark"
+          onClick={handleNext}
+          disabled={startIndex + visibleCards >= stats.length}
+          className="carousel-btn ms-2"
+        >
+          ▶
+        </Button>
+      </div>
+
+      <Row className="mt-4">
+        <Col>
+          <Card className="border-0">
+            <Card.Body>
+              <SubscriptionStats />
             </Card.Body>
           </Card>
-        ))}
-      </div>
-      {/* Recent Transactions */}
-      <Card className="border-0 mt-4 ">
-        <Card.Body>
-          <SubscriptionStats/>
-        </Card.Body>
-      </Card>
+        </Col>
+      </Row>
 
-      {/* Traffic Chart */}
-          <h5 className="text-center fs-2 mt-3 mb-3 text-primary">Traffic Overview</h5>
-      <Card className="mt-4  border-0">
-        
-        <Card.Body >
-          <div style={{ height: "300px", width: "100%" }}>
-            {/* <Line data={chartData} options={{ maintainAspectRatio: false }} /> */}
-            <MyChart data={chartData} options={{ maintainAspectRatio: false }}/>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
+      <h5 className="text-center fs-2 mt-3 mb-3 text-primary">Traffic Overview</h5>
+      <Row>
+        <Col>
+          <Card className="mt-4 border-0">
+            <Card.Body>
+              <div className="chart-container">
+                <MyChart data={chartData} options={chartOptions} />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

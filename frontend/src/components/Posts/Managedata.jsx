@@ -30,8 +30,7 @@ const ManageData = () => {
         "Learn the fundamentals of React and build your first component",
       author: "Jane Smith",
       date: "2025-02-15",
-      duration: null,
-      views: 1245,
+
     },
     {
       id: 2,
@@ -40,8 +39,7 @@ const ManageData = () => {
       description: "Master CSS Grid, Flexbox, and modern styling approaches",
       author: "Mike Johnson",
       date: "2025-02-20",
-      duration: null,
-      views: 892,
+
     },
     {
       id: 3,
@@ -50,8 +48,7 @@ const ManageData = () => {
       description: "Complete guide to building professional React applications",
       author: "Sarah Davis",
       date: "2025-02-10",
-      duration: "1:25:30",
-      views: 3456,
+
     },
     {
       id: 4,
@@ -60,8 +57,7 @@ const ManageData = () => {
       description: "What's new in modern JavaScript and how to use it",
       author: "Alex Lee",
       date: "2025-02-05",
-      duration: "42:15",
-      views: 2178,
+
     },
     {
       id: 5,
@@ -70,8 +66,7 @@ const ManageData = () => {
       description: "Step-by-step tutorial to create your own RESTful API",
       author: "Chris Wilson",
       date: "2025-01-28",
-      duration: null,
-      views: 1567,
+
     },
     {
       id: 6,
@@ -80,8 +75,7 @@ const ManageData = () => {
       description: "Interactive guide to TypeScript fundamentals",
       author: "Emma Brown",
       date: "2025-02-18",
-      duration: null,
-      views: 984,
+
     },
     {
       id: 7,
@@ -90,8 +84,7 @@ const ManageData = () => {
       description: "Live session comparing Redux, Context API, and more",
       author: "David Martin",
       date: "2025-03-05",
-      duration: "1:00:00",
-      views: 756,
+
     },
     {
       id: 8,
@@ -100,8 +93,7 @@ const ManageData = () => {
       description: "Live workshop on building inclusive web applications",
       author: "Lisa Chen",
       date: "2025-03-10",
-      duration: "1:30:00",
-      views: 542,
+
     },
   ]);
 
@@ -208,7 +200,7 @@ const ManageData = () => {
                 </p>
                 <button
                   className="mt-3 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800"
-               
+
 
                   onClick={(e) => {
                     e.stopPropagation();
@@ -265,11 +257,10 @@ const ManageData = () => {
           <div className="px-4 py-5 bg-gray-50 border-b border-gray-200 flex flex-wrap">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
-                activeFilter === "all"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
+              className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${activeFilter === "all"
+                ? "bg-indigo-600 text-white"
+                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
             >
               All Content ({contentItems.length})
             </button>
@@ -282,11 +273,10 @@ const ManageData = () => {
                 <button
                   key={type.type}
                   onClick={() => setActiveFilter(type.type)}
-                  className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
-                    activeFilter === type.type
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
+                  className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${activeFilter === type.type
+                    ? "bg-indigo-600 text-white"
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    }`}
                 >
                   {type.title} ({count})
                 </button>
@@ -344,9 +334,8 @@ const ManageData = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          getTypeInfo(item.type).badge
-                        }`}
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${getTypeInfo(item.type).badge
+                          }`}
                       >
                         {item.type}
                       </span>
