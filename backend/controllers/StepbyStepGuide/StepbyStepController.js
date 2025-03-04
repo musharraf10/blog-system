@@ -112,7 +112,8 @@ const addStepbyStepGuide = async (req, res) => {
             title,
             description,
             thumbnailImage: thumbnailImageUrl, 
-            steps
+            steps,
+            tags
         });
 
         const createPost=new Post({

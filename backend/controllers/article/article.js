@@ -16,7 +16,8 @@ const addarticleconroller = async (req, res) => {
   try {
     const newArticle = new Article({
       title,
-      description: content
+      description: content,
+      tags
     });
 
     const createPost=new Post({

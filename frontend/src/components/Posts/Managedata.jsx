@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FileText, Video, BookOpen, Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import  axios  from 'axios';
+import axios from "axios";
 
 const ManageData = () => {
   const navigate = useNavigate();
@@ -10,12 +10,14 @@ const ManageData = () => {
   useEffect(() => {
     const fetchContentItems = async () => {
       try {
-        const response = await axios.get(`${BackendServername}/posts/managecontent/getpost`);
-        const data = response.data; 
-        console.log(data.data)
+        const response = await axios.get(
+          `${BackendServername}/posts/managecontent/getpost`
+        );
+        const data = response.data;
+        console.log(data.data);
         setContentItems(data.data);
       } catch (error) {
-        alert(error)
+        alert(error);
         console.error("Error fetching content items:", error);
       }
     };
@@ -24,82 +26,66 @@ const ManageData = () => {
   }, []);
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Content type metadata
-  const contentTypes = [
+  const categoryDetails = [
     {
       type: "Article",
-      title: "Articles",
+      label: "Articles",
       icon: FileText,
-      color: "bg-blue-500",
-      badge: "bg-blue-100 text-blue-800",
+      description: "Rich text, images, embedded media",
+      color: "#3b82f6",
     },
     {
-      type: "video-tutorial",
-      title: "Videos",
+      type: "VideoTutorial",
+      label: "Videos",
       icon: Video,
-      color: "bg-red-500",
-      badge: "bg-red-100 text-red-800",
+      description: "Host content with adaptive streaming",
+      color: "#ef4444",
     },
     {
       type: "StepbyStepGuide",
-      title: "Interactive Guides",
+      label: "Interactive Guides",
       icon: BookOpen,
-      color: "bg-green-500",
-      badge: "bg-green-100 text-green-800",
+      description: "Step-by-step tutorials with interactive elements",
+      color: "#22C55E",
     },
     {
       type: "Webinar",
-      title: "Webinars",
+      label: "Webinars",
       icon: Calendar,
-      color: "bg-purple-500",
-      badge: "bg-purple-100 text-purple-800",
+      description: "Scheduled live video sessions with chat/Q&A",
+      color: "#A855F7 ",
     },
   ];
 
-const categoryDetails = [
-    {
-      type: "article",
-      label: "Articles",
-      icon: FileText,
-      description: "Rich text, images, embedded media"
-    },
-    {
-      type: "video-tutorial",
-      label: "Videos",
-      icon: Video,
-      description: "Host content with adaptive streaming"
-    },
-    {
-      type: "guide",
-      label: "Interactive Guides",
-      icon: BookOpen,
-      description: "Step-by-step tutorials with interactive elements"
-    },
-    {
-      type: "webinar",
-      label: "Webinars",
-      icon: Calendar,
-      description: "Scheduled live video sessions with chat/Q&A"
-    }
-  ];
+  const articleCount = contentItems.filter(
+    (item) => item.contentData === "Article"
+  ).length;
+  const videoCount = contentItems.filter(
+    (item) => item.contentData === "video-tutorial"
+  ).length;
+  const guideCount = contentItems.filter(
+    (item) => item.contentData === "StepbyStepGuide"
+  ).length;
+  const webinarCount = contentItems.filter(
+    (item) => item.contentData === "Webinar"
+  ).length;
 
   // Filter content items
   const filteredItems =
     activeFilter === "all"
       ? contentItems
       : contentItems.filter((item) => item.contentData === activeFilter);
-console.log(filteredItems)
-  // Get type object by type name
+
   const getTypeInfo = (typeName) => {
     return (
-      contentTypes.find((type) => type.type === typeName) || contentTypes[0]
+      categoryDetails.find((type) => type.type === typeName) ||
+      categoryDetails[0]
     );
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
-
 
       <div className="bg-white shadow-sm rounded-lg overflow-hidden mb-8">
           <div className="p-6">
@@ -141,7 +127,7 @@ console.log(filteredItems)
             </div>
           </div>
         </div>
-        
+
       <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold mb-2 text-center">
@@ -156,24 +142,32 @@ console.log(filteredItems)
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         {/* Content Types Section */}
-      
 
         {/* Content Type Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {contentTypes.map((type) => {
+          {categoryDetails.map((type) => {
             const count = contentItems.filter(
               (item) => item.contentData === type.type
             ).length;
             return (
-              <div
-                key={type.type}
-                className="bg-white rounded-lg shadow overflow-hidden transition-all duration-300 hover:shadow-lg"
-              >
+              <div className="bg-white rounded-lg shadow overflow-hidden transition-all duration-300 hover:shadow-lg">
                 <div
-                  className={`${type.color} p-4 text-white flex items-center justify-between`}
+                  style={{ backgroundColor: `${type.color}` }}
+                  className=" p-4 text-white flex items-center justify-between"
                 >
-                  <h3 className="font-semibold">{type.title}</h3>
-                  <span className="text-2xl font-bold">{count}</span>
+                  <h3 className="font-semibold">{type.label}</h3>
+                  <span className="text-2xl font-bold">
+                    {type.type === "Article" ? `  ${articleCount}` : null}
+                  </span>
+                  <span className="text-2xl font-bold">
+                    {type.type === "VideoTutorial" ? `  ${videoCount}` : null}
+                  </span>
+                  <span className="text-2xl font-bold">
+                    {type.type === "StepbyStepGuide" ? `  ${guideCount}` : null}
+                  </span>
+                  <span className="text-2xl font-bold">
+                    {type.type === "Webinar" ? `  ${webinarCount}` : null}
+                  </span>{" "}
                 </div>
               </div>
             );
@@ -193,7 +187,7 @@ console.log(filteredItems)
             >
               All Content ({contentItems.length})
             </button>
-            {contentTypes.map((type) => {
+            {categoryDetails.map((type) => {
               const count = contentItems.filter(
                 (item) => item.contentData === type.type
               ).length;
@@ -207,7 +201,7 @@ console.log(filteredItems)
                       : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                   }`}
                 >
-                  {type.title} ({count})
+                  {type.type} ({count})
                 </button>
               );
             })}
@@ -251,30 +245,50 @@ console.log(filteredItems)
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-    {filteredItems.map((item) => (
-      <tr key={item.id} className="text-center hover:bg-gray-50">
-        <td className="px-6 py-4 text-start">
-          <div className="text-sm font-medium text-gray-900">{item.refId?.title}</div>
-          <div className="text-sm text-gray-500 truncate max-w-xs">{item.refId?.description}</div>
-        </td>
-        <td className="px-6 py-4">
-          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getTypeInfo(item.contentData).badge}`}>
-            {getTypeInfo(item.contentData).title}
-          </span>
-        </td>
-        <td className="px-6 py-4 text-sm text-gray-500">{item.author.username}</td>
-        <td className="px-6 py-4 text-sm text-gray-500">{new Date(item.date).toLocaleDateString()}</td>
-        <td className="px-6 py-4 text-sm font-medium space-x-2">
-          <button className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-            Edit
-          </button>
-          <button className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
+                {filteredItems.map((item) => {
+                  // Find matching category based on contentData
+                  const category = categoryDetails.find(
+                    (cat) => cat.type === item.contentData
+                  );
+
+                  return (
+                    <tr key={item.id} className="text-center hover:bg-gray-50">
+                      <td className="px-6 py-4 text-start">
+                        <div className="text-sm font-medium text-gray-900">
+                          {item.refId?.title}
+                        </div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs">
+                          {item.refId?.description}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          style={{
+                            backgroundColor: category ? category.color : "#ccc", // Use category color or default gray
+                          }}
+                          className="px-2 py-1 text-xs font-semibold rounded-full text-white"
+                        >
+                          {category ? category.label : item.contentData}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {item.author.username}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {new Date(item.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium space-x-2">
+                        <button className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                          Edit
+                        </button>
+                        <button className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
 

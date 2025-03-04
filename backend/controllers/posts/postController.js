@@ -498,7 +498,7 @@ const postController = {
     try{
       const posts = await Post.find()
       .populate("author")
-      .populate("refId"); // This will populate refId based on refPath
+      .populate("refId"); 
     
 res.json({ data: posts });
       
