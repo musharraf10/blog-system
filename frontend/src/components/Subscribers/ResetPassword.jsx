@@ -37,6 +37,7 @@ const ResetPassword = () => {
         .mutateAsync(data)
         .then(() => {
           // redirect
+          navigate("/login");
         })
         .catch((err) => console.log(err));
     },
