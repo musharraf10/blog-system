@@ -16,7 +16,7 @@
 
 //   await Category.findByIdAndUpdate(category, { $push: { posts: postCreated._id } });
 //   await User.findByIdAndUpdate(req.user, { $push: { posts: postCreated._id } });
-//   await Notification.create({ userId: req.user, postId: postCreated._id, message: `New post created by ${userFound.username}` });
+//   await Notification.create({ userId: req.user, postId: postCreated._id, message: New post created by ${userFound.username} });
 
 //   res.json({ message: "Post submitted for review", postCreated });
 // }),
@@ -88,7 +88,7 @@ const postController = {
     //     throw new Error("User not found");
     //   }
   
-    //   // Ensure `posts` array exists before pushing
+    //   // Ensure posts array exists before pushing
     //   if (!userFound.posts) {
     //     userFound.posts = [];
     //   }
@@ -99,7 +99,7 @@ const postController = {
     //   await Notification.create({
     //     userId: req.user,
     //     postId: postCreated._id,
-    //     message: `New post created by ${userFound.username}`,
+    //     message: New post created by ${userFound.username},
     //   });
   
     //   //Send email to all hus/her followers
@@ -177,13 +177,13 @@ const postController = {
   getallpostsinadmincontroller: asyncHandler(async (req, res) => {
     try {
       const postsdata = await Post.find({})
-        .populate("author")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "author",
-          },
-        });
+        // .populate("author")
+        // .populate({
+        //   path: "comments",
+        //   populate: {
+        //     path: "author",
+        //   },
+        // });
       // .limit(1);
 
 
@@ -494,7 +494,18 @@ const postController = {
       message: "Post Unbookmarked",
     });
   }),
-
+  getallpost:asyncHandler(async(req,res)=>{
+    try{
+      const posts = await Post.find()
+      .populate("author")
+      .populate("refId"); // This will populate refId based on refPath
+    
+res.json({ data: posts });
+      
+    }catch(err){
+      console.error("Error fetching posts:", err);
+    }
+  }),
   getBookmarkedPosts : asyncHandler(async (req, res) => {
     try {
       const userId = req.user;

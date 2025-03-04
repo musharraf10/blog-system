@@ -43,7 +43,7 @@ export default function Checkposttypemodal({
               }}
             >
               <MenuItem value="selectyourcontent">Select Your Content</MenuItem>
-              <MenuItem value="articles">Articles</MenuItem>
+              <MenuItem value="article">Articles</MenuItem>
               <MenuItem value="webinar">Webinar</MenuItem>
             </Select>
           </FormControl>
