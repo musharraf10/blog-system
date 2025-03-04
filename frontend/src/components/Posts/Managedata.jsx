@@ -16,8 +16,7 @@ const ManageData = () => {
       description: "Learn the fundamentals of React and build your first component",
       author: "Jane Smith",
       date: "2025-02-15",
-      duration: null,
-      views: 1245,
+
     },
     {
       id: 2,
@@ -26,8 +25,7 @@ const ManageData = () => {
       description: "Master CSS Grid, Flexbox, and modern styling approaches",
       author: "Mike Johnson",
       date: "2025-02-20",
-      duration: null,
-      views: 892,
+
     },
     {
       id: 3,
@@ -36,8 +34,7 @@ const ManageData = () => {
       description: "Complete guide to building professional React applications",
       author: "Sarah Davis",
       date: "2025-02-10",
-      duration: "1:25:30",
-      views: 3456,
+
     },
     {
       id: 4,
@@ -46,8 +43,7 @@ const ManageData = () => {
       description: "What's new in modern JavaScript and how to use it",
       author: "Alex Lee",
       date: "2025-02-05",
-      duration: "42:15",
-      views: 2178,
+
     },
     {
       id: 5,
@@ -56,8 +52,7 @@ const ManageData = () => {
       description: "Step-by-step tutorial to create your own RESTful API",
       author: "Chris Wilson",
       date: "2025-01-28",
-      duration: null,
-      views: 1567,
+
     },
     {
       id: 6,
@@ -66,8 +61,7 @@ const ManageData = () => {
       description: "Interactive guide to TypeScript fundamentals",
       author: "Emma Brown",
       date: "2025-02-18",
-      duration: null,
-      views: 984,
+
     },
     {
       id: 7,
@@ -76,8 +70,7 @@ const ManageData = () => {
       description: "Live session comparing Redux, Context API, and more",
       author: "David Martin",
       date: "2025-03-05",
-      duration: "1:00:00",
-      views: 756,
+
     },
     {
       id: 8,
@@ -86,8 +79,7 @@ const ManageData = () => {
       description: "Live workshop on building inclusive web applications",
       author: "Lisa Chen",
       date: "2025-03-10",
-      duration: "1:30:00",
-      views: 542,
+
     },
   ])
 
@@ -167,59 +159,48 @@ const ManageData = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Section */}
-      <header className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white py-16 shadow-xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMCAwaDEyMHYyMEgweiIvPjxwYXRoIGQ9Ik0wIDBoMTIwdjIwSDB6IiBmaWxsPSIjRkZGIiBmaWxsLW9wYWNpdHk9Ii4yIi8+PC9nPjwvc3ZnPg==')] opacity-10"></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <h1 className="text-5xl font-bold mb-4 text-center tracking-tight">Content Management Dashboard</h1>
-          <p className="text-xl text-center max-w-2xl mx-auto opacity-90 font-light">
-            Manage, update, and organize your content efficiently
-          </p>
-        </div>
-      </header>
+      {/* Header */}
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-12 max-w-7xl">
-        {/* Content Types */}
-        <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
-          <div className="p-8 border-b border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-              <span className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] w-1.5 h-6 rounded mr-3 inline-block"></span>
-              Content Types
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {categorydetails.map((contentType) => (
-                <div
-                  key={contentType.type}
-                  className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
-                  onClick={() => navigate(`/admin/create-post/${contentType.type}`)}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] opacity-0 transition-opacity duration-300 group-hover:opacity-5"></div>
-                  <div className="flex items-center mb-4">
-                    <div className="bg-blue-50 p-3 rounded-lg mr-4 transition-colors duration-300 group-hover:bg-blue-100">
-                      <contentType.icon className="h-7 w-7 text-[#1565C0] transition-colors duration-300 group-hover:text-[#0D47A1]" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 transition-colors duration-300 group-hover:text-[#1565C0]">
-                      {contentType.label}
-                    </h3>
+      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Content Types
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {categorydetails.map((contentType) => (
+              <div
+                key={contentType.type}
+                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => navigate(`/admin/create-post/${contentType.type}`)}
+              >
+                <div className="flex items-center mb-2">
+                  <div className="bg-indigo-100 p-2 rounded-md mr-3">
+                    <contentType.icon className="h-6 w-6 text-indigo-600" />
                   </div>
-                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">{contentType.description}</p>
-                  <button
-                    className="mt-2 inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white text-sm font-medium transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md relative overflow-hidden group-hover:scale-105"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      navigate(`/admin/create-post/${contentType.type}`)
-                    }}
-                  >
-                    <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 hover:opacity-20"></span>
-                    <Plus className="h-4 w-4 mr-1.5" />
-                    Create New
-                  </button>
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {contentType.label}
+                  </h3>
                 </div>
-              ))}
-            </div>
+                <p className="text-sm text-gray-500">
+                  {contentType.description}
+                </p>
+                <button
+                  className="mt-3 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800"
+
+
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/admin/create-post/${contentType.type}`)
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Create New
+                </button>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
 
         {/* Type Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -260,10 +241,10 @@ const ManageData = () => {
           <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 flex flex-wrap items-center">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
+              className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
                 activeFilter === "all"
-                  ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
               All Content ({contentItems.length})
@@ -275,10 +256,10 @@ const ManageData = () => {
                 <button
                   key={type.type}
                   onClick={() => setActiveFilter(type.type)}
-                  className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
+                  className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
                     activeFilter === type.type
-                      ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                      ? "bg-indigo-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   {type.title} ({count})
@@ -335,9 +316,9 @@ const ManageData = () => {
                     </td>
                     <td className="px-6 py-6 text-center">
                       <span
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-full inline-block transition-all duration-300 ${
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
                           getTypeInfo(item.type).badge
-                        } hover:shadow-sm`}
+                        }`}
                       >
                         {item.type}
                       </span>
@@ -384,7 +365,7 @@ const ManageData = () => {
           )}
         </div>
       </div>
-    </div>
+
   )
 }
 
