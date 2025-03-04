@@ -103,7 +103,8 @@ const Dashboard = () => {
 
   return (
     <Container fluid className="px-3 px-md-4">
-      <h2 className="fs-2 fw-bold text-primary text-start text-center mt-2 mb-5">
+      <h2 className="fs-2 fw-bold text-start text-center mt-2 mb-5 text-[#1E3A8A]"  // or use text-[#3B82F6]
+      >
         Welcome To Admin Dashboard
       </h2>
 
@@ -154,7 +155,8 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      <h5 className="text-center fs-2 mt-3 mb-3 text-primary">Traffic Overview</h5>
+      <h5 className="fs-2 fw-bold text-start text-center mt-2 mb-5 text-[#1E3A8A]"
+      >Traffic Overview</h5>
       <Row>
         <Col>
           <Card className="mt-4 border-0">
