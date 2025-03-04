@@ -85,7 +85,8 @@ const SubscriptionStats = () => {
         className="mt-4  p-4 rounded-1 w-100 mx-auto border-0"
         style={{ maxWidth: "100%" }}
       >
-        <h5 className="fs-2 fw-bold text-primary text-start text-center mt-2 mb-5">
+        <h5 className="fs-2 fw-bold text-start text-center mt-2 mb-5 text-[#1E3A8A]"  // or use text-[#3B82F6]
+        >
           USERS DATA
         </h5>
         <Card.Header className="bg-white substatsbar border-0">
@@ -165,11 +166,38 @@ const SubscriptionStats = () => {
           >
             <thead className="table-light text-center">
               <tr>
-                <th style={{ borderTopLeftRadius: "12px" }}>Name</th>
-                <th>Status</th>
-                <th style={{ borderTopRightRadius: "12px" }}>Role</th>
+                <th
+                  style={{
+                    borderTopLeftRadius: "12px",
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  Name
+                </th>
+                <th
+                  style={{
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  Status
+                </th>
+                <th
+                  style={{
+                    borderTopRightRadius: "12px",
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  Role
+                </th>
               </tr>
             </thead>
+
             <tbody>
               {filteredUsers().map((user, index, array) => (
                 <tr key={user.id}>
@@ -208,7 +236,8 @@ const SubscriptionStats = () => {
             </tbody>
           </table>
 
-          <h5 className="text-primary mt-5 fw-bold text-center fs-3 mb-5">
+          <h5 className="fs-2 fw-bold text-start text-center mt-2 mb-5 text-[#1E3A8A]"  // or use text-[#3B82F6]
+          >
             Transactions Data
           </h5>
 
@@ -253,10 +282,44 @@ const SubscriptionStats = () => {
           >
             <thead className="table-light text-center">
               <tr>
-                <th style={{ borderTopLeftRadius: "12px" }}>User</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th style={{ borderTopRightRadius: "12px" }}>Date</th>
+                <th
+                  style={{
+                    borderTopLeftRadius: "12px",
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  User
+                </th>
+                <th
+                  style={{
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  Amount
+                </th>
+                <th
+                  style={{
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  Status
+                </th>
+                <th
+                  style={{
+                    borderTopRightRadius: "12px",
+                    backgroundImage: "linear-gradient(90deg, #1565C0, #42A5F5)",
+                    color: "white",
+                    padding: "10px",
+                  }}
+                >
+                  Date
+                </th>
               </tr>
             </thead>
             <tbody>
