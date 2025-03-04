@@ -20,9 +20,14 @@ import ChangePassword from "../components/Subscribers/Settings/ChangePassword";
 import BecomeCreator from "../components/Subscribers/Settings/BecomeCreator";
 import SettingsSubPage from "../components/Subscribers/SettingsPage";
 import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
+
+import { Webinars } from "../components/Webinar/Webinars";
+
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
 import Trending from "../components/Subscribers/Trending/Trending";
-import {BookmarkPost} from "../components/Posts/BookmarkPost";
+import { BookmarkPost } from "../components/Posts/BookmarkPost";
+
+import ResetPassword from "../components/Subscribers/ResetPassword";
 
 const SubscriberRoutes = () => {
   return (
@@ -38,29 +43,32 @@ const SubscriberRoutes = () => {
         <Route path="feed" element={<PostsList />} />
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
-          <Route  path="profilesettings" element={<SettingsSubPage />} />
+          <Route path="profilesettings" element={<SettingsSubPage />} />
           <Route path="plan" element={<Plan />} />
-          <Route path="trendingcontent" element={<Trending/>} />
           <Route path="billing" element={<Billing />} />
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
-          </Route>
-          <Route path="bookmarks" element={<BookmarkPost />} />
-          <Route path="profile" element={<AccountSummaryDashboard />} />
-          <Route path="my-followings" element={<MyFollowing />} />
-          <Route path="my-followers" element={<MyFollowers />} />
-          <Route path="add-email" element={<AddEmailComponent />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="latestposts" element={<DashboardPosts/>} />
-          <Route path="pricing" element={<Pricing/>} />
-          <Route path="free-subscription" element={<PayingFreePlan/>} />
+          <Route path="trendingcontent" element={<Trending />} />
+        </Route>
+
+        <Route path="bookmarks" element={<BookmarkPost />} />
+        <Route path="profile" element={<AccountSummaryDashboard />} />
+        <Route path="my-followings" element={<MyFollowing />} />
+        <Route path="my-followers" element={<MyFollowers />} />
+        <Route path="add-email" element={<AddEmailComponent />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route path="latestposts" element={<DashboardPosts />} />
+        <Route path="pricing" element={<Pricing />} />
+        <Route path="free-subscription" element={<PayingFreePlan />} />
+        <Route path="webinars" element={<Webinars />} />
 
         <Route
           path="account-verification/:verifyToken"
           element={<AccountVerifiedComponent />}
         />
       </Route>
-      
+
+      <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>
   );
 };

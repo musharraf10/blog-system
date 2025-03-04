@@ -1,42 +1,70 @@
 import React from "react";
-import { FaUserCircle, FaEnvelope, FaKey, FaCheckCircle } from "react-icons/fa";
+import { FaUserCircle, FaEnvelope, FaPhone, FaSave, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Settings = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className=" p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
-          User Settings
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-6">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg transform -translate-y-10">
+        <h2 className="text-xl font-semibold text-center text-gray-700 mb-4">
+          Update Profile
         </h2>
-        {/* upload profile photo */}
-        <Link to="/admin/upload-profile-photo">
-          <div className="bg-white shadow-lg rounded-lg p-6 mb-4 hover:bg-orange-100 transition-colors duration-200">
-            <div className="flex items-center space-x-4">
-              <FaUserCircle className="text-orange-500 text-3xl" />
-              <div className="flex-1">
-                <h3 className="text-gray-700 font-semibold text-lg">
-                  Update Profile Photo
-                </h3>
-                <p className="text-gray-600">Change your profile photo</p>
-              </div>
+        
+        {/* Profile Photo */}
+        <div className="flex flex-col items-center mb-6">
+          <FaUserCircle className="text-blue-500 text-6xl mb-2" />
+          <Link to="#" className="text-blue-500 hover:underline text-sm">
+            Change Profile Photo
+          </Link>
+        </div>
+        
+        {/* Profile Form */}
+        <div className="space-y-4">
+          <div className="flex space-x-4">
+            <div className="w-1/2">
+              <label className="block text-sm font-medium text-gray-700">First Name</label>
+              <input type="text" className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="John" />
+            </div>
+            <div className="w-1/2">
+              <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              <input type="text" className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Doe" />
             </div>
           </div>
-        </Link>
-        {/* add email */}
-        <Link to="/admin/add-email">
-          <div className="bg-white shadow-lg rounded-lg p-6 mb-4 hover:bg-orange-100 transition-colors duration-200">
-            <div className="flex items-center space-x-4">
-              <FaEnvelope className="text-orange-500 text-3xl" />
-              <div className="flex-1">
-                <h3 className="text-gray-700 font-semibold text-lg">
-                  Update Email
-                </h3>
-                <p className="text-gray-600">Change your email address</p>
-              </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <div className="relative">
+              <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                className="w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="johndoe@example.com"
+              />
             </div>
           </div>
-        </Link>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
+            <div className="relative">
+              <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                className="w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="+1234567890"
+              />
+            </div>
+          </div>
+        </div>
+        
+        {/* Buttons */}
+        <div className="flex justify-end mt-6 space-x-3">
+          <button className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-200">
+            <FaTimes className="mr-2" /> Cancel
+          </button>
+          <button className="flex items-center px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+            <FaSave className="mr-2" /> Save
+          </button>
+        </div>
       </div>
     </div>
   );
