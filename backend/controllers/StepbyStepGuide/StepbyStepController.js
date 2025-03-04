@@ -122,10 +122,10 @@ const addStepbyStepGuide = async (req, res) => {
             refId: newGuide._id
           })
       
-        await newGuide.save();
+          await newGuide.save();
         
-    
-        for (const tagName of tags) {
+        const tagArray = Array.isArray(tags) ? tags : JSON.parse(tags);
+        for (const tagName of tagArray) {
             const tag = await Tag.findOneAndUpdate(
               { tagname: tagName },
               {
@@ -134,10 +134,12 @@ const addStepbyStepGuide = async (req, res) => {
               },
               { new: true, upsert: true }
             );
+            
         }
         await createPost.save()
+        
 
-        res.status(201).json({ message: 'Guide added successfully', guide: newGuide });
+        res.status(201).json({ message: 'Guide added successfully', guide: newGuide , Tag : tagArray});
     } catch (error) {
         console.error("Server Error:", error);
         res.status(500).json({ message: 'Internal Server Error', error: error.message });

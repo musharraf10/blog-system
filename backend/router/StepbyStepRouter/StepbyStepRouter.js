@@ -2,6 +2,7 @@ const express = require('express');
 const upload = require('../../utils/fileupload'); // Ensure correct path
 const  addStepbyStepGuide = require('../../controllers/StepbyStepGuide/StepbyStepController');
 const multer = require('multer');
+const isAuthenticated = require('../../middlewares/isAuthenticated');
 
 const VideoGuideRouter = express.Router();
 
@@ -23,8 +24,8 @@ VideoGuideRouter.post("/addguide", (req, res, next) => {
       }
       console.log("req.files.stepMedia:", req.files.stepMedia);
       console.log("req.files.thumbnailImage:", req.files.thumbnailImage);
-      next(); // Crucial: pass control to the next middleware or controller
+      next(); 
     });
-  }, addStepbyStepGuide); // Add the controller as the next middleware
+  }, isAuthenticated, addStepbyStepGuide); 
 
 module.exports = VideoGuideRouter;
