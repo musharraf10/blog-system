@@ -1,4 +1,4 @@
-import Webinar from "../../models/webinar/webinar.js";
+// import Webinar from "../../models/webinar/webinar.js";
 
 export const addwebinarconroller = async (req, res) => {
   try {

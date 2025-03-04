@@ -99,7 +99,7 @@ const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
 const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
-const webinarRouter = require("./router/webinar/webinar");
+// const webinarRouter = require("./router/webinar/webinar");
 const articleRouter = require("./router/article/article");
 
 
@@ -149,7 +149,7 @@ app.use("/api/v1/earnings", earningsRouter);
 app.use("/api/v1/notifications", notificationRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
-app.use("/api/v1/webinar", webinarRouter);
+// app.use("/api/v1/webinar", webinarRouter);
 app.use("/api/v1/article", articleRouter);
 
 
