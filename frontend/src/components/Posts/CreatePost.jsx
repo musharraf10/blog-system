@@ -13,18 +13,18 @@ import {
 const CreatePost = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
-  const [title, setTitle] = useState(""); // State to handle title
-  const [tags, setTags] = useState(""); // State to handle tags
+  const [title, setTitle] = useState(""); 
+  const [tags, setTags] = useState(""); 
+  const [price, setprice] = useState(""); 
 
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
-
 
   const savePost = async (postStatus) => {
     if (title.trim().length === 0 || content.trim().length === 0) {
       alert("Title and content cannot be empty!");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         `${BackendServername}/article/addarticle`,
@@ -33,18 +33,20 @@ const CreatePost = () => {
           content,
           status: postStatus,
           tags: tags.split(",").map((tag) => tag.trim()),
+          price
         },
         {
-          withCredentials:true
+          withCredentials: true,
         }
-      )
+      );
 
       if (response.status === 200 || response.status === 201) {
         console.log("Success");
-        alert("article saved succesfully")
-        setContent("")
-        setTitle("")
-        setTags("")
+        alert("article saved succesfully");
+        setContent("");
+        setTitle("");
+        setTags("");
+        setprice("")
       } else {
         alert("Something went wrong! Please try again.");
       }
@@ -95,7 +97,15 @@ const CreatePost = () => {
           value={tags}
           onChange={(e) => setTags(e.target.value)}
           sx={{ mb: 3 }}
-          helperText="Add tags separated by commas (e.g., technology, JavaScript, web)"
+        />
+
+        <TextField
+          label="Add Price"
+          variant="outlined"
+          fullWidth
+          value={price}
+          onChange={(e) => setprice(e.target.value)}
+          sx={{ mb: 3 }}
         />
 
         {/* Editor */}

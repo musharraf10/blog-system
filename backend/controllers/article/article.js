@@ -4,7 +4,8 @@ const Article = require("../../models/article/article.js");
 const Post = require("../../models/Post/Post.js");
 
 const addarticleconroller = async (req, res) => {
-  const { title, content, status, tags } = req.body;
+  const { title, content, status, tags,price } = req.body;
+
 
   if (!title || !content || !status) {
     return res.status(400).json({
@@ -24,7 +25,8 @@ const addarticleconroller = async (req, res) => {
       author:req.user,
       status,
       contentData: "Article",  
-      refId: newArticle._id
+      refId: newArticle._id,
+      price
     })
     await newArticle.save()
     await createPost.save()
