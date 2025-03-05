@@ -157,7 +157,8 @@ const postController = {
       filter.description = { $regex: title, $options: "i" }; //case insensitive
     }
 
-    const posts = await Post.find(filter)
+    const posts = await Post.find(filter).populate("author")
+    .populate("refId")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);

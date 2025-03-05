@@ -2,7 +2,7 @@ const Webinar = require("../../models/webinar/webinar.js");
 const Post = require("../../models/Post/Post.js");
  const addwebinarconroller = async (req, res) => {
   try {
-    const { title, link, date, time, description } = req.body;
+    const { title, link, date, time, description,price } = req.body;
 
 
     const newWebinar = new Webinar({
@@ -17,7 +17,8 @@ const Post = require("../../models/Post/Post.js");
     const createPost=new Post({
       author:req.user,
       contentData: "Webinar",  
-      refId: newWebinar._id
+      refId: newWebinar._id,
+      price
     })
 
     

@@ -11,7 +11,8 @@ const WebinarForm = () => {
     link: "",
     date: "",
     time: "",
-    description: "",
+    price:"",
+    description: ""
   });
 
   const handleChange = (e) => {
@@ -27,7 +28,11 @@ const WebinarForm = () => {
     
     try {
       // Sending form data to the backend API without token or headers
-      const response = await axios.post(`${BackendServername}/webinar/addwebinar`, formData);
+      const response = await axios.post(`${BackendServername}/webinar/addwebinar`, formData,
+        {withCredentials:true}
+
+
+      );
 
 
       console.log("Webinar added successfully:", response.data);
@@ -37,6 +42,7 @@ const WebinarForm = () => {
         link: "",
         date: "",
         time: "",
+        price:"",
         description: "",})
     } catch (error) {
       console.error("Error submitting webinar:", error);
@@ -94,6 +100,37 @@ const WebinarForm = () => {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
             />
           </div>
+
+
+
+
+
+          <div>
+            <label
+              htmlFor="price"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Add Price
+            </label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+            />
+          </div>
+
+
+
+
+
+
+
+
+
 
           <div className="grid grid-cols-2 gap-4">
             <div>

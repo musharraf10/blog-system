@@ -85,12 +85,6 @@ const ManageData = () => {
       ? contentItems
       : contentItems.filter((item) => item.contentData === activeFilter);
 
-  const getTypeInfo = (typeName) => {
-    return (
-      categoryDetails.find((type) => type.type === typeName) ||
-      categoryDetails[0]
-    );
-  };
 
 
 
@@ -279,12 +273,14 @@ const ManageData = () => {
                   return (
                     <tr key={item.id} className="text-center hover:bg-gray-50">
                       <td className="px-6 py-4 text-start">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm text-capitalize font-medium text-gray-900">
                           {item.refId?.title}
                         </div>
+{/*                         
                         <div className="text-sm text-gray-500 truncate max-w-xs">
+                          
                           {item.refId?.description}
-                        </div>
+                        </div> */}
                       </td>
                       <td className="px-6 py-4">
                         <span
@@ -293,6 +289,8 @@ const ManageData = () => {
                           }}
                           className="px-2 py-1 text-xs font-semibold rounded-full text-white"
                         >
+
+
                           {category ? category.label : item.contentData}
                         </span>
                       </td>

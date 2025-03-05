@@ -55,6 +55,8 @@ const PostsList = () => {
       fetchAllPosts({ ...filters, title: searchTerm, page, limit: 9 }),
   });
 
+
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -113,7 +115,7 @@ const PostsList = () => {
         &lt;
       </button>
     );
-    console.log(data)
+  
     
     // Page buttons
     for (let i = 1; i <= totalPages; i++) {
@@ -258,7 +260,7 @@ const PostsList = () => {
                       >
                         <div className="post-content">
                           <h3 className="post-title">
-                            {post?.title || "Untitled Post"}
+                            {post?.refId.title || "Untitled Post"}
                           </h3>
                           
                           <p className="post-excerpt">
