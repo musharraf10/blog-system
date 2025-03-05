@@ -61,6 +61,6 @@ const playlistSchema = new mongoose.Schema({
   },
 }, { collection: 'playlists' }); // Explicitly set collection name to 'playlists'
 
-const Playlist = mongoose.model("Playlist", playlistSchema);
+const Playlist = mongoose.model("VideoTutorial", playlistSchema);
 
 module.exports = Playlist;

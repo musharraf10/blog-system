@@ -17,6 +17,7 @@ const createPlaylist = async (req, res) => {
       description,
       thumbnailType,
       thumbnail,
+      Tags,
       videoType,
       video,
     });
@@ -24,7 +25,7 @@ const createPlaylist = async (req, res) => {
     const createPost=new Post({
       author:req.user,
       status,
-      contentData: "Playlist",  
+      contentData: "VideoTutorial",  
       refId: newPlaylist._id
     })
     
