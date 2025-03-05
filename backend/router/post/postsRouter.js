@@ -38,7 +38,7 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
-
+postRouter.get("/managecontent/getpost",postController.getallpost);
 postRouter.get("/bookmarked", isAuthenticated, postController.getBookmarkedPosts);
 postRouter.get("/:postId", isAuthenticated, optionalAuth, postController.getPost);
 

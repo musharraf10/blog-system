@@ -1,11 +1,12 @@
-const Article = require("../../models/article/article.js");
+const Tag =require("../../models/Tags/Tags.js");
 
+const Article = require("../../models/article/article.js");
+const Post = require("../../models/Post/Post.js");
 
 const addarticleconroller = async (req, res) => {
-  const { title, content, status, tags } = req.body;
-  console.log("requested")
+  const { title, content, status, tags,price } = req.body;
 
-  // Validate required fields
+
   if (!title || !content || !status) {
     return res.status(400).json({
       status: "error",
@@ -14,50 +15,76 @@ const addarticleconroller = async (req, res) => {
   }
 
   try {
-    const newarticle = new Article({
+    const newArticle = new Article({
       title,
       description: content,
-      status,
-      // author: req.user,
-
+      tags
     });
 
+    const createPost=new Post({
+      author:req.user,
+      status,
+      contentData: "Article",  
+      refId: newArticle._id,
+      price
+    })
+    await newArticle.save()
+    await createPost.save()
 
-    // const categoryIds = [];
 
-    // for (const categoryName of tags) {
-    //   let categoryFound = await Category.findOne({ categoryName });
 
-    //   if (!categoryFound) {
-    //     categoryFound = await Category.create({
-    //       categoryName,
 
-    //       posts: [newarticle._id],
-    //       // createdBy: req.user,
-    //     });
-    //   } else {
-    //     await categoryFound.updateOne({ $push: { posts: newarticle._id } });
-    //   }
+   
+    for (const tagName of tags) {
+      const tag = await Tag.findOneAndUpdate(
+        { tagname: tagName },
+        {
+          $setOnInsert: { tagname: tagName, createdBy: req.user },
+          $push: { allposts: createPost._id },
+        },
+        { new: true, upsert: true }
+      );
+      await newArticle.save()
 
-    //   categoryIds.push(categoryFound._id);
-    //   await categoryFound.save();
-    // }
-
-    // newarticle.categorylist = categoryIds;
-    await newarticle.save();
+      
+    }
+    await createPost.save()
 
     return res.status(201).json({
       status: "success",
-      message: "Post created successfully!",
-      post: newarticle,
+      message: "Article created successfully!",
+      article: newArticle,
+      post: createPost,  // Returning the post as well
     });
   } catch (error) {
-    console.error("Error saving post:", error);
+    console.error("Error saving article:", error);
     return res.status(500).json({
       status: "error",
-      message: "Failed to create post. Please try again.",
+      message: "Failed to create article. Please try again.",
     });
   }
 };
 
-module.exports = {addarticleconroller};
+
+
+ const getAllArticles = async (req, res) => {
+  try {
+    const articles = await Article.find()
+      
+
+    return res.status(200).json({
+      status: "success",
+      count: articles.length,
+      articles,
+    });
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to fetch articles. Please try again.",
+    });
+  }
+};
+
+
+module.exports={addarticleconroller,getAllArticles}

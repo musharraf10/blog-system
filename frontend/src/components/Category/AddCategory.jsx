@@ -11,6 +11,7 @@ const AddCategory = () => {
     mutationKey: ["create-post"],
     mutationFn: addCategoryAPI,
   });
+
   const formik = useFormik({
     // initial data
     initialValues: {
