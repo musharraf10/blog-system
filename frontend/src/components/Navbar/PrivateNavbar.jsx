@@ -88,7 +88,7 @@ const { isLoading, data,  } = useQuery({
                   <IoLogOutOutline className="h-5 w-5" />
                 </button>
 
-                <NotificationCounts props={userRole}/>
+                <NotificationCounts />
 
                 <Menu as="div" className="relative">
                   <Menu.Button className="flex text-sm rounded-full focus:ring-2 focus:ring-[#1565C0]/50 transition-all duration-300">
