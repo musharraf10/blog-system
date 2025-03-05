@@ -24,9 +24,7 @@ const postSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected","draft"],
       default: "pending",
     },
-    category:[ {
-        enum:["article","webinar","video","step-by-step-guide","video-tutorials"]
-    }],
+   
     nextEarningDate: {
       type: Date,
       default: () =>
