@@ -15,6 +15,7 @@ const AuthRoute = ({ children, allowedRoles }) => {
     cacheTime: 0,  
   });
 
+  console.log("userdata",data)
   useEffect(() => {
     refetch(); // Ensure fresh authentication data when component mounts
   }, [refetch]);

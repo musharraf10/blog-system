@@ -39,14 +39,12 @@ const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 const sendNotificatiomMsg = require("../../utils/sendNotificatiomMsg");
 
-
 const postController = {
-
   //!Create post
   createPost: asyncHandler(async (req, res) => {
-    const {content}=req.body
-    console.log(req.user)
-    res.send(content)
+    const { content } = req.body;
+    console.log(req.user);
+    res.send(content);
 
     // try {
     //   const { title, description, category } = req.body;
@@ -57,12 +55,12 @@ const postController = {
     //     author: req.user,
     //     status: "pending",
     //   });
-  
-    //   const categoryIds = []; 
+
+    //   const categoryIds = [];
 
     //   for (const { categoryName } of category) {
     //     let categoryFound = await Category.findOne({ categoryName });
-  
+
     //     if (!categoryFound) {
     //       categoryFound = await Category.create({
     //         categoryName,
@@ -72,36 +70,33 @@ const postController = {
     //     } else {
     //       await categoryFound.updateOne({ $push: { posts: postCreated._id } });
     //     }
-  
-    //     categoryIds.push(categoryFound._id); 
+
+    //     categoryIds.push(categoryFound._id);
     //     await categoryFound.save();
     //   }
-  
+
     //   await postCreated.updateOne({ $set: { category: categoryIds } });
-  
-  
-  
-  
+
     //   // Find the user
     //   const userFound = await User.findById(req.user);
     //   if (!userFound) {
     //     throw new Error("User not found");
     //   }
-  
+
     //   // Ensure posts array exists before pushing
     //   if (!userFound.posts) {
     //     userFound.posts = [];
     //   }
     //   userFound.posts.push(postCreated._id);
     //   await userFound.save();
-  
+
     //   //Create notification
     //   await Notification.create({
     //     userId: req.user,
     //     postId: postCreated._id,
     //     message: New post created by ${userFound.username},
     //   });
-  
+
     //   //Send email to all hus/her followers
     //   userFound.followers.forEach(async (follower) => {
     //     //find the users by ids
@@ -120,15 +115,13 @@ const postController = {
     //   error: error.message,
     // });
     // }
-  
 
     res.json({
       status: "success",
       message: "Post created successfully",
-      
     });
   }),
-  
+
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     await Post.findByIdAndUpdate(postId, { status: "approved" });
@@ -157,8 +150,9 @@ const postController = {
       filter.description = { $regex: title, $options: "i" }; //case insensitive
     }
 
-    const posts = await Post.find(filter).populate("author")
-    .populate("refId")
+    const posts = await Post.find(filter)
+      .populate("author")
+      .populate("refId")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
@@ -176,16 +170,15 @@ const postController = {
 
   getallpostsinadmincontroller: asyncHandler(async (req, res) => {
     try {
-      const postsdata = await Post.find({})
-        // .populate("author")
-        // .populate({
-        //   path: "comments",
-        //   populate: {
-        //     path: "author",
-        //   },
-        // });
+      const postsdata = await Post.find({});
+      // .populate("author")
+      // .populate({
+      //   path: "comments",
+      //   populate: {
+      //     path: "author",
+      //   },
+      // });
       // .limit(1);
-
 
       res.status(200).json({
         status: "success",
@@ -208,7 +201,6 @@ const postController = {
             path: "author",
           },
         });
-
 
       res.status(200).json({
         status: "success",
@@ -409,14 +401,14 @@ const postController = {
     }
   },
 
-   like: asyncHandler(async (req, res) => {
+  like: asyncHandler(async (req, res) => {
     try {
       const postId = req.params.postId;
       const userId = req.user;
-  
+
       console.log("Liking Post:", postId);
       console.log("User:", userId);
-  
+
       const post = await Post.findById(postId);
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
@@ -425,15 +417,15 @@ const postController = {
       if (post?.dislikes.includes(userId)) {
         post?.dislikes?.pull(userId);
       }
-  
+
       if (post?.likes.includes(userId)) {
         post?.likes?.pull(userId);
       } else {
         post?.likes?.push(userId);
       }
-  
+
       await post.save();
-  
+
       res.json({ message: "Post Liked" });
     } catch (error) {
       console.error("Error in liking post:", error);
@@ -443,11 +435,11 @@ const postController = {
 
   dislike: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
-    console.log("Dislike",postId)
+    console.log("Dislike", postId);
     const userId = req.user;
-    console.log("User", userId)
+    console.log("User", userId);
     const post = await Post.findById(postId);
-    console.log("post", post)
+    console.log("post", post);
     if (post?.likes.includes(userId)) {
       post?.likes?.pull(userId);
     }
@@ -467,29 +459,28 @@ const postController = {
 
   BookMarkPost: asyncHandler(async (req, res) => {
     try {
-    const {postId} = req.params;
-    const userId = req.user;
+      const { postId } = req.params;
+      const userId = req.user;
 
-    const post = await Post.findById(postId);
-    if (post?.bookmarkedBy?.includes(userId)) {
-      return res.status(400).json({ message: "Post already bookmarked" });
-    }
-    post?.bookmarkedBy?.push(userId);
+      const post = await Post.findById(postId);
+      if (post?.bookmarkedBy?.includes(userId)) {
+        return res.status(400).json({ message: "Post already bookmarked" });
+      }
+      post?.bookmarkedBy?.push(userId);
 
-    await post.save();
+      await post.save();
 
-    res.json({
-      message: "Post Bookmarked",
-    });
-      
+      res.json({
+        message: "Post Bookmarked",
+      });
     } catch (error) {
       console.error("Error bookmarking post:", error);
-      res.status(500).json({ message: error.message});
+      res.status(500).json({ message: error.message });
     }
   }),
 
   unBookMarkPost: asyncHandler(async (req, res) => {
-    const {postId} = req.params;
+    const { postId } = req.params;
     const userId = req.user;
 
     const post = await Post.findById(postId);
@@ -502,24 +493,24 @@ const postController = {
       message: "Post Unbookmarked",
     });
   }),
-  getallpost:asyncHandler(async(req,res)=>{
-    try{
-      const posts = await Post.find()
-      .populate("author")
-      .populate("refId"); 
-    
-res.json({ data: posts });
-      
-    }catch(err){
+  getallpost: asyncHandler(async (req, res) => {
+    const { userId } = req.query;
+    try {
+      const posts = await Post.find({ author:userId })
+        .populate("author")
+        .populate("refId");
+
+      res.json({ data: posts });
+    } catch (err) {
       console.error("Error fetching posts:", err);
     }
   }),
-  getBookmarkedPosts : asyncHandler(async (req, res) => {
+  getBookmarkedPosts: asyncHandler(async (req, res) => {
     try {
       const userId = req.user;
       const posts = await Post.find({ bookmarkedBy: userId });
       // console.log(posts);
-  
+
       res.status(200).json({
         message: "Bookmarked Posts Fetched",
         posts,
@@ -528,7 +519,7 @@ res.json({ data: posts });
       console.error("Error fetching bookmarked posts:", error);
       res.status(500).json({ message: "Server Error" });
     }
-  })
+  }),
 };
 
 module.exports = postController;
