@@ -20,11 +20,21 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Box,
+  Typography,
+  useMediaQuery,
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  Alert,
+  Divider,
+  CircularProgress,
 } from '@mui/material';
 import { Edit, Delete, Close } from '@mui/icons-material';
 
 const UserManagementTable = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState();
   const [editUser, setEditUser] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -33,75 +43,135 @@ const UserManagementTable = () => {
 
   // Fetch all users
   const fetchUsers = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await axios.get(
-        'http://localhost:5000/api/v1/users/getallusers',
-      );
+      const response = await axios.get('http://localhost:5000/api/v1/users/getallusers');
       if (response.data && response.data.users) {
         setUsers(response.data.users);
       }
     } catch (error) {
       console.error('Error fetching users:', error);
+      setError('Failed to fetch users. Please try again later.');
       showSnackbar('Failed to fetch users.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // Snackbar Handler
   const showSnackbar = (message) => {
     setSnackbarMessage(message);
     setOpenSnackbar(true);
   };
 
-  // Edit Handler
   const handleEditClick = (user) => {
     setEditUser({ ...user });
     setOpenEdit(true);
   };
 
   const handleEditChange = (e) => {
-    setEditUser({ ...editUser, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setEditUser((prev) => (prev ? { ...prev, [name]: value } : null));
   };
+  
 
   const handleSaveEdit = async () => {
+    if (!editUser) return;
+    
     try {
-      await axios.put(
-        `http://localhost:5000/api/v1/users/update-user/${editUser._id}`,
-        editUser,
-      );
-      setUsers(
-        users.map((user) => (user._id === editUser._id ? editUser : user)),
-      );
+      await axios.put(`http://localhost:5000/api/v1/users/update-user/${editUser._id}`, editUser);
+      setUsers(users.map((user) => (user._id === editUser._id ? editUser : user)));
       setOpenEdit(false);
       showSnackbar('User updated successfully.');
+      handleMenuClose(); // Close menu if open
     } catch (error) {
       console.error('Failed to update user:', error);
       showSnackbar('Failed to update user.');
     }
   };
 
-  // Delete Handler
-  const handleDelete = async (userId) => {
+  const handleDeleteClick = (userId) => {
+    setConfirmDelete({ open: true, userId });
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/v1/users/delete-user/${userId}`,
-      );
-      setUsers(users.filter((user) => user._id !== userId));
+      await axios.delete(`http://localhost:5000/api/v1/users/delete-user/${confirmDelete.userId}`);
+      setUsers(users.filter((user) => user._id !== confirmDelete.userId));
+      setConfirmDelete({ open: false, userId: null });
       showSnackbar('User deleted successfully.');
+      handleMenuClose(); // Close menu if open
     } catch (error) {
       console.error('Failed to delete user:', error);
       showSnackbar('Failed to delete user.');
     }
   };
 
-  // Filter Logic
-  const filteredUsers =
-    filterRole === 'All'
-      ? users
-      : users.filter((user) => user.role === filterRole);
+  const handleDeleteCancel = () => {
+    setConfirmDelete({ open: false, userId: null });
+  };
+
+  // Grid view: Open menu for selected user
+  const handleMenuOpen = (event, user) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedUser(user);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedUser(null);
+  };
+
+  const getRoleChip = (role) => {
+    let bgColor, textColor;
+    switch (role) {
+      case 'admin':
+        bgColor = '#ffcccb';   // Light red
+        textColor = '#b71c1c';  // Dark red
+        break;
+      case 'subscriber':
+        bgColor = '#90ee90';   // Light green
+        textColor = '#1b5e20';  // Dark green
+        break;
+      case 'curator':
+        bgColor = '#add8e6';   // Light blue
+        textColor = '#0d47a1';  // Dark blue
+        break;
+      default:
+        bgColor = '#ccc';
+        textColor = 'black';
+        break;
+    }
+    return (
+      <Chip
+        label={role}
+        style={{
+          backgroundColor: bgColor,
+          color: textColor,
+          borderRadius: '20px',
+          fontWeight: 'bold',
+          fontSize: '0.65rem',
+        }}
+      />
+    );
+  };
+
+  // Returns avatar with profile image if available; otherwise, first letter.
+  const getUserAvatar = (user) => {
+    if (user.profilePicture) {
+      return (
+        <Avatar alt={user.username} src={user.profilePicture.path} sx={{ width: 60, height: 60 }} />
+      );
+    } else {
+      return (
+        <Avatar sx={{ width: 70, height: 70 }}>
+          {user.username.charAt(0).toUpperCase()}
+        </Avatar>
+      );
+    }
+  };
+
+  const filteredUsers = filterRole === 'All' ? users : users.filter((user) => user.role === filterRole);
 
   return (
     <div style={{ padding: '20px' }}>
@@ -184,7 +254,7 @@ const UserManagementTable = () => {
           <DialogContent>
             <TextField
               fullWidth
-              margin="dense"
+              variant="outlined"
               label="Username"
               name="username"
               value={editUser.username}
@@ -192,7 +262,7 @@ const UserManagementTable = () => {
             />
             <TextField
               fullWidth
-              margin="dense"
+              variant="outlined"
               label="Email"
               name="email"
               value={editUser.email}
@@ -201,13 +271,14 @@ const UserManagementTable = () => {
             <FormControl fullWidth margin="dense">
               <InputLabel>Role</InputLabel>
               <Select
+                labelId="role-select-label"
                 name="role"
                 value={editUser.role}
                 onChange={handleEditChange}
               >
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="subscriber">Subscriber</MenuItem>
-                <MenuItem value="curator">curator</MenuItem>
+                <MenuItem value="curator">Curator</MenuItem>
               </Select>
             </FormControl>
           </DialogContent>

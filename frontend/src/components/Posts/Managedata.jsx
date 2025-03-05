@@ -1,168 +1,85 @@
+"use client"
 
-
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
 import { FileText, Video, BookOpen, Plus, Search, Edit, Trash2, Calendar } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const ManageData = () => {
   const navigate = useNavigate()
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME
+  const [contentItems, setContentItems] = useState([])
 
-  // Sample data with more detailed fields
-  const [contentItems, setContentItems] = useState([
-    {
-      id: 1,
-      title: "Getting Started with React",
-      type: "articles",
-      description: "Learn the fundamentals of React and build your first component",
-      author: "Jane Smith",
-      date: "2025-02-15",
-      duration: null,
-      views: 1245,
-    },
-    {
-      id: 2,
-      title: "Advanced CSS Techniques",
-      type: "articles",
-      description: "Master CSS Grid, Flexbox, and modern styling approaches",
-      author: "Mike Johnson",
-      date: "2025-02-20",
-      duration: null,
-      views: 892,
-    },
-    {
-      id: 3,
-      title: "Full React Tutorial",
-      type: "videos",
-      description: "Complete guide to building professional React applications",
-      author: "Sarah Davis",
-      date: "2025-02-10",
-      duration: "1:25:30",
-      views: 3456,
-    },
-    {
-      id: 4,
-      title: "JavaScript ES6+ Features",
-      type: "videos",
-      description: "What's new in modern JavaScript and how to use it",
-      author: "Alex Lee",
-      date: "2025-02-05",
-      duration: "42:15",
-      views: 2178,
-    },
-    {
-      id: 5,
-      title: "Build a REST API with Node.js",
-      type: "guides",
-      description: "Step-by-step tutorial to create your own RESTful API",
-      author: "Chris Wilson",
-      date: "2025-01-28",
-      duration: null,
-      views: 1567,
-    },
-    {
-      id: 6,
-      title: "Introduction to TypeScript",
-      type: "guides",
-      description: "Interactive guide to TypeScript fundamentals",
-      author: "Emma Brown",
-      date: "2025-02-18",
-      duration: null,
-      views: 984,
-    },
-    {
-      id: 7,
-      title: "State Management in React",
-      type: "webinars",
-      description: "Live session comparing Redux, Context API, and more",
-      author: "David Martin",
-      date: "2025-03-05",
-      duration: "1:00:00",
-      views: 756,
-    },
-    {
-      id: 8,
-      title: "Accessibility Best Practices",
-      type: "webinars",
-      description: "Live workshop on building inclusive web applications",
-      author: "Lisa Chen",
-      date: "2025-03-10",
-      duration: "1:30:00",
-      views: 542,
-    },
-  ])
+  useEffect(() => {
+    const fetchContentItems = async () => {
+      try {
+        const response = await axios.get(`${BackendServername}/posts/managecontent/getpost`)
+        const data = response.data
+        console.log(data.data)
+        setContentItems(data.data)
+      } catch (error) {
+        alert(error)
+        console.error("Error fetching content items:", error)
+      }
+    }
+
+    fetchContentItems()
+  }, [])
 
   const [activeFilter, setActiveFilter] = useState("all")
 
   // Content type metadata
-  const contentTypes = [
+  const categoryDetails = [
     {
-      type: "articles",
-      title: "Articles",
-      icon: "document-text",
+      type: "Article",
+      label: "Articles",
+      icon: FileText,
+      description: "Rich text, images, embedded media",
       color: "bg-blue-600",
       badge: "bg-blue-100 text-blue-800",
       hoverColor: "group-hover:bg-blue-700",
     },
     {
-      type: "videos",
-      title: "Videos",
-      icon: "video-camera",
+      type: "VideoTutorial",
+      label: "Videos",
+      icon: Video,
+      description: "Host content with adaptive streaming",
       color: "bg-indigo-600",
       badge: "bg-indigo-100 text-indigo-800",
       hoverColor: "group-hover:bg-indigo-700",
     },
     {
-      type: "guides",
-      title: "Interactive Guides",
-      icon: "academic-cap",
+      type: "StepbyStepGuide",
+      label: "Interactive Guides",
+      icon: BookOpen,
+      description: "Step-by-step tutorials with interactive elements",
       color: "bg-cyan-600",
       badge: "bg-cyan-100 text-cyan-800",
       hoverColor: "group-hover:bg-cyan-700",
     },
     {
-      type: "webinars",
-      title: "Webinars",
-      icon: "presentation-chart-line",
+      type: "Webinar",
+      label: "Webinars",
+      icon: Calendar,
+      description: "Scheduled live video sessions with chat/Q&A",
       color: "bg-sky-600",
       badge: "bg-sky-100 text-sky-800",
       hoverColor: "group-hover:bg-sky-700",
     },
   ]
 
-  const categorydetails = [
-    {
-      type: "articles",
-      label: "Articles",
-      icon: FileText,
-      description: "Rich text, images, embedded media",
-    },
-    {
-      type: "video",
-      label: "Videos",
-      icon: Video,
-      description: "Hosted content with adaptive streaming",
-    },
-    {
-      type: "guide",
-      label: "Interactive Guides",
-      icon: BookOpen,
-      description: "Step-by-step tutorials with interactive elements",
-    },
-    {
-      type: "webinar",
-      label: "Webinars & Live Sessions",
-      icon: Calendar,
-      description: "Scheduled live video sessions with chat/Q&A",
-    },
-  ]
+  const articleCount = contentItems.filter((item) => item.contentData === "Article").length
+  const videoCount = contentItems.filter((item) => item.contentData === "video-tutorial").length
+  const guideCount = contentItems.filter((item) => item.contentData === "StepbyStepGuide").length
+  const webinarCount = contentItems.filter((item) => item.contentData === "Webinar").length
 
   // Filter content items
   const filteredItems =
-    activeFilter === "all" ? contentItems : contentItems.filter((item) => item.type === activeFilter)
+    activeFilter === "all" ? contentItems : contentItems.filter((item) => item.contentData === activeFilter)
 
   // Get type object by type name
   const getTypeInfo = (typeName) => {
-    return contentTypes.find((type) => type.type === typeName) || contentTypes[0]
+    return categoryDetails.find((type) => type.type === typeName) || categoryDetails[0]
   }
 
   return (
@@ -181,14 +98,14 @@ const ManageData = () => {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-12 max-w-7xl">
         {/* Content Types */}
-        <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+        <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 transform transition-all duration-300 hover:shadow-xl">
           <div className="p-8 border-b border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <span className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] w-1.5 h-6 rounded mr-3 inline-block"></span>
               Content Types
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {categorydetails.map((contentType) => (
+              {categoryDetails.map((contentType) => (
                 <div
                   key={contentType.type}
                   className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
@@ -223,30 +140,35 @@ const ManageData = () => {
 
         {/* Type Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {contentTypes.map((type) => {
-            const count = contentItems.filter((item) => item.type === type.type).length
+          {categoryDetails.map((type) => {
+            let count = 0
+            if (type.type === "Article") count = articleCount
+            else if (type.type === "VideoTutorial") count = videoCount
+            else if (type.type === "StepbyStepGuide") count = guideCount
+            else if (type.type === "Webinar") count = webinarCount
+
             return (
               <div
                 key={type.type}
-                className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100 transform hover:-translate-y-1 group"
+                className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 group"
               >
-                <div
-                  className={`bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-6 text-white flex items-center justify-between transition-all duration-300`}
-                >
-                  <h3 className="font-semibold text-lg">{type.title}</h3>
+                <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-6 text-white flex items-center justify-between transition-all duration-300">
+                  <h3 className="font-semibold text-lg">{type.label}</h3>
                   <span className="text-3xl font-bold">{count}</span>
                 </div>
                 <div className="p-5 bg-white">
                   <div className="text-sm text-gray-600 flex items-center justify-between">
                     <span>{count === 1 ? "item" : "items"} published</span>
                     <span className="text-xs px-2 py-1 bg-gray-100 rounded-full transition-colors duration-300 group-hover:bg-gray-200">
-                      {Math.round((count / contentItems.length) * 100)}% of total
+                      {contentItems.length > 0 ? Math.round((count / contentItems.length) * 100) : 0}% of total
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mt-3">
                     <div
                       className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] h-1.5 rounded-full transition-all duration-500 ease-out group-hover:from-[#0D47A1] group-hover:to-[#1976D2]"
-                      style={{ width: `${Math.round((count / contentItems.length) * 100)}%` }}
+                      style={{
+                        width: `${contentItems.length > 0 ? Math.round((count / contentItems.length) * 100) : 0}%`,
+                      }}
                     ></div>
                   </div>
                 </div>
@@ -256,35 +178,42 @@ const ManageData = () => {
         </div>
 
         {/* Content Table */}
-        <div className="bg-white rounded-xl shadow-lg mb-12 border border-gray-100 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
-          <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 flex flex-wrap items-center">
-            <button
-              onClick={() => setActiveFilter("all")}
-              className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
-                activeFilter === "all"
-                  ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-              }`}
-            >
-              All Content ({contentItems.length})
-            </button>
+        <div className="bg-white rounded-xl shadow-lg mb-12 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+          <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 overflow-x-auto">
+            <div className="flex items-center space-x-3 w-full">
+              <button
+                onClick={() => setActiveFilter("all")}
+                className={`px-5 py-2.5 rounded-lg transition-all duration-300 font-medium whitespace-nowrap ${
+                  activeFilter === "all"
+                    ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                }`}
+              >
+                All Content ({contentItems.length})
+              </button>
 
-            {contentTypes.map((type) => {
-              const count = contentItems.filter((item) => item.type === type.type).length
-              return (
-                <button
-                  key={type.type}
-                  onClick={() => setActiveFilter(type.type)}
-                  className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
-                    activeFilter === type.type
-                      ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-                  }`}
-                >
-                  {type.title} ({count})
-                </button>
-              )
-            })}
+              {categoryDetails.map((type) => {
+                let count = 0
+                if (type.type === "Article") count = articleCount
+                else if (type.type === "VideoTutorial") count = videoCount
+                else if (type.type === "StepbyStepGuide") count = guideCount
+                else if (type.type === "Webinar") count = webinarCount
+
+                return (
+                  <button
+                    key={type.type}
+                    onClick={() => setActiveFilter(type.type)}
+                    className={`px-5 py-2.5 rounded-lg transition-all duration-300 font-medium whitespace-nowrap ${
+                      activeFilter === type.type
+                        ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                    }`}
+                  >
+                    {type.label} ({count})
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           {/* Content table */}
@@ -325,41 +254,46 @@ const ManageData = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-blue-50 transition-all duration-300">
-                    <td className="px-8 py-6">
-                      <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
-                        {item.title}
-                      </div>
-                      <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.description}</div>
-                    </td>
-                    <td className="px-6 py-6 text-center">
-                      <span
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-full inline-block transition-all duration-300 ${
-                          getTypeInfo(item.type).badge
-                        } hover:shadow-sm`}
-                      >
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-6 text-sm text-gray-600 text-center">{item.author}</td>
-                    <td className="px-6 py-6 text-sm text-gray-600 text-center">
-                      {new Date(item.date).toLocaleDateString()}
-                    </td>
-                    <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
-                      <button className="px-4 py-2 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
-                        <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
-                        <Edit className="h-3.5 w-3.5 inline mr-1.5" />
-                        Edit
-                      </button>
-                      <button className="px-4 py-2 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
-                        <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
-                        <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredItems.map((item) => {
+                  // Find matching category based on contentData
+                  const category = categoryDetails.find((cat) => cat.type === item.contentData)
+
+                  return (
+                    <tr key={item.id} className="hover:bg-blue-50 transition-all duration-300">
+                      <td className="px-8 py-6">
+                        <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
+                          {item.refId?.title}
+                        </div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.refId?.description}</div>
+                      </td>
+                      <td className="px-6 py-6 text-center">
+                        <span
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-full inline-block transition-all duration-300 ${
+                            category ? category.badge : "bg-gray-100 text-gray-800"
+                          } hover:shadow-sm`}
+                        >
+                          {category ? category.label : item.contentData}
+                        </span>
+                      </td>
+                      <td className="px-6 py-6 text-sm text-gray-600 text-center">{item.author?.username}</td>
+                      <td className="px-6 py-6 text-sm text-gray-600 text-center">
+                        {new Date(item.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
+                        <button className="px-4 py-2 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                          <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                          <Edit className="h-3.5 w-3.5 inline mr-1.5" />
+                          Edit
+                        </button>
+                        <button className="px-4 py-2 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                          <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                          <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

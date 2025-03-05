@@ -99,8 +99,10 @@ const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
 const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
-// const webinarRouter = require("./router/webinar/webinar");
+
 const articleRouter = require("./router/article/article");
+const webinarRouter = require("./router/webinar/webinar");
+const VideoGuideRouter = require("./router/StepbyStepRouter/StepbyStepRouter");
 
 
 // Connect to Database
@@ -127,6 +129,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json()); 
+express.urlencoded({ extended: true })
 app.use(cookieParser()); 
 app.use(passport.initialize()); 
 
@@ -138,6 +141,7 @@ app.use(cors(corsOptions));
 
 // Routes
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/stepbystepguide", VideoGuideRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/plans", planRouter);
@@ -146,8 +150,11 @@ app.use("/api/v1/earnings", earningsRouter);
 app.use("/api/v1/notifications", notificationRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
-// app.use("/api/v1/webinar", webinarRouter);
 app.use("/api/v1/article", articleRouter);
+app.use("/api/v1/webinar", webinarRouter);
+
+
+
 
 
 

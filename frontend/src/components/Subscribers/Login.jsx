@@ -120,3 +120,5 @@ const Login = () => {
 };
 
 export default Login;
+
+// npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core    dependency for the eye icon

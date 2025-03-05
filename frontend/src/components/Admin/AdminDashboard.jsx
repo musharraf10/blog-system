@@ -16,7 +16,6 @@ const navigation = [
   { name: "Payment Management", href: "/admin/payment-management", icon: MdPayment },
   { name: "Manage Content", href: "/admin/manage-content", icon: FaUserEdit },
   { name: "Create Plan", href: "/admin/create-plan", icon: FaCalendarPlus },
-  { name: "Add Category", href: "/admin/add-category", icon: FaTags },
 ]
 
 export default function AdminDashboard() {
@@ -142,21 +141,9 @@ export default function AdminDashboard() {
               )
             })}
           </nav>
-          <div className="mt-auto mb-20">
-            <Link
-              to="/admin/settings"
-              className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
-                location.pathname === "/admin/settings"
-                  ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
-                  : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
-              }`}
-            >
-              <Cog6ToothIcon
-                className={`h-5 w-5 mr-3 flex-shrink-0 ${
-                  location.pathname === "/admin/settings" ? "text-[#1565C0]" : "text-gray-500"
-                }`}
-              />
-              <span className="truncate">Settings</span>
+          <div className="mt-auto mb-[30%]">
+            <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
+              <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
             </Link>
           </div>
         </aside>
@@ -176,4 +163,3 @@ export default function AdminDashboard() {
     </>
   )
 }
-
