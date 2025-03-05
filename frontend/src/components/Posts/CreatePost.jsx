@@ -63,7 +63,7 @@ const CreatePost = () => {
     toolbarAdaptive: false,
     height: 500,
     width: "100%",
-    uploader: { insertImageAsBase64URI: true },
+    // uploader: { insertImageAsBase64URI: true },
     askBeforePasteHTML: false,
     pastePlainText: true,
   };
