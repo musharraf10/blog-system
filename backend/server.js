@@ -128,16 +128,10 @@ cron.schedule(
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-<<<<<<< HEAD
-app.use(express.json());
-app.use(cookieParser());
-app.use(passport.initialize());
-=======
 app.use(express.json()); 
 express.urlencoded({ extended: true })
 app.use(cookieParser()); 
 app.use(passport.initialize()); 
->>>>>>> cdc5a3463988fb001f185077db1c288b347cffe4
 
 const corsOptions = {
   origin: ["http://localhost:5173"],
