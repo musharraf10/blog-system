@@ -157,6 +157,7 @@ const UserManagementTable = () => {
 
   // Returns avatar with profile image if available; otherwise, first letter.
   const getUserAvatar = (user) => {
+
     if (user.profilePicture) {
       return (
         <Avatar alt={user.username} src={user.profilePicture.path} sx={{ width: 60, height: 60 }} />
@@ -193,7 +194,9 @@ const UserManagementTable = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
+
           <b>  USER MANAGEMENT</b>
+
           </Typography>
         </Box>
 
@@ -251,8 +254,10 @@ const UserManagementTable = () => {
               {filteredUsers.map((user) => (
                 <TableRow key={user._id} className="hover-row animated-row">
                   <TableCell>
+
                     {user.profilePicture ? (
                       <img src={user.profilePicture.path} alt={user.username} className="user-profile-img" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+
                     ) : (
                       <div className="user-profile-placeholder" style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {user.username.charAt(0).toUpperCase()}
