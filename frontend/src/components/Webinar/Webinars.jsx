@@ -55,7 +55,7 @@ export const Webinars = () => {
             <Link to={`${k.link}`} key={index} className="card-link">
               <Card
                 key={index}
-                className={`video - card ${index < 3 ? "top-row" : "bottom-row"}`}
+                className={`video-card ${index < 3 ? "top-row" : "bottom-row"}`}
               >
                 {/* Use Fixed Images */}
                 <Card.Img
@@ -79,7 +79,11 @@ export const Webinars = () => {
         ) : (
           <p>No webinars found.</p>
         )}
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
+
+
+
+
