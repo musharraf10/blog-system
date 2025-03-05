@@ -47,7 +47,7 @@ const AdminRoutes = () => {
           <Route path="user-management" element={<UserManagement/>} />
           <Route path="payment-management" element={<PaymentsDashboard/>} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
-          <Route path="create-post/articles" element={<CreatePost />} />
+          <Route path="create-post/article" element={<CreatePost />} />
           <Route path="create-post/webinar" element={<WebinarForm />} />
           <Route path="manage-content" element={<ManageData />} />
           <Route path="posts" element={<DashboardPosts />} />

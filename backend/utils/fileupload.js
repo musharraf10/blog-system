@@ -1,22 +1,27 @@
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('./Cloudinary'); // Ensure this is correct
 
-//! Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Cloudinary storage instance
+// Cloudinary Storage Setup
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "blog-project",
-    resource_type: "auto", 
-    allowedFormats: ["jpg", "png", "jpeg", "pdf", "docx", "mp4", "mov" , "mkv", "avi"], 
-    transformation: [{ width: 500, height: 500, crop: "limit" }], 
+  params: async (req, file) => {
+    console.log("File Received:", file);
+
+    const resourceType = file.mimetype.startsWith('video') ? 'video' : 'image';
+    const fileExtension = file.mimetype.split('/')[1]; // Get file extension
+
+    return {
+      folder: 'step_guides',
+      format: fileExtension || 'jpg', // Default to jpg if format missing
+      public_id: `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`,
+      resource_type: resourceType,
+      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'webp'], // Explicit allowed formats
+    };
   },
 });
 
-module.exports = storage;
+// Multer Middleware
+const upload = multer({ storage });
+
+module.exports = upload;
