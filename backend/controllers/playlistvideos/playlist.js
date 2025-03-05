@@ -4,7 +4,7 @@ import Tag from "../../models/Tags/Tags.js";
 // Create a new playlist video
 const createPlaylist = async (req, res) => {
   try {
-    const { title, description, thumbnailType, thumbnail, videoType } = req.body;
+    const { title, description, thumbnailType, thumbnail, videoType ,tags} = req.body;
     const video = req.file ? req.file.filename : null;
 
     // Validation: Ensure required fields are provided
@@ -17,7 +17,7 @@ const createPlaylist = async (req, res) => {
       description,
       thumbnailType,
       thumbnail,
-      Tags,
+      tags,
       videoType,
       video,
     });
