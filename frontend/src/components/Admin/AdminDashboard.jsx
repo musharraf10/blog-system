@@ -1,25 +1,27 @@
-import { useState, Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { FaBlog, FaUserEdit, FaFileAlt, FaUsers, FaCalendarPlus, FaTags, FaWallet } from "react-icons/fa";
-import { MdContentPaste, MdPayment } from "react-icons/md";
-import { FaUsersCog } from "react-icons/fa";
-import { Link, Outlet } from "react-router-dom";
-import PrivateNavbar from "../Navbar/PrivateNavbar";
+"use client"
+
+import { useState, Fragment } from "react"
+import { Dialog, Transition } from "@headlessui/react"
+import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags } from "react-icons/fa"
+import { MdContentPaste, MdPayment } from "react-icons/md"
+import { FaUsersCog } from "react-icons/fa"
+import { Link, Outlet, useLocation } from "react-router-dom"
+import PrivateNavbar from "../Navbar/PrivateNavbar"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: HomeIcon },
   { name: "Content Management", href: "/admin/content-management", icon: MdContentPaste },
   { name: "User Management", href: "/admin/user-management", icon: FaUsersCog },
   { name: "Payment Management", href: "/admin/payment-management", icon: MdPayment },
-  // { name: "Create New Post", href: "/admin/create-post", icon: FaUserEdit },
   { name: "Manage Content", href: "/admin/manage-content", icon: FaUserEdit },
   { name: "Create Plan", href: "/admin/create-plan", icon: FaCalendarPlus },
   { name: "Add Category", href: "/admin/add-category", icon: FaTags },
-];
+]
 
 export default function AdminDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const location = useLocation()
 
   return (
     <>
@@ -50,23 +52,58 @@ export default function AdminDashboard() {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex w-64 flex-col bg-white p-4 h-screen">
-                <button className="absolute top-4 right-4" onClick={() => setSidebarOpen(false)}>
+              <Dialog.Panel className="relative flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen shadow-xl">
+                <button
+                  className="absolute top-4 right-4 bg-white/80 rounded-full p-1.5 transition-all duration-300 hover:bg-white shadow-sm"
+                  onClick={() => setSidebarOpen(false)}
+                >
                   <XMarkIcon className="h-6 w-6 text-gray-700" />
                 </button>
-                <Link to="/" className="mb-6 flex items-center justify-center">
-                  <FaBlog className="h-8 w-auto text-orange-500" />
+                <Link to="/" className="mb-8 flex items-center justify-center">
+                  <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
+                    <FaBlog className="h-6 w-auto text-white" />
+                  </div>
+                  <span className="ml-3 text-xl font-semibold text-gray-800">AdminPanel</span>
                 </Link>
-                <nav>
-                  {navigation.map(({ name, href, icon: Icon }) => (
-                    <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-                      <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
-                    </Link>
-                  ))}
+                <nav className="space-y-1.5">
+                  {navigation.map(({ name, href, icon: Icon }) => {
+                    // Only apply active styling if it's not the Dashboard and the path matches
+                    const isActive =
+                      href !== "/admin" && (location.pathname === href || location.pathname.startsWith(href + "/"))
+
+                    return (
+                      <Link
+                        key={name}
+                        to={href}
+                        className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                          isActive
+                            ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                            : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                        }`}
+                      >
+                        <Icon
+                          className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`}
+                        />
+                        <span className="truncate">{name}</span>
+                      </Link>
+                    )
+                  })}
                 </nav>
-                <div className="mt-auto mb-[15%]">
-                  <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-                    <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
+                <div className="mt-auto mb-6">
+                  <Link
+                    to="/admin/settings"
+                    className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                      location.pathname === "/admin/settings"
+                        ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                        : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                    }`}
+                  >
+                    <Cog6ToothIcon
+                      className={`h-5 w-5 mr-3 flex-shrink-0 ${
+                        location.pathname === "/admin/settings" ? "text-[#1565C0]" : "text-gray-500"
+                      }`}
+                    />
+                    <span className="truncate">Settings</span>
                   </Link>
                 </div>
               </Dialog.Panel>
@@ -76,31 +113,54 @@ export default function AdminDashboard() {
       </Transition.Root>
 
       <div className="flex">
-        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200 h-screen fixed top-16">
-          <Link to="/" className="mb-6 flex items-center justify-center">
-            <FaBlog className="h-8 w-auto text-orange-500" />
+        <aside className="hidden lg:flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen fixed top-16 shadow-md border-r border-blue-100">
+          <Link to="/" className="mb-8 flex items-center justify-center">
+            <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
+              <FaBlog className="h-6 w-auto text-white" />
+            </div>
+            <span className="ml-3 text-xl font-semibold text-gray-800">AdminPanel</span>
           </Link>
-          <nav>
-            {navigation.map(({ name, href, icon: Icon }) => (
-              <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-black p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black-100 rounded-md">
-                <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
-              </Link>
-            ))}
+          <nav className="space-y-1.5">
+            {navigation.map(({ name, href, icon: Icon }) => {
+              // Only apply active styling if it's not the Dashboard and the path matches
+              const isActive =
+                href !== "/admin" && (location.pathname === href || location.pathname.startsWith(href + "/"))
+
+              return (
+                <Link
+                  key={name}
+                  to={href}
+                  className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                      : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                  }`}
+                >
+                  <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
+                  <span className="truncate">{name}</span>
+                </Link>
+              )
+            })}
           </nav>
           <div className="mt-auto mb-[30%]">
-            <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-black p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black-100 rounded-md">
+            <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
               <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
             </Link>
           </div>
         </aside>
 
-        <div className="flex-1 p-6 mt-16 lg:ml-72">
-          <button className="lg:hidden mb-4" onClick={() => setSidebarOpen(true)}>
-            <span className="text-orange-500">☰ Open Sidebar</span>
+        <div className="flex-1 p-8 mt-16 lg:ml-80 bg-gray-50 min-h-screen">
+          <button
+            className="lg:hidden mb-6 flex items-center px-4 py-2.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-lg shadow-md transition-all duration-300 hover:opacity-90"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <span className="mr-2">☰</span> Menu
           </button>
-          <Outlet />
+          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
+            <Outlet />
+          </div>
         </div>
       </div>
     </>
-  );
+  )
 }
