@@ -49,6 +49,7 @@ export const fetchPost = async (postId) => {
 
 //!like post api
 export const likePostAPI = async (postId) => {
+  console.log("Like",postId)
   const response = await axios.patch(
     `${BASE_URL}/likes/${postId}`,
     {},
@@ -60,6 +61,7 @@ export const likePostAPI = async (postId) => {
 };
 //!dislike post api
 export const dislikePostAPI = async (postId) => {
+  console.log("disLike",postId)
   const response = await axios.patch(
     `${BASE_URL}/dislikes/${postId}`,
     {},

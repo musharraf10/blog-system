@@ -11,7 +11,7 @@ const Notifications = () => {
     queryFn: fetchNotificationsAPI,
   });
   //filter unread notifications
-  const unreadNotifications = data?.filter(
+  const unreadNotifications = data.notifications?.filter(
     (notification) => notification?.isRead === false
   );
   //mutation
