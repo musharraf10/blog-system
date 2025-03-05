@@ -15,8 +15,14 @@ const Trending = () => {
     const loadTrending = async () => {
       try {
         const data = await fetchTrendingContent();
-        console.log(data)
-        setTrendingData({data});
+        console.log("Fetched Data:", data);
+        
+        // Ensure data has expected structure before updating state
+        setTrendingData({
+          articles: data.articles || [],
+          videos: data.videos || [],
+          webinars: data.webinars || [],
+        });
       } catch (err) {
         setError(err.message);
       } finally {
@@ -36,69 +42,38 @@ const Trending = () => {
 
   if (error) return <Alert variant="danger">{error}</Alert>;
 
+  // Function to render sections dynamically
+  const renderSection = (title, content, color, buttonText) => (
+    content.length > 0 ? (
+      <div className="mb-5">
+        <h3 className={`text-${color}`}>{title}</h3>
+        <Row>
+          {content.map((item) => (
+            <Col md={4} key={item._id} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Img variant="top" src={item.thumbnail} alt={item.title} />
+                <Card.Body>
+                  <Card.Title>{item.title}</Card.Title>
+                  <Button variant={color} href={item.contentUrl} target="_blank">
+                    {buttonText}
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+    ) : (
+      <p className="text-muted text-center">No {title.toLowerCase()} available.</p>
+    )
+  );
+
   return (
     <Container className="my-5">
       <h2 className="text-center mb-4">🔥 Trending Content</h2>
-
-      {/* Articles */}
-      <div className="mb-5">
-        <h3 className="text-primary">📖 Top Articles</h3>
-        <Row>
-          {trendingData.articles.map((article, index) => (
-            <Col md={4} key={index} className="mb-4">
-              <Card className="shadow-sm h-100">
-                <Card.Img variant="top" src={article.thumbnail} alt={article.title} />
-                <Card.Body>
-                  <Card.Title>{article.title}</Card.Title>
-                  <Button variant="primary" href={article.contentUrl} target="_blank">
-                    Read More
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
-
-      {/* Videos */}
-      <div className="mb-5">
-        <h3 className="text-success">🎬 Top Videos</h3>
-        <Row>
-          {trendingData.videos.map((video, index) => (
-            <Col md={4} key={index} className="mb-4">
-              <Card className="shadow-sm h-100">
-                <Card.Img variant="top" src={video.thumbnail} alt={video.title} />
-                <Card.Body>
-                  <Card.Title>{video.title}</Card.Title>
-                  <Button variant="success" href={video.contentUrl} target="_blank">
-                    Watch Video
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
-
-      {/* Webinars */}
-      <div>
-        <h3 className="text-warning">📅 Top Webinars</h3>
-        <Row>
-          {trendingData.webinars.map((webinar, index) => (
-            <Col md={4} key={index} className="mb-4">
-              <Card className="shadow-sm h-100">
-                <Card.Img variant="top" src={webinar.thumbnail} alt={webinar.title} />
-                <Card.Body>
-                  <Card.Title>{webinar.title}</Card.Title>
-                  <Button variant="warning" href={webinar.contentUrl} target="_blank">
-                    Join Webinar
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
+      {renderSection("📖 Top Articles", trendingData.articles, "primary", "Read More")}
+      {renderSection("🎬 Top Videos", trendingData.videos, "success", "Watch Video")}
+      {renderSection("📅 Top Webinars", trendingData.webinars, "warning", "Join Webinar")}
     </Container>
   );
 };

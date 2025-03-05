@@ -20,6 +20,7 @@ import ContentEditor from "../components/Curator/contentEditor/ContentEditor"
 import ContentDashBoard from "../components/Curator/ContentDashBoard";
 import DashBoard from "../components/Curator/contentEditor/DashBoard";
 import Analytics from "../components/Curator/contentEditor/Analytics";
+import ResetPassword from "../components/Subscribers/ResetPassword";
 
 
 
@@ -58,6 +59,7 @@ const CuratorRoutes = () => {
           />
           <Route path="add-category" element={<AddCategory />} />
         </Route>
+        <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
       </Routes>
     );
   };

@@ -5,12 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 
 import AlertMessage from "../../Alert/AlertMessage";
 import { uploadProfilePicAPI, updateEmailAPI } from "../../../APIServices/users/usersAPI";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   // State for file upload
   const [imageError, setImageErr] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-
+  const navigate =useNavigate();
   // Profile image upload mutation
   const imageMutation = useMutation({ mutationFn: uploadProfilePicAPI });
 

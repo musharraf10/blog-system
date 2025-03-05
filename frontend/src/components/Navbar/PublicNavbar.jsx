@@ -1,107 +1,116 @@
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { PlusIcon } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
+import { Disclosure } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Link, useLocation } from "react-router-dom";
 import { FaBlog } from "react-icons/fa";
-
 import { useQuery } from "@tanstack/react-query";
 import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
-import { Navigate } from "react-router-dom";
 import AuthCheckingComponent from "../Templates/AuthCheckingComponent";
 
-// Export the default function PublicNavbar
 export default function PublicNavbar() {
-
   const { isLoading, data } = useQuery({
     queryKey: ["user-auth"],
     queryFn: checkAuthStatusAPI,
   });
-if (isLoading) return <AuthCheckingComponent />;
-const userRole = data?.role; 
+
+  if (isLoading) return <AuthCheckingComponent />;
+
+  const userRole = data?.role;
+  const location = useLocation(); // Get current route
+
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <Disclosure as="nav" className="bg-white shadow sticky top-0 z-50">
+    <Disclosure as="nav" className="sticky top-0 z-50 bg-[#F9FAFB] shadow-md">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-between">
-              <div className="flex">
-                <div className="-ml-2 mr-2 flex items-center md:hidden">
-                  {/* Mobile menu button */}
-                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                    <span className="absolute -inset-0.5" />
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </Disclosure.Button>
-                </div>
-                <div className="flex flex-shrink-0 items-center">
-                  {/* Logo */}
-                  <FaBlog className="h-8 w-auto text-orange-500" />
-                </div>
-                <div className="hidden md:ml-6 md:flex md:space-x-8">
-                  <Link
-                    to="/"
-                    className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/posts"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Latest Posts
-                  </Link>
-                  <Link
-                    to="/ranking"
-                    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    Creators Ranking
-                  </Link>
-                </div>
+          <div className="mx-auto max-w-7xl px-6 lg:px-12">
+            {/* Navbar height increased by 2px */}
+            <div className="flex h-[70px] items-center justify-between">
+              {/* Left Section - Logo */}
+              <div className="flex items-center space-x-5">
+                <Link to="/" className="flex items-center">
+                  <FaBlog className="h-8 w-auto text-blue-600" />
+                </Link>
               </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  {["subscriber", "curator", "admin"].includes(userRole)
-                      ? <Link to = {`/${userRole}`} className="relative inline-flex items-center gap-x-1.5 rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 animate-pulse">Dashboard</Link> : (<Link to="/login" className="relative inline-flex items-center gap-x-1.5 rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 animate-pulse">Login</Link>)}
-                </div>
-                <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+
+              {/* Center - NavLinks with active and underline hover effect */}
+              <div className="hidden md:flex space-x-10 text-base font-medium">
+                {[
+                  { name: "Home", path: "/" },
+                  { name: "Latest Posts", path: "/posts" },
+                  { name: "Creators Ranking", path: "/ranking" },
+                ].map(({ name, path }) => (
+                  <Link
+                    key={path}
+                    to={path}
+                    className={`relative transition duration-300 ${
+                      isActive(path)
+                        ? "text-blue-700 font-semibold before:w-full"
+                        : "text-gray-700 hover:text-blue-700 before:w-0"
+                    } before:absolute before:bottom-[-2px] before:left-0 before:h-[2px] before:bg-blue-700 before:transition-all before:duration-300 hover:before:w-full`}
                   >
-                    <span className="absolute -inset-1.5" />
-                  </button>
-                </div>
+                    {name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Right Section - Button */}
+              <div>
+                {["subscriber", "curator", "admin"].includes(userRole) ? (
+                  <Link
+                    to={`/${userRole}`}
+                    className="inline-block bg-gradient-to-r from-[#1565C0] to-[#42A5F5] hover:from-[#0D47A1] hover:to-[#1E88E5] transition-all duration-300 text-white font-mediam text-lg px-20 py-2 md:px-10 md:py- rounded-full shadow-lg transform hover:scale-105 hover:shadow-xl"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="inline-block bg-gradient-to-r from-[#1565C0] to-[#42A5F5] hover:from-[#0D47A1] hover:to-[#1E88E5] transition-all duration-300 text-white font-semibold text-lg px-8 py-3 md:px-10 md:py-4 rounded-full shadow-lg transform hover:scale-105 hover:shadow-xl"
+                  >
+                    Login
+                  </Link>
+                )}
+              </div>
+
+              {/* Mobile Menu Button */}
+              <div className="md:hidden">
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-600 hover:bg-blue-200 focus:ring-2 focus:ring-blue-500 rounded-md">
+                  {open ? (
+                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+                  )}
+                </Disclosure.Button>
               </div>
             </div>
           </div>
 
-          <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 pb-3 pt-2">
-              {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
-
+          {/* Mobile Menu */}
+          <Disclosure.Panel className="md:hidden bg-[#F9FAFB]">
+            <div className="space-y-2 pb-4 pt-2">
+              {[
+                { name: "Home", path: "/" },
+                { name: "Latest Posts", path: "/posts" },
+                { name: "Creators Ranking", path: "/ranking" },
+              ].map(({ name, path }) => (
+                <Disclosure.Button
+                  key={path}
+                  as={Link}
+                  to={path}
+                  className={`block py-2 pl-4 pr-6 font-medium rounded-md transition-all ${
+                    isActive(path)
+                      ? "text-blue-700 font-semibold bg-blue-100"
+                      : "text-gray-700 hover:bg-blue-100 hover:text-blue-700"
+                  }`}
+                >
+                  {name}
+                </Disclosure.Button>
+              ))}
               <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-              >
-                Home
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="/posts"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
-              >
-                Latest Posts
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="/login"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
+                as={Link}
+                to="/login"
+                className="block py-2 pl-4 pr-6 text-gray-700 font-medium hover:bg-blue-100 hover:text-blue-700 rounded-md"
               >
                 Login
               </Disclosure.Button>
