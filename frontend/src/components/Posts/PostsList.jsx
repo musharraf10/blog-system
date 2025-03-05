@@ -32,6 +32,7 @@ const PostsList = () => {
     setBookmarkedPosts(savedBookmarks);
   }, []);
 
+  
   const toggleBookmark = (postId, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -114,6 +115,8 @@ const PostsList = () => {
       </button>
     );
     console.log(data)
+    console.log("Fetched Posts Data:", data?.posts);
+
     
     // Page buttons
     for (let i = 1; i <= totalPages; i++) {
@@ -258,7 +261,7 @@ const PostsList = () => {
                       >
                         <div className="post-content">
                           <h3 className="post-title">
-                            {post?.title || "Untitled Post"}
+                            {post?.refId.title || "Untitled Post"}
                           </h3>
                           
                           <p className="post-excerpt">
