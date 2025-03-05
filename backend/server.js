@@ -103,6 +103,7 @@ const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes');
 const articleRouter = require("./router/article/article");
 const webinarRouter = require("./router/webinar/webinar");
 const VideoGuideRouter = require("./router/StepbyStepRouter/StepbyStepRouter");
+const playlistRouter = require("./router/playlist/playlist"); // Added playlist router import
 
 
 // Connect to Database
@@ -152,6 +153,8 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
 app.use("/api/v1/article", articleRouter);
 app.use("/api/v1/webinar", webinarRouter);
+app.use("/api/v1/playlist", playlistRouter); // Add playlist routes here
+
 
 
 

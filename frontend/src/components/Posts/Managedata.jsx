@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { FileText, Video, BookOpen, Plus, Calendar } from "lucide-react";
+import { FileText, Video, BookOpen, Plus, Calendar, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Previewdata from "./Previewdata";
 
 const ManageData = () => {
   const navigate = useNavigate();
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+  const [selectedeyebutton, setselectedeyebutton] = useState(null)
+  const [selectedcontent, setselectedcontent] = useState(null)
   const [contentItems, setContentItems] = useState([]);
+
+
+
+
+
+
   useEffect(() => {
     const fetchContentItems = async () => {
       try {
@@ -83,7 +92,23 @@ const ManageData = () => {
     );
   };
 
+
+
+  
+
+  const handleOpenModalofposts = (post) => {
+    setselectedcontent(post);
+    setselectedeyebutton(true)
+    
+  };
+
+  const handleCloseModalofposts = () => {
+    setselectedcontent(null);
+    setselectedeyebutton(null)
+  };
+
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
 
@@ -278,6 +303,7 @@ const ManageData = () => {
                         {new Date(item.date).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium space-x-2">
+                      <Eye       onClick={() => handleOpenModalofposts(item)}/>
                         <button className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
                           Edit
                         </button>
@@ -299,7 +325,17 @@ const ManageData = () => {
           )}
         </div>
       </div>
+
+
     </div>
+     {selectedeyebutton && (
+            <Previewdata
+              post={selectedcontent}
+              onHide={handleCloseModalofposts}
+              show={true}
+            />
+          )}
+    </>
   );
 };
 
