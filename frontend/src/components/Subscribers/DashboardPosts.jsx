@@ -28,7 +28,7 @@ const DashboardPosts = () => {
       .catch((e) => console.log(e));
   };
   const userPosts = data?.user?.posts;
-  console.log(userPosts);
+  console.log("userPosts",userPosts);
   return (
     <section className="py-8">
       {userPosts?.length < 0 ? (

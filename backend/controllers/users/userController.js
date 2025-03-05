@@ -129,6 +129,7 @@ const userController = {
   //! Profile
   profile: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id)
+  
       .populate("followers")
       .populate("following")
       .populate("posts")

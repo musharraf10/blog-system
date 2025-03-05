@@ -327,107 +327,125 @@ const ContentTable = ({ rows, onDelete }) => {
         </Box>
       ) : (
         // Desktop Table View
-        <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
-          <Table>
-            <TableHead sx={{ backgroundColor: "#f0f2f5" }}>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Description</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Preview</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>User Details</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRows.length > 0 ? (
-                filteredRows.map((row, index) => (
-                  <TableRow 
-                    key={index} 
-                    sx={{ 
-                      "&:nth-of-type(odd)": { backgroundColor: "#fafafa" },
-                      "&:hover": { backgroundColor: "#f5f5f5" },
-                      transition: "background-color 0.2s ease"
-                    }}
-                  >
-                    <TableCell>{row.title}</TableCell>
-                    <TableCell>{row.description}</TableCell>
-                    <TableCell>
-                      <img
-                        src={row.image}
-                        alt="Preview"
-                        style={{ width: 60, height: 60, cursor: "pointer", borderRadius: "8px", objectFit: "cover" }}
-                        onClick={() => handleImageClick(row.image, row.title, row.description)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div>User ID: {row.user.id}</div>
-                      <div>User Name: {row.user.name}</div>
-                      <div>Role: {row.user.role}</div>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        sx={{ 
-                          backgroundColor: 
-                            row.status === "Posted" ? "#ff9800" : 
-                            row.status === "Verified" ? "#4caf50" : 
-                            row.status === "Rejected" ? "#f44336" : 
-                            "#3f51b5", 
-                          color: "#fff",
-                          boxShadow: 2
-                        }}
-                      >
-                        {row.status}
-                      </Button>
-                      {row.status === "Rejected" && row.rejectionReason && (
-                        <Typography variant="caption" display="block" sx={{ mt: 1, color: "text.secondary" }}>
-                          Reason: {row.rejectionReason}
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                        <IconButton size="small" color="primary" onClick={() => handleLike(index)}>
-                          <Favorite />
-                          <Typography variant="caption" sx={{ ml: 0.5 }}>{likes[index] || 0}</Typography>
-                        </IconButton>
-                        <IconButton size="small" color="secondary" onClick={() => handleDislike(index)}>
-                          <ThumbDown />
-                          <Typography variant="caption" sx={{ ml: 0.5 }}>{dislikes[index] || 0}</Typography>
-                        </IconButton>
-                        <IconButton size="small" onClick={(event) => handleCommentClick(event, row.user)}>
-                          <Comment />
-                        </IconButton>
-                        <IconButton size="small" onClick={() => handleShare(row.title, row.description)}>
-                          <Share />
-                        </IconButton>
-                        <IconButton size="small" color="error" onClick={() => handleDelete(index)}>
-                          <Delete />
-                        </IconButton>
-                        <IconButton 
-                          size="small" 
-                          color="warning" 
-                          onClick={() => handleRejectionDialogOpen(index)}
-                          disabled={row.status === "Rejected"}
-                        >
-                          <Close />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    <Typography variant="body1">No content found matching the selected filter</Typography>
-                  </TableCell>
-                </TableRow>
+<TableContainer 
+  component={Paper} 
+  sx={{ 
+    borderRadius: 3, 
+    boxShadow: 4, 
+    overflow: "hidden", 
+    border: "1px solid #e0e0e0"
+  }}
+>
+  <Table>
+    <TableHead sx={{ backgroundColor: "#e3f2fd" }}>
+      <TableRow>
+        {["Title", "Description", "Preview", "User Details", "Status", "Actions"].map((header) => (
+          <TableCell key={header} sx={{ fontWeight: "bold", color: "#0d47a1", fontSize: "1rem" }}>
+            {header}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {filteredRows.length > 0 ? (
+        filteredRows.map((row, index) => (
+          <TableRow 
+            key={index} 
+            sx={{ 
+              "&:nth-of-type(odd)": { backgroundColor: "#fafafa" },
+              "&:hover": { backgroundColor: "#f1f8ff" },
+              transition: "background-color 0.2s ease"
+            }}
+          >
+            <TableCell>{row.title}</TableCell>
+            <TableCell>{row.description}</TableCell>
+            <TableCell>
+              <img
+                src={row.image}
+                alt="Preview"
+                style={{ 
+                  width: 60, 
+                  height: 60, 
+                  cursor: "pointer", 
+                  borderRadius: "12px", 
+                  objectFit: "cover",
+                  border: "3px solid white"  // White border added
+                }}
+                onClick={() => handleImageClick(row.image, row.title, row.description)}
+              />
+            </TableCell>
+            <TableCell>
+              <Typography variant="body2"><strong>User ID:</strong> {row.user.id}</Typography>
+              <Typography variant="body2"><strong>User Name:</strong> {row.user.name}</Typography>
+              <Typography variant="body2"><strong>Role:</strong> {row.user.role}</Typography>
+            </TableCell>
+            <TableCell>
+              <Button
+                variant="contained"
+                size="small"
+                sx={{ 
+                  backgroundColor: 
+                    row.status === "Posted" ? "#ff9800" : 
+                    row.status === "Verified" ? "#4caf50" : 
+                    row.status === "Rejected" ? "#f44336" : 
+                    "#3f51b5", 
+                  color: "#fff",
+                  fontWeight: "bold",
+                  boxShadow: 2,
+                  "&:hover": { opacity: 0.9 }
+                }}
+              >
+                {row.status}
+              </Button>
+              {row.status === "Rejected" && row.rejectionReason && (
+                <Typography variant="caption" sx={{ mt: 1, color: "text.secondary" }}>
+                  Reason: {row.rejectionReason}
+                </Typography>
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </TableCell>
+            <TableCell>
+              {/* Actions in a Single Row */}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "nowrap" }}>
+                <IconButton size="small" color="primary" onClick={() => handleLike(index)}>
+                  <Favorite />
+                  <Typography variant="caption" sx={{ ml: 0.5 }}>{likes[index] || 0}</Typography>
+                </IconButton>
+                <IconButton size="small" color="secondary" onClick={() => handleDislike(index)}>
+                  <ThumbDown />
+                  <Typography variant="caption" sx={{ ml: 0.5 }}>{dislikes[index] || 0}</Typography>
+                </IconButton>
+                <IconButton size="small" onClick={(event) => handleCommentClick(event, row.user)}>
+                  <Comment />
+                </IconButton>
+                <IconButton size="small" onClick={() => handleShare(row.title, row.description)}>
+                  <Share />
+                </IconButton>
+                <IconButton size="small" color="error" onClick={() => handleDelete(index)}>
+                  <Delete />
+                </IconButton>
+                <IconButton 
+                  size="small" 
+                  color="warning" 
+                  onClick={() => handleRejectionDialogOpen(index)}
+                  disabled={row.status === "Rejected"}
+                >
+                  <Close />
+                </IconButton>
+              </Box>
+            </TableCell>
+          </TableRow>
+        ))
+      ) : (
+        <TableRow>
+          <TableCell colSpan={6} align="center">
+            <Typography variant="body1">No content found matching the selected filter</Typography>
+          </TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+</TableContainer>
+
       )}
 
       {/* Preview Dialog */}

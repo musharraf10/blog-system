@@ -27,6 +27,7 @@ import UserManagement from "../components/Admin/UserManagement/Usersmanagement";
 import ManageData from "../components/Posts/Managedata";
 import WebinarForm from "../components/Posts/WebinarForm";
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import StepByStepGuide from "../components/Posts/StepByStepGuide";
 
 
 
@@ -48,6 +49,8 @@ const AdminRoutes = () => {
           <Route path="payment-management" element={<PaymentsDashboard/>} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post/article" element={<CreatePost />} />
+          <Route path="create-post/webinar" element={<WebinarForm />} />
+          <Route path="create-post/StepbyStepGuide" element={<StepByStepGuide />} />
           <Route path="create-post/webinar" element={<WebinarForm />} />
           <Route path="manage-content" element={<ManageData />} />
           <Route path="posts" element={<DashboardPosts />} />
