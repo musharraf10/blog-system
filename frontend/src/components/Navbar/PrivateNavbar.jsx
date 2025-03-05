@@ -1,4 +1,4 @@
-import { Fragment , useEffect, useState} from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -185,7 +185,7 @@ export default function PrivateNavbar() {
                   sx={{
                     backgroundColor: "#007bff",
                     color: "white",
-                    borderRadius:"10px",
+                    borderRadius: "10px",
                     "&:hover": {
                       backgroundColor: "transparent",
                       border: "1px solid #007bff",
@@ -207,7 +207,7 @@ export default function PrivateNavbar() {
                 </Button>
 
 
-              
+
 
                 {/* Modal Component */}
                 <Checkposttypemodal
