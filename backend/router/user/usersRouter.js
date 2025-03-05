@@ -3,10 +3,9 @@ const multer = require("multer");
 const userController = require("../../controllers/users/userController");
 const isAuthenticated = require("../../middlewares/isAuthenticated");
 const roleCheck = require("../../middlewares/roleCheck");
-const storage = require("../../utils/fileupload");
+const upload = require("../../utils/fileupload");
 
 const usersRouter = express.Router();
-const upload = multer({ storage });
 
 // Authentication Routes
 usersRouter.post("/register", userController.register);

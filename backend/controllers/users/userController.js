@@ -317,7 +317,7 @@ const userController = {
     //email
     const { email } = req.body;
     console.log(email)
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user);
    
     user.email = email;
     user.isEmailVerified = false;
@@ -334,7 +334,7 @@ const userController = {
   }),
   
   updateProfilePic: asyncHandler(async (req, res) => {
-    
+    console.log(req.file)
     await User.findByIdAndUpdate(
       req.user,
       {

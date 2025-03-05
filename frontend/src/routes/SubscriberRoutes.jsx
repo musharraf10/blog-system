@@ -30,6 +30,7 @@ import { BookmarkPost } from "../components/Posts/BookmarkPost";
 import ResetPassword from "../components/Subscribers/ResetPassword";
 import ViewGuide from "../components/Posts/ViewGuide";
 import GuideDetails from "../components/Posts/GuideDetails";
+import CheckoutForm from "../components/Plans/CheckoutForm";
 
 const SubscriberRoutes = () => {
   return (
@@ -65,12 +66,14 @@ const SubscriberRoutes = () => {
         <Route path="webinars" element={<Webinars />} />
         <Route path="stepbystepguide" element={<ViewGuide />} />
         <Route path="guide/:guideId" element={<GuideDetails />} />
+        <Route path="checkout/:_id" element={<CheckoutForm />} />
 
-        <Route
-          path="account-verification/:verifyToken"
-          element={<AccountVerifiedComponent />}
-        />
+       
       </Route>
+      <Route
+            path="/account-verification/:verifyToken"
+            element={<AccountVerifiedComponent />}
+          />
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>

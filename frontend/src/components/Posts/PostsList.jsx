@@ -231,13 +231,7 @@ const PostsList = () => {
                         />
                         
                         {/* Bookmark Button */}
-                        <button 
-                          className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
-                          onClick={(e) => toggleBookmark(post._id, e)}
-                          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                        >
-                          <FaBookmark />
-                        </button>
+                       
                       </div>
                       
                       {/* Premium Overlay for Locked Content */}

@@ -63,14 +63,15 @@ const AdminRoutes = () => {
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="latestposts" element={<PostsList />} />
-          <Route
-            path="account-verification/:verifyToken"
-            element={<AccountVerifiedComponent />}
-          />
+         
           <Route path="create-plan" element={<CreatePlan />} />
           <Route path="add-category" element={<AddCategory />} />
           <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         </Route>
+        <Route
+            path="/account-verification/:verifyToken"
+            element={<AccountVerifiedComponent />}
+          />
       </Routes>
     );
   };
