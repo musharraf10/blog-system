@@ -14,19 +14,19 @@ export default function PostDetailsModal({ post, show, onHide }) {
         <p><strong>Author:</strong> {post.author?.username || "Unknown"}</p>
         <p><strong>Description:</strong> {post.description || "No description available"}</p>
         <p><strong>Status:</strong> {post.status || "N/A"}</p>
-        
+         
         {post.image && (
-          <div>
+          <div className="card">
             <img className="imginmodal" src={post.image} alt="Post" style={{  borderRadius: "10px" }} />
           </div>
-        )}
-        
+        )}  
+       
         <p className="mt-3"><strong>Created:</strong> {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : "Unknown"}</p>
         <p><strong>Updated:</strong> {post.updatedAt ? new Date(post.updatedAt).toLocaleDateString() : "Unknown"}</p>
 
         {post.status === "approved" && (
           <>
-            <p><strong>Published Date:</strong>
+            <p><strong>Published Date ;</strong>
             
              {/* {post.publishedDate ? new Date(post.publishedDate).toLocaleDateString() : "Unknown"} */}
              {new Date(post.publisheddate).toLocaleDateString("en-GB")}
@@ -59,5 +59,6 @@ export default function PostDetailsModal({ post, show, onHide }) {
         <Button  onClick={onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
-  );
+
+  );
 }

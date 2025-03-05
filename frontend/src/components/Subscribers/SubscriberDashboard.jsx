@@ -71,7 +71,7 @@ export default function AdminDashboard() {
 
       <div className="flex min-h-screen">
         {/* Sidebar for desktop - Sticky and does not scroll */}
-        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200 shadow-md fixed top-15 left-0 h-[89vh]">
+        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200 shadow-md fixed top-15 left-0 h-[100vh]">
           <Link to="/subscriber" className="mb-6 flex items-center justify-center">
             <FaBlog className="h-8 w-auto text-orange-500" />
           </Link>

@@ -4,27 +4,30 @@ import { Link } from "react-router-dom";
 
 const CallToAction = () => {
   return (
-    <section className="py-24 bg-orange-50">
-      <div className="container mx-auto px-4">
-        <div className="bg-white border border-orange-100 rounded-4xl py-20 px-8">
-          <div className="flex justify-center mb-6">
-            <FaLightbulb className="text-orange-500" size="68" />
-          </div>
-          <h1 className="text-4xl lg:text-5xl font-bold font-heading mb-6 text-center max-w-lg lg:max-w-2xl mx-auto">
-            Discover Fun and Exciting Knowledge
-          </h1>
-          <p className="text-gray-500 text-center mb-10">
-            Embark on an exciting learning adventure together - Join now!
-          </p>
-          <div className="flex justify-center">
-            <Link
-              className="w-full sm:w-auto text-center py-5 px-8 mb-8 h-16 inline-flex items-center justify-center rounded-full bg-orange-500 border border-orange-600 shadow font-bold font-heading text-white hover:bg-orange-600 focus:ring focus:ring-orange-200 transition duration-200"
-              to="/register"
-            >
-              Sign Up Now
-            </Link>
-          </div>
-        </div>
+    <section className="w-full py-24 flex flex-col items-center text-center">
+      {/* Icon */}
+      <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-4 rounded-full shadow-lg">
+        <FaLightbulb className="text-white" size={28} />
+      </div>
+
+      {/* Heading */}
+      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mt-10 leading-snug">
+        Discover Fun and Exciting Knowledge
+      </h1>
+
+      {/* Description */}
+      <p className="text-lg text-gray-700 mt-6 max-w-2xl leading-relaxed">
+        Embark on an exciting learning adventure together - Join now!
+      </p>
+
+      {/* CTA Button */}
+      <div className="mt-20">
+        <Link
+          to="/register"
+          className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] hover:from-[#0D47A1] hover:to-[#1E88E5] transition-all duration-300 text-white font-semibold text-lg px-7 py-3 rounded-full shadow-lg transform hover:scale-105"
+        >
+          Sign Up Now
+        </Link>
       </div>
     </section>
   );
