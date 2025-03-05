@@ -10,43 +10,45 @@ import { MdClear } from "react-icons/md";
 import truncateString from "../../utils/truncateString";
 import { useLocation } from "react-router-dom";
 import PublicNavbar from "../Navbar/PublicNavbar";
+import axios from "axios";
+
+import {loadStripe} from '@stripe/stripe-js';
 
 const PostsList = () => {
   const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
+  const [planName, setPlanName] = useState("");
 
-  // Simulate checking if user is subscribed
-  // In a real app, this would come from your auth context or API
-  useEffect(() => {
-    // For demo purposes, we'll check localStorage
-    // In production, this would be a proper auth check
-    const userSubscriptionStatus = localStorage.getItem("userSubscriptionStatus");
-    setIsUserSubscribed(userSubscriptionStatus === "subscribed");
-  }, []);
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
-  useEffect(() => {
-    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedPosts")) || [];
-    setBookmarkedPosts(savedBookmarks);
-  }, []);
+  const getPlan = async () => {
+    try {
+      const response = await axios.get(`${BackendServername}/users/fetchplan`, {
+        withCredentials: true,
+      });
 
-  
-  const toggleBookmark = (postId, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    let updatedBookmarks;
-    if (bookmarkedPosts.includes(postId)) {
-      updatedBookmarks = bookmarkedPosts.filter(id => id !== postId);
-    } else {
-      updatedBookmarks = [...bookmarkedPosts, postId];
+      console.log("Fetched Plan:", response.data.plan);
+      setPlanName(response.data.plan?.planName || "free"); // Avoid errors if `plan` is missing
+    } catch (error) {
+      console.error("Error fetching plan:", error);
     }
-    setBookmarkedPosts(updatedBookmarks);
-    localStorage.setItem("bookmarkedPosts", JSON.stringify(updatedBookmarks));
   };
 
+  useEffect(() => {
+    getPlan();
+  }, []);
+
+  useEffect(() => {
+    setIsUserSubscribed(planName !== "Free");
+  }, [planName]);
+
+  const handleContent = async () =>{
+    const Stripe = await loadStripe('pk_test_51Qw85zFSLEamEKhDkKe5ZOLgaih2kgw3gUCTYooo2tAyP3NSEFPPt0jvOLgaf7SSYpEQDgQhqwHh5vTXoK7p3VBb00dhMvsm8f')
+    const price = postId
+  }
+  
   const location = useLocation();
   const showHeaderFooter = location.pathname.includes("/posts");
 
@@ -87,11 +89,7 @@ const PostsList = () => {
   });
 
   // Function to simulate subscription
-  const handleSubscribe = () => {
-    
-    localStorage.setItem("userSubscriptionStatus", "subscribed");
-    setIsUserSubscribed(true);
-  };
+ 
 
   // Check if a post is premium (price > 0)
   const isPremiumPost = (post) => {
@@ -211,7 +209,7 @@ const PostsList = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {data?.posts?.map((post) => {
                   const isPremium = isPremiumPost(post.price);
-                  const isBookmarked = bookmarkedPosts.includes(post._id);
+                  
                   
                   return (
                     <div key={post._id} className="post-card bg-white">
@@ -234,7 +232,6 @@ const PostsList = () => {
                        
                       </div>
                       
-                      {/* Premium Overlay for Locked Content */}
                       {isPremium && !isUserSubscribed && (
                         <div className="premium-overlay">
                           <FaLock className="premium-lock-icon" />
@@ -243,7 +240,7 @@ const PostsList = () => {
                           </p>
                           <button 
                             className="unlock-button"
-                            onClick={handleSubscribe}
+                            onClick={handleContent}
                           >
                             Subscribe Now
                           </button>

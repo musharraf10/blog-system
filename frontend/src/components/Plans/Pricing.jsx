@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Link } from "react-router-dom";
 import { fetchPlansAPI } from "../../APIServices/plans/plans";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 
 const Pricing = () => {
   const { data, isError, isLoading, error } = useQuery({

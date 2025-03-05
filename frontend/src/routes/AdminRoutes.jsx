@@ -66,8 +66,9 @@ const AdminRoutes = () => {
          
           <Route path="create-plan" element={<CreatePlan />} />
           <Route path="add-category" element={<AddCategory />} />
-          <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
+         
         </Route>
+        <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         <Route
             path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}

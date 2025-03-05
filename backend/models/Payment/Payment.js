@@ -25,11 +25,6 @@ const paymentSchema = new mongoose.Schema(
       default: "pending",
       required: true,
     },
-    paymentMethod: {
-      type: String,
-      enum: ["Stripe", "PayPal", "Credit Card", "Crypto"],
-      required: true, // Track how payment was made
-    },
     subscriptionPlan: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Plan",
@@ -41,7 +36,7 @@ const paymentSchema = new mongoose.Schema(
     },
     content: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Post", // Content reference for pay-per-view (PPV)
+      ref: "Post", 
       default: null,
     },
     amount: {
