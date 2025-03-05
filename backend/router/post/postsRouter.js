@@ -46,6 +46,8 @@ postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPos
 postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);
 
 
+postRouter.patch("/likes/:postId", isAuthenticated, postController.like);
+postRouter.patch("/dislikes/:postId", isAuthenticated, postController.dislike);
 
 
 
@@ -75,8 +77,6 @@ postRouter.delete(
 postRouter.get("/analytics", postController.fetchPostAnalytics);
 
 // Like & Dislike Post
-postRouter.patch("/likes/:postId", isAuthenticated, postController.like);
-postRouter.patch("/dislikes/:postId", isAuthenticated, postController.dislike);
 
 
 

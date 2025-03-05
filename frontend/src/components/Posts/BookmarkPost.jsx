@@ -142,23 +142,21 @@ const BookmarkPost = () => {
             key={post._id}
             className="bg-white border border-gray-200 rounded-2xl shadow-lg transition-all duration-300 transform hover:shadow-2xl hover:-translate-y-2"
           >
-            <Link to={`/subscriber/bookmark`} className="relative block">
+            <Link to={`/posts/${post._id}`} className="relative block">
               <img
                 // src={post.image}
                 // alt={post.title}
                 // className="w-full h-48 object-cover"
                 // loading="lazy"
-                src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                // src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                 // alt={post.title}
-                className="w-full h-48 object-cover rounded-t-2xl" // ✅ This ensures only the top corners are rounded
-              // loading="lazy"
-              // src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                className="w-full h-48 object-cover rounded-t-2xl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1E3A8A]/80 to-transparent opacity-0"></div>
             </Link>
             <div className="p-3">
               <h2 className="text-lg fs-3 font-semibold text-gray-900 text-left truncate">
-                {post.title}TajMahal
+                {post.title}
               </h2>
               <p className="text-gray-500 text-sm mb-4 text-left mt-3 ms-2">
                 {new Date(post.createdAt).toLocaleDateString(undefined, {
@@ -167,15 +165,9 @@ const BookmarkPost = () => {
                   day: "numeric",
                 })}
               </p>
-              {/* <Link
-                to={`/posts/${post._id}`}
-                className="inline-block px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-              >
-                View More
-              </Link> */}
               <div className="flex justify-end mt-4">
             <Link
-              to={`/subscriber/bookmark`}
+              to={`/posts/${post._id}`}
               className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               View More

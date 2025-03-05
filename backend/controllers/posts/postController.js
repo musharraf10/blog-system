@@ -408,37 +408,45 @@ const postController = {
     }
   },
 
-  like: asyncHandler(async (req, res) => {
-    const postId = req.params.postId;
+   like: asyncHandler(async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const userId = req.user;
+  
+      console.log("Liking Post:", postId);
+      console.log("User:", userId);
+  
+      const post = await Post.findById(postId);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
 
-    const userId = req.user._id;
-
-    const post = await Post.findById(postId);
-
-    if (post?.dislikes.includes(userId)) {
-      post?.dislikes?.pull(userId);
+      if (post?.dislikes.includes(userId)) {
+        post?.dislikes?.pull(userId);
+      }
+  
+      if (post?.likes.includes(userId)) {
+        post?.likes?.pull(userId);
+      } else {
+        post?.likes?.push(userId);
+      }
+  
+      await post.save();
+  
+      res.json({ message: "Post Liked" });
+    } catch (error) {
+      console.error("Error in liking post:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-
-    if (post?.likes.includes(userId)) {
-      post?.likes?.pull(userId);
-    } else {
-      post?.likes?.push(userId);
-    }
-
-    await post.save();
-
-    res.json({
-      message: "Post Liked",
-    });
   }),
 
   dislike: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
-
+    console.log("Dislike",postId)
     const userId = req.user;
-
+    console.log("User", userId)
     const post = await Post.findById(postId);
-
+    console.log("post", post)
     if (post?.likes.includes(userId)) {
       post?.likes?.pull(userId);
     }
@@ -481,7 +489,7 @@ const postController = {
 
   unBookMarkPost: asyncHandler(async (req, res) => {
     const {postId} = req.params;
-    const userId = req.user._id;
+    const userId = req.user;
 
     const post = await Post.findById(postId);
 

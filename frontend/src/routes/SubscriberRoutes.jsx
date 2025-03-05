@@ -28,6 +28,7 @@ import Trending from "../components/Subscribers/Trending/Trending";
 import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import PostDetails from "../components/Posts/PostDetails";
 
 const SubscriberRoutes = () => {
   return (
@@ -53,6 +54,7 @@ const SubscriberRoutes = () => {
 
         <Route path="bookmarks" element={<BookmarkPost />} />
         <Route path="profile" element={<AccountSummaryDashboard />} />
+        
         <Route path="my-followings" element={<MyFollowing />} />
         <Route path="my-followers" element={<MyFollowers />} />
         <Route path="add-email" element={<AddEmailComponent />} />
@@ -67,6 +69,7 @@ const SubscriberRoutes = () => {
           element={<AccountVerifiedComponent />}
         />
       </Route>
+      <Route path="/posts/:postId" element={<PostDetails/>}/>
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>

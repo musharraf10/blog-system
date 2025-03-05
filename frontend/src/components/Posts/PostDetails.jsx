@@ -95,10 +95,8 @@ const PostDetails = () => {
     <div className="flex justify-center items-center p-6">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
         <img
-          // src={data?.postFound?.image}
-          src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-          alt={data?.postFound?.description}
-          className="w-3/4 max-w-lg h-64 object-cover rounded-lg mb-2 border-4 border-gray-300 shadow-lg mx-auto transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
+          src={data?.postFound?.image}
+          className="w-full max-w-lg h-64 object-cover rounded-lg mb-2 border-2   mx-auto transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
         />
 
         {data?.postFound?.description}
@@ -197,19 +195,66 @@ const PostDetails = () => {
           </form>
 
           {/* Scrollable Comments Section */}
-          <div className="max-h-60 overflow-y-auto space-y-4 p-2 border rounded-lg">
+          {/* <div className="max-h-60 overflow-y-auto space-y-4 p-2 border rounded-lg">
             {data?.postFound?.comments?.map((comment, index) => (
               <div key={index} className="p-2 bg-gray-100 rounded-lg shadow-sm text-left">
                 <div className="mt-2 flex items-center text-gray-600 text-sm">
-                  <span className="font-semibold text-primary">{comment.author?.username}</span>
-                  <span className="ml-2 text-primary-500">
-                    {new Date(comment.createdAt).toLocaleDateString()}
-                  </span>
+      
+                  <div className="d-flex">
+              
+                    <img
+                      src={comment.author?.image || "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=600"}
+                      alt="User Avatar"
+                      className="w-10 h-10 rounded-full border border-gray-300 shadow-sm"
+                    />
+                    <div>
+                      <span className="font-semibold text-primary">{comment.author?.username}</span>
+                      <span className="ml-2 text-primary-500">
+                        {new Date(comment.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                  </div>
+
                 </div>
-                <p className="text-gray-800">{comment.content}</p>
+
               </div>
             ))}
-          </div>
+          </div> */}
+
+<div 
+  className="space-y-4 p-2 border rounded-lg"
+  style={{ maxHeight: "250px", overflowY: data?.postFound?.comments?.length > 3 ? "auto" : "visible" }}
+>
+  {data?.postFound?.comments?.map((comment, index) => (
+    <div key={index} className="flex items-start space-x-4 p-2 bg-gray-100 rounded-lg shadow-sm text-left">
+      
+      {/* Profile Picture */}
+      <img
+        src={comment.author?.profilePic } // Default profile pic
+        alt={comment.author?.username}
+        className="w-10 h-10 rounded-full object-cover mt-2"
+      />
+
+      {/* Comment Content */}
+      <div className="flex-1">
+      
+
+        {/* Author Name & Date */}
+        <div className="mt-2 flex items-center text-sm">
+          <span className="font-bold text-blue-600">{comment.author?.username}</span>
+          <span className="ml-2 text-gray-500">
+            {new Date(comment.createdAt).toLocaleDateString()}
+          </span>
+        </div>
+        <p className="text-gray-800 font-semibold">{comment.content}</p>
+      </div>
+
+    </div>
+  ))}
+</div>
+
+
         </div>
 
       </div>
