@@ -27,7 +27,7 @@ export default function PublicRoutes() {
         <Route element={<RequestResetPassword />} path="/forgot-password" />
         <Route element={<Rankings />} path="/ranking" />
         <Route element={<PostsList />} path="/posts" />
-        <Route path="posts/:postId" element={<AuthRoute allowedRoles={["curator","subscriber","admin"]}> <PostDetails /></AuthRoute>} />
+        <Route path="/subscriber/bookmark" element={<AuthRoute allowedRoles={["curator","subscriber","admin"]}> <PostDetails /></AuthRoute>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
   )
