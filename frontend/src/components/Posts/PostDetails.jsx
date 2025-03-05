@@ -1,7 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { FaThumbsUp, FaThumbsDown, FaEye, FaComment, FaBookmark } from "react-icons/fa";
+import {
+  FaThumbsUp,
+  FaThumbsDown,
+  FaEye,
+  FaComment,
+  FaBookmark,
+} from "react-icons/fa";
 import { RiUserUnfollowFill, RiUserFollowLine } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -31,12 +37,10 @@ const PostDetails = () => {
     queryKey: ["profile"],
     queryFn: () => userProfileAPI(),
   });
-  console.log(data);
-  console.log(profileData);
+
   const targetId = data?.postFound?.author;
   const userId = profileData?.user?._id;
-  console.log("Target",targetId);
-  console.log("User",userId);
+
   const isFollowing = profileData?.user?.following?.some(
     (user) => user?._id?.toString() === targetId?.toString()
   );
@@ -92,22 +96,28 @@ const PostDetails = () => {
   });
 
   return (
-    <div className="flex justify-center items-center p-6">
+    <div className="flex flex-col items-center p-6">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
         <img
           src={data?.postFound?.image}
           alt={data?.postFound?.description}
-          className="w-full h-72 object-cover rounded-lg mb-4"
+          className="w-3/4 max-w-lg h-64 object-cover rounded-lg mb-2 border-1 mx-auto transition-transform duration-300 ease-in-out hover:scale-105"
         />
 
-        {data?.postFound?.description}
+        <p className="text-lg mb-4 text-left">{data?.postFound?.description}</p>
 
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-4 items-center">
-            <span className="flex items-center gap-1 cursor-pointer" onClick={likePostHandler}>
+            <span
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={likePostHandler}
+            >
               <FaThumbsUp /> {data?.postFound?.likes?.length || 0}
             </span>
-            <span className="flex items-center gap-1 cursor-pointer" onClick={dislikesPostHandler}>
+            <span
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={dislikesPostHandler}
+            >
               <FaThumbsDown /> {data?.postFound?.dislikes?.length || 0}
             </span>
             <span className="flex items-center gap-1">
@@ -117,32 +127,33 @@ const PostDetails = () => {
               className={`flex items-center gap-1 cursor-pointer ${
                 isBookmarked ? "text-blue-600" : "text-gray-600"
               }`}
-              onClick={isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler}
+              onClick={
+                isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler
+              }
             >
-              <FaBookmark /> 
+              <FaBookmark />
             </span>
-           
           </div>
 
           {isFollowing ? (
             <button
               onClick={unfollowUserHandler}
-              className="px-2 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 flex items-center gap-1"
+              className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black flex items-center gap-1"
             >
               <RiUserUnfollowFill /> Unfollow
             </button>
           ) : (
             <button
               onClick={followUserHandler}
-              className="px-2 py-2 border border-black text-black bg-transparent rounded-md hover:bg-black hover:text-white flex items-center gap-1"
+              className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black flex items-center gap-1"
             >
               <RiUserFollowLine /> Follow
             </button>
           )}
         </div>
 
-        <div className="mt-6">
-          <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+        <div className="mt-6 w-full">
+          <h2 className="text-2xl font-semibold mb-4 text-center">Comments</h2>
           <form onSubmit={formik.handleSubmit} className="mb-6">
             <textarea
               className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -155,24 +166,37 @@ const PostDetails = () => {
             )}
             <button
               type="submit"
-              className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+              className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
             >
               <FaComment className="inline mr-1" /> Add Comment
             </button>
           </form>
 
-          <div className="space-y-4">
-            {data?.postFound?.comments?.map((comment, index) => (
-              <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-sm">
-                <p className="text-gray-800">{comment.content}</p>
-                <div className="mt-2 flex items-center text-gray-600 text-sm">
-                  <span className="font-semibold">{comment.author?.username}</span>
-                  <span className="ml-2 text-gray-500">
+          <div className="space-y-4 max-h-60 overflow-y-auto p-2 border border-gray-300 rounded-lg shadow-sm">
+            {data?.postFound?.comments
+               ?.slice()
+              .reverse()
+              .map((comment, index) => (
+                <div
+                  key={index}
+                  className="p-2 bg-gray-100 rounded-lg shadow-sm text-left"
+                >
+                  <div className="mt-2 flex items-center text-gray-600 text-md">
+                  <img
+              src={comment.author?.profilePic || "https://via.placeholder.com/40"}
+              alt={comment.author?.username}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+                    <span className="font-semibold text-primary">
+                      {comment.author?.username}
+                    </span>
+                    <span className="ml-2 text-gray-500 ">
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </span>
+                  </div>
+                  <p className="text-gray-800 text-sm">{comment.content}</p>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
