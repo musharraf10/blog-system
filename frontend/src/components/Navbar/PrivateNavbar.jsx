@@ -112,7 +112,8 @@ export default function PrivateNavbar() {
                 >
                   <IoLogOutOutline className="h-5 w-5" />
                 </button>
-                <NotificationCounts />
+
+                <NotificationCounts props={userRole}/>
 
                 <Menu as="div" className="relative">
                   <Menu.Button className="flex text-sm rounded-full focus:ring-2 focus:ring-indigo-500">
