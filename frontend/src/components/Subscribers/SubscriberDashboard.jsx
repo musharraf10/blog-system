@@ -12,7 +12,7 @@ const navigation = [
   { name: "Trending", href: "/subscriber/trendingcontent", icon: MdContentPaste },
   { name: "Webinars", href: "/subscriber/webinars", icon: FaUsersCog },
   { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
-  { name: "Video Tutorials", href: "/subscriber/videoguides", icon: FaUserEdit },
+  { name: "Video Tutorials", href: "/subscriber/stepbystepguide", icon: FaUserEdit },
   { name: "Bookmarks", href: "/subscriber/bookmarks", icon: FaCalendarPlus },
   { name: "Upcoming Events", href: "/subscriber/upcomingevents", icon: FaTags },
 ];

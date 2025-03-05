@@ -57,6 +57,7 @@ const StepbyStepGuide = require('../../models/StepbyStepGuide/StepbyStepGuide');
 const cloudinary = require('../../utils/Cloudinary');
 const Tag = require("../../models/Tags/Tags.js");
 const Post = require("../../models/Post/Post.js");
+const { response } = require('express');
 
 
 const addStepbyStepGuide = async (req, res) => {
@@ -147,4 +148,28 @@ const addStepbyStepGuide = async (req, res) => {
     }
 };
 
-module.exports =  addStepbyStepGuide ;
+const getVideoGuide = async (req,res) =>{
+    try {
+        const video = await Post.find({contentData : "StepbyStepGuide"}).populate('refId');
+
+        res.status(200).json({response : video})
+
+    } catch (error) {
+        res.status(500).json({message : error.message})
+    }
+};
+
+const VideoGuideSingle = async(req, res) =>{
+    try {
+        const {guideId} = req.params;
+        console.log(guideId)
+
+        const findGuide = await Post.findById(guideId).populate("refId");
+
+        res.status(200).json({response : findGuide});
+    } catch (error) {
+        res.status(500).json({message : error.message})
+    }
+}
+
+module.exports =  {addStepbyStepGuide, getVideoGuide,VideoGuideSingle } ;

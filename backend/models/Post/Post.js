@@ -5,7 +5,7 @@ const postSchema = new mongoose.Schema(
   { 
     contentData:{
       type:String,
-      enum:["Article","Webinar","StepbyStepGuide", "VideoTutorial"],
+      enum:["Article", "Webinar", "StepbyStepGuide", "VideoTutorial"],
     },
     refId:{
       type:mongoose.Schema.Types.ObjectId,

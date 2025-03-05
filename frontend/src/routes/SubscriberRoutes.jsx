@@ -28,6 +28,8 @@ import Trending from "../components/Subscribers/Trending/Trending";
 import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import ViewGuide from "../components/Posts/ViewGuide";
+import GuideDetails from "../components/Posts/GuideDetails";
 
 const SubscriberRoutes = () => {
   return (
@@ -61,6 +63,8 @@ const SubscriberRoutes = () => {
         <Route path="pricing" element={<Pricing />} />
         <Route path="free-subscription" element={<PayingFreePlan />} />
         <Route path="webinars" element={<Webinars />} />
+        <Route path="stepbystepguide" element={<ViewGuide />} />
+        <Route path="guide/:guideId" element={<GuideDetails />} />
 
         <Route
           path="account-verification/:verifyToken"

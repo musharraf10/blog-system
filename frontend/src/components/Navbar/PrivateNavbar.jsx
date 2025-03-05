@@ -65,8 +65,8 @@ export default function PrivateNavbar() {
   };
 
   const navLinks = [
-    { name: "Latest Posts", path: `/${userRole}/latestposts` },
-    { name: "Creators Ranking", path: "/ranking" },
+    userRole !== "admin" && { name: "Latest Posts", path: `/${userRole}/latestposts` },
+    userRole !== "admin" && { name: "Creators Ranking", path: "/ranking" },
     userRole !== "admin" && { name: "Pricing", path: `/${userRole}/pricing` },
   ].filter(Boolean);
 
@@ -100,15 +100,9 @@ export default function PrivateNavbar() {
               </div>
 
               <div className="flex items-center space-x-10 mr-10">
-                <Link
-                  to={`/${userRole}`}
-                  className="bg-orange-600 text-white px-3 py-2 rounded-md hover:bg-indigo-500"
-                >
-                  <MdOutlineDashboard className="inline mr-1" /> Dashboard
-                </Link>
                 <button
                   onClick={logoutHandler}
-                  className="bg-red-600 text-white p-2 rounded-md hover:bg-indigo-500"
+                  className="text-black p-2 rounded-md hover:bg-white-500"
                 >
                   <IoLogOutOutline className="h-5 w-5" />
                 </button>
