@@ -10,7 +10,8 @@ export const createPostAPI = async (postData) => {
   });
   return response.data;
 };
-//!update post api
+
+
 export const updatePostAPI = async ({ formData, postId }) => {
   const response = await axios.patch(
     `${BASE_URL}/${postId}`,
@@ -120,6 +121,36 @@ export const fetchPostAnalytics = async () => {
 }
 
 
+export const bookmarkPostAPI = async (postId) => {
+  console.log("Post", postId);
+  const response = await axios.post(`${BASE_URL}/${postId}/bookmark`,
+    {},
+    {
+      withCredentials: true,
+    }
+);
+  return response.data;
+};
+
+export const unbookmarkPostAPI = async (postId) => {
+  const response = await axios.post(`${BASE_URL}/${postId}/unbookmark`,{},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
+
+export const fetchBookmarkedPostsAPI = async () => {
+  const response = await axios.get(`${BASE_URL}/bookmarked`,
+    {
+      withCredentials: true,
+    }
+  );
+  
+  return response.data;
+};
+
 const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
 
@@ -134,3 +165,4 @@ const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
       return [];
     }
   };
+

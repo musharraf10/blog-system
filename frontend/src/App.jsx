@@ -14,6 +14,7 @@ function App() {
         <AdminRoutes />
         <CuratorRoutes />
         <SubscriberRoutes />
+
       </>
     </BrowserRouter>
   );

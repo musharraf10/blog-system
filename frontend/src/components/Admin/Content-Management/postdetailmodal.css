@@ -1,122 +1,159 @@
-/* Modal Backdrop */
+/*  Modal Backdrop */
 .modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.3) !important;
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+/*  Modal Container */
+.postdetailsmodal {
+  font-family: 'Poppins', sans-serif;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 /* Modal Header */
 .postdetailsmodal .modal-header {
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
-  padding: 15px 20px;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  border-bottom: none;
+  padding: 18px 25px;
 }
 
 .postdetailsmodal .modal-header .modal-title {
-  font-weight: 700;
-  font-size: 1.6rem;
-  color: #333;
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* Close Button */
 .postdetailsmodal .modal-header .btn-close {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ff0000' class='bi bi-x' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708'/%3E%3C/svg%3E");
-  background-size: contain;
-  opacity: 1 !important;
+  filter: invert(1);
+  opacity: 0.8;
 }
 
-/* Modal Body */
+
+.postdetailsmodal .modal-header .btn-close:hover {
+  opacity: 1;
+}
+
+/*  Modal Body - Stylish Content */
 .postdetailsmodal .modal-body {
+  font-family: 'Lora', serif;
   font-size: 1rem;
-  color: #444;
-  padding: 20px;
-  line-height: 1.6;
+  color: #333;
+  padding: 25px;
+  line-height: 1.8;
+  background: #fafafa;
+  border-radius: 8px;
 }
 
+/* Text Styling */
 .postdetailsmodal .modal-body p {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-weight: 500;
+  color: #444;
 }
 
 .postdetailsmodal .modal-body strong {
-  color: #212529;
-  font-weight: 600;
+  color: #111;
+  font-weight: 700;
 }
 
-/* Image Styling */
+/*Image Styling */
 .postdetailsmodal .modal-body img {
   display: block;
   max-width: 100%;
-  height: 300px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  object-fit: cover;
+  height: auto;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 2px solid #ff758c;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.postdetailsmodal .modal-body img:hover {
+  transform: scale(1.05);
 }
 
 /* Accordion Styling */
 .postdetailsmodal .accordion-button {
   font-weight: bold;
-  background-color: #e9ecef;
-  color: #333;
-  transition: background-color 0.2s ease-in-out;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  transition: 0.3s ease;
 }
 
 .postdetailsmodal .accordion-button:hover {
-  background-color: #d6d8db;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
 }
 
 .postdetailsmodal .accordion-body {
-  background-color: #f8f9fa;
+  background: #fff;
   padding: 15px;
 }
 
 /* Comments Section */
 .postdetailsmodal ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
 .postdetailsmodal ul li {
   background: #fff;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 12px 16px;
+  border-radius: 6px;
   border: 1px solid #ddd;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  transition: background 0.3s ease-in-out;
 }
 
-/* Modal Footer */
-.postdetailsmodal .modal-footer {
-  background-color: #f8f9fa;
-  border-top: 2px solid #dee2e6;
-  padding: 15px;
+.postdetailsmodal ul li:hover {
+  background: #fce3e9;
 }
 
-/* Button Styling */
+/*  Modal Footer */
+.postdetailsmodal .modal-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  border-bottom: none;
+  padding: 18px 25px;
+}
+
+/*  Button Styling */
 .postdetailsmodal .modal-footer .btn {
   font-weight: 600;
-  border-radius: 6px;
-  padding: 10px 18px;
+  border-radius: 8px;
+  padding: 12px 20px;
   transition: all 0.3s ease-in-out;
 }
 
+/* Custom Close Button */
 .postdetailsmodal .modal-footer button {
-  color: red !important;
-  border: 1px solid red;
-  background-color: transparent;
+  color: white !important;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  border: none;
 }
 
 .postdetailsmodal .modal-footer button:hover {
-  color: white !important;
-  background-color: red !important;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  transform: scale(1.05);
 }
 
-/* Ensure Collapse is Visible */
-.postdetailsmodal .collapse {
-  visibility: visible !important;
+/* Scrollable Modal Body */
+.postdetailsmodalbody {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
-.postdetailsmodalbody{
-  height: 600px;
-  overflow-y: scroll;
+/*  Smooth Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1); }
 }
-

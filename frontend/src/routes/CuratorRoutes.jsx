@@ -21,6 +21,7 @@ import ContentDashBoard from "../components/Curator/ContentDashBoard";
 import DashBoard from "../components/Curator/contentEditor/DashBoard";
 import Analytics from "../components/Curator/contentEditor/Analytics";
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import WebinarForm from "../components/Posts/WebinarForm";
 
 
 
@@ -40,9 +41,9 @@ const CuratorRoutes = () => {
           <Route path="DashBoard" element={<DashBoard />} />
           <Route path="Analytics" element={<Analytics />} />
           <Route path="AddCategory" element={<AddCategory />} />
-
           <Route path="profile" element={<AccountSummaryDashboard />} />
-          <Route path="create-post" element={<CreatePost />} />
+          <Route path="create-post/article" element={<CreatePost />} />
+          <Route path="create-post/webinar" element={<WebinarForm />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
