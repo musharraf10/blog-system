@@ -28,13 +28,11 @@ const addarticleconroller = async (req, res) => {
       refId: newArticle._id,
       price
     })
+
+
     await newArticle.save()
     await createPost.save()
 
-
-
-
-   
     for (const tagName of tags) {
       const tag = await Tag.findOneAndUpdate(
         { tagname: tagName },
