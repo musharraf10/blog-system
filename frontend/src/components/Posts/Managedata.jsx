@@ -55,7 +55,7 @@ const ManageData = () => {
       description: "Scheduled live video sessions with chat/Q&A",
       color: "#A855F7 ",
     },
-  ]
+  ];
 
   const articleCount = contentItems.filter(
     (item) => item.contentData === "Article"
@@ -170,7 +170,7 @@ const ManageData = () => {
                   </span>{" "}
                 </div>
               </div>
-            )
+            );
           })}
         </div>
 
@@ -179,10 +179,11 @@ const ManageData = () => {
           <div className="px-4 py-5 bg-gray-50 border-b border-gray-200 flex flex-wrap">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${activeFilter === "all"
-                ? "bg-indigo-600 text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
+              className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
+                activeFilter === "all"
+                  ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+              }`}
             >
               All Content ({contentItems.length})
             </button>
@@ -194,14 +195,15 @@ const ManageData = () => {
                 <button
                   key={type.type}
                   onClick={() => setActiveFilter(type.type)}
-                  className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${activeFilter === type.type
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                    }`}
+                  className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
+                    activeFilter === type.type
+                      ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                  }`}
                 >
                   {type.type} ({count})
                 </button>
-              )
+              );
             })}
           </div>
 
@@ -209,28 +211,28 @@ const ManageData = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
-                <tr>
+                <tr className="text-center">
                   <th
                     scope="col"
-                    className="px-8 py-5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                    className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
                   >
                     Title
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                    className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
                   >
                     Type
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                    className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
                   >
                     Author
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                    className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
                   >
                     Date
                   </th>
@@ -291,28 +293,14 @@ const ManageData = () => {
           </div>
 
           {filteredItems.length === 0 && (
-            <div className="py-20 text-center text-gray-500">
-              <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-inner">
-                <Search className="h-10 w-10 text-[#1565C0]" />
-              </div>
-              <p className="text-lg font-medium text-gray-700">No content found for the selected filter.</p>
-              <p className="text-sm mt-2 text-gray-500 max-w-md mx-auto">
-                Try selecting a different category or create new content to get started.
-              </p>
-              <button
-                className="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 font-medium relative overflow-hidden group"
-                onClick={() => setActiveFilter("all")}
-              >
-                <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
-                View All Content
-              </button>
+            <div className="py-12 text-center text-gray-500">
+              No content found for the selected filter.
             </div>
           )}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ManageData
-
+export default ManageData;
