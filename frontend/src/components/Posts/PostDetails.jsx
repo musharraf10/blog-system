@@ -35,8 +35,8 @@ const PostDetails = () => {
   console.log(profileData);
   const targetId = data?.postFound?.author;
   const userId = profileData?.user?._id;
-  console.log("Target",targetId);
-  console.log("User",userId);
+  console.log("Target", targetId);
+  console.log("User", userId);
   const isFollowing = profileData?.user?.following?.some(
     (user) => user?._id?.toString() === targetId?.toString()
   );
@@ -95,9 +95,10 @@ const PostDetails = () => {
     <div className="flex justify-center items-center p-6">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
         <img
-          src={data?.postFound?.image}
+          // src={data?.postFound?.image}
+          src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
           alt={data?.postFound?.description}
-          className="w-full h-72 object-cover rounded-lg mb-4"
+          className="w-3/4 max-w-lg h-64 object-cover rounded-lg mb-2 border-4 border-gray-300 shadow-lg mx-auto transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
         />
 
         {data?.postFound?.description}
@@ -114,33 +115,67 @@ const PostDetails = () => {
               <FaEye /> {data?.postFound?.viewers?.length || 0}
             </span>
             <span
-              className={`flex items-center gap-1 cursor-pointer ${
-                isBookmarked ? "text-blue-600" : "text-gray-600"
-              }`}
+              className={`flex items-center gap-1 cursor-pointer ${isBookmarked ? "text-blue-600" : "text-gray-600"
+                }`}
               onClick={isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler}
             >
-              <FaBookmark /> 
+              <FaBookmark />
             </span>
-           
+
           </div>
 
           {isFollowing ? (
             <button
               onClick={unfollowUserHandler}
-              className="px-2 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 flex items-center gap-1"
+              className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black flex items-center gap-1"
             >
               <RiUserUnfollowFill /> Unfollow
             </button>
           ) : (
             <button
               onClick={followUserHandler}
-              className="px-2 py-2 border border-black text-black bg-transparent rounded-md hover:bg-black hover:text-white flex items-center gap-1"
+              className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black flex items-center gap-1"
             >
               <RiUserFollowLine /> Follow
             </button>
           )}
         </div>
 
+        {/* <div className="mt-6">
+          <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+          <form onSubmit={formik.handleSubmit} className="mb-6">
+            <textarea
+              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              rows="3"
+              placeholder="Write a comment..."
+              {...formik.getFieldProps("content")}
+            ></textarea>
+            {formik.touched.content && formik.errors.content && (
+              <div className="text-red-500 mb-2">{formik.errors.content}</div>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
+            >
+              <FaComment className="inline mr-1" /> Add Comment
+            </button>
+          </form>
+
+          <div className="space-y-4">
+            {data?.postFound?.comments?.map((comment, index) => (
+              <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-sm text-left">
+                <div className="mt-2 flex items-center text-gray-600 text-sm">
+                  <span className="font-semibold text-primary">{comment.author?.username}</span>
+                  <span className="ml-2 text-primary-500 ">
+                    {new Date(comment.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className="text-gray-800">{comment.content}</p>
+                
+              </div>
+            ))}
+          </div>
+        </div> */}
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-4">Comments</h2>
           <form onSubmit={formik.handleSubmit} className="mb-6">
@@ -155,26 +190,28 @@ const PostDetails = () => {
             )}
             <button
               type="submit"
-              className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+              className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
             >
               <FaComment className="inline mr-1" /> Add Comment
             </button>
           </form>
 
-          <div className="space-y-4">
+          {/* Scrollable Comments Section */}
+          <div className="max-h-60 overflow-y-auto space-y-4 p-2 border rounded-lg">
             {data?.postFound?.comments?.map((comment, index) => (
-              <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-sm">
-                <p className="text-gray-800">{comment.content}</p>
+              <div key={index} className="p-2 bg-gray-100 rounded-lg shadow-sm text-left">
                 <div className="mt-2 flex items-center text-gray-600 text-sm">
-                  <span className="font-semibold">{comment.author?.username}</span>
-                  <span className="ml-2 text-gray-500">
+                  <span className="font-semibold text-primary">{comment.author?.username}</span>
+                  <span className="ml-2 text-primary-500">
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </span>
                 </div>
+                <p className="text-gray-800">{comment.content}</p>
               </div>
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );
