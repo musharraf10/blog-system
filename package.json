@@ -1,0 +1,23 @@
+{
+  "name": "blog-system",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/musharraf10/blog-system.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/musharraf10/blog-system/issues"
+  },
+  "homepage": "https://github.com/musharraf10/blog-system#readme",
+  "description": "",
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.2.0"
+  }
+}
