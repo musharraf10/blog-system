@@ -25,17 +25,17 @@ const AddCategory = () => {
       categoryMutation.mutate(values);
     },
   });
-  console.log(categoryMutation);
+
   return (
     <div className="flex flex-wrap">
-      <div className="w-full  p-4">
+      <div className="w-full p-4">
         <div className="flex flex-col justify-center max-w-md mx-auto h-full py-12">
           <form onSubmit={formik.handleSubmit}>
-            <h1 className="text-3xl font-bold font-heading mb-4">
+            <h1 className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] mb-6">
               Add Category
             </h1>
-            {/* show loading */}
 
+            {/* show loading */}
             {categoryMutation.isPending && (
               <AlertMessage type="loading" message="Loading please wait" />
             )}
@@ -51,12 +51,12 @@ const AddCategory = () => {
                 message={categoryMutation?.error?.response?.data?.message}
               />
             )}
-            {/* Category Name */}
 
+            {/* Category Name */}
             <input
               type="text"
               {...formik.getFieldProps("categoryName")}
-              className="w-full rounded-full p-4 outline-none border border-gray-100  shadow placeholder-gray-500 focus:ring focus:ring-orange-200 transition duration-200 mb-4"
+              className="w-full rounded-full p-4 outline-none border border-gray-100 shadow placeholder-gray-500 focus:ring focus:ring-orange-200 transition duration-200 mb-4"
               placeholder="Category Name"
             />
             {formik.touched.categoryName && formik.errors.categoryName && (
@@ -64,13 +64,13 @@ const AddCategory = () => {
                 {formik.errors.categoryName}
               </div>
             )}
+<button
+  className="h-14 inline-flex items-center justify-center py-4 px-6 text-white font-bold font-heading rounded-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] p-2 hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black w-full text-center border border-orange-600 shadow focus:ring focus:ring-orange-200 transition duration-200 mb-8"
+  type="submit"
+>
+  Add Category
+</button>
 
-            <button
-              className="h-14 inline-flex items-center justify-center py-4 px-6 text-white font-bold font-heading rounded-full bg-orange-500 w-full text-center border border-orange-600 shadow hover:bg-orange-600 focus:ring focus:ring-orange-200 transition duration-200 mb-8"
-              type="submit"
-            >
-              Add Category
-            </button>
           </form>
         </div>
       </div>

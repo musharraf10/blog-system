@@ -126,9 +126,9 @@ cron.schedule(
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json()); 
-app.use(cookieParser()); 
-app.use(passport.initialize()); 
+app.use(express.json());
+app.use(cookieParser());
+app.use(passport.initialize());
 
 const corsOptions = {
   origin: ["http://localhost:5173"],
@@ -148,6 +148,7 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
 // app.use("/api/v1/webinar", webinarRouter);
 app.use("/api/v1/article", articleRouter);
+
 
 
 

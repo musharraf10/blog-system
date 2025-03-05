@@ -14,6 +14,7 @@ const CreatePlan = () => {
     mutationKey: ["create-plan"],
     mutationFn: createPlanAPI,
   });
+  
 
   const formik = useFormik({
     initialValues: {
@@ -57,9 +58,10 @@ const CreatePlan = () => {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
           <div className="px-8 py-6 bg-blue-900 text-white">
-            <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2">
-              <Package className="w-6 h-6" /> Create Subscription Plan
-            </h2>
+          <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2 text-white">
+  <Package className="w-6 h-6" /> Create Subscription Plan
+</h2>
+
           </div>
           <form onSubmit={formik.handleSubmit} className="px-8 py-6 space-y-6">
             {planMutation.isPending && <AlertMessage type="loading" message="Loading, please wait..." />}
@@ -100,16 +102,21 @@ const CreatePlan = () => {
                 )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Billing Cycle</label>
-                <select id="billingCycle" {...formik.getFieldProps("billingCycle")} className="block w-full px-4 py-3 rounded-lg border">
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
-                {formik.touched.billingCycle && formik.errors.billingCycle && (
-                  <p className="mt-1 text-sm text-red-600">{formik.errors.billingCycle}</p>
-                )}
-              </div>
+              <div className="w-full">
+  <label className="block text-sm font-medium text-gray-700 mb-2 text-left">Billing Cycle</label>
+  <select
+    id="billingCycle"
+    {...formik.getFieldProps("billingCycle")}
+    className="block w-full px-4 py-3 rounded-lg border text-left"
+  >
+    <option value="monthly">Monthly</option>
+    <option value="yearly">Yearly</option>
+  </select>
+  {formik.touched.billingCycle && formik.errors.billingCycle && (
+    <p className="mt-1 text-sm text-red-600">{formik.errors.billingCycle}</p>
+  )}
+</div>
+
             </div>
 
             <div>
@@ -122,7 +129,12 @@ const CreatePlan = () => {
               )}
             </div>
 
-            <button type="submit" className="w-full bg-blue-900 text-white px-6 py-3 rounded-lg" disabled={planMutation.isPending}>
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md 
+                        hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
+              disabled={planMutation.isPending}
+            >
               {planMutation.isPending ? "Creating Plan..." : "Create Plan"}
             </button>
           </form>

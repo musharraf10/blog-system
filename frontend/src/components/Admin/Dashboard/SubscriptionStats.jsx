@@ -86,14 +86,16 @@ const SubscriptionStats = () => {
         style={{ maxWidth: "100%" }}
       >
         <h5 className="fs-2 fw-bold text-primary text-start text-center mt-2 mb-5">
-          Users Data
+          USERS DATA
         </h5>
         <Card.Header className="bg-white substatsbar border-0">
           <Row className="align-items-center text-end justify-content-between">
             <Col xs={12} md={4} className="text-start justify-content-start">
-              <h5 className="m-0 text-center">Subscription Stats</h5>
+              <h5 className="ml-xt-center fw-bold ">Subscription Stats</h5>
             </Col>
-            <Col xs={12} md={4} className="mt-2  mt-md-0">
+            <Col xs={12} md={4} className="mt-2  mt-md-0 mr-12"
+              style={{ marginLeft: "-185px" }}
+            >
               <Form.Control
                 type="text"
                 placeholder="Search by Name"
@@ -101,19 +103,21 @@ const SubscriptionStats = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
-            <Col xs={4} md={2} className="mt-2 mt-md-0 ">
+            <Col xs={4} md={2} className="mt-2 mt-md-0 "
+              style={{ marginLeft: "0" }}
+            >
               <Dropdown onSelect={handleFilterChange}>
                 <Dropdown.Toggle
                   className="w-100 w-md-auto"
-                  style={{ minWidth: "210px" , cursor:"pointer", color:"black"}}
+                  style={{ minWidth: "210px", cursor: "pointer", color: "black", marginLeft: "-150px" }}
                 >
                   {filter === "totalUsers"
                     ? "Total Users"
                     : filter === "newSubscriptions"
-                    ? "New Subscriptions"
-                    : filter === "expiredSubscriptions"
-                    ? "Expired Subscriptions"
-                    : "Upcoming Expirations"}
+                      ? "New Subscriptions"
+                      : filter === "expiredSubscriptions"
+                        ? "Expired Subscriptions"
+                        : "Upcoming Expirations"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
@@ -147,18 +151,29 @@ const SubscriptionStats = () => {
         </Card.Header>
 
         <Card.Body>
-          <table className="text-capitalize table table-bordered table-hover mt-3">
+          <table
+            className="text-capitalize table table-bordered table-hover mt-3 ml-12"
+            style={{
+              width: "85%",
+              borderCollapse: "separate",
+              borderSpacing: "0",
+              borderRadius: "12px",
+              overflow: "hidden",
+              border: "1px solid #ccc",
+              marginLeft: "70px"
+            }}
+          >
             <thead className="table-light text-center">
               <tr>
-                <th>Name</th>
+                <th style={{ borderTopLeftRadius: "12px" }}>Name</th>
                 <th>Status</th>
-                <th>Role</th>
+                <th style={{ borderTopRightRadius: "12px" }}>Role</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers().map((user, index) => (
+              {filteredUsers().map((user, index, array) => (
                 <tr key={user.id}>
-                  <td className=" text-center">{user.name}</td>
+                  <td className="text-center">{user.name}</td>
                   <td
                     className="fs-6 fw-bold text-center"
                     style={{
@@ -166,59 +181,82 @@ const SubscriptionStats = () => {
                         user.status === "active"
                           ? "green"
                           : user.status === "expired"
-                          ? "darkred"
-                          : "orange",
+                            ? "darkred"
+                            : "orange",
                     }}
                   >
                     {user.status}
                   </td>
-                  <td
-                    className="fs-6 text-center"
-                    style={{ minWidth: "120px" }}
-                  >
+                  <td className="fs-6 text-center" style={{ minWidth: "120px" }}>
                     {user.role}
                   </td>
                 </tr>
               ))}
+              <tr>
+                <td
+                  style={{
+                    borderBottomLeftRadius: "12px",
+                  }}
+                />
+                <td />
+                <td
+                  style={{
+                    borderBottomRightRadius: "12px",
+                  }}
+                />
+              </tr>
             </tbody>
           </table>
 
           <h5 className="text-primary mt-5 fw-bold text-center fs-3 mb-5">
             Transactions Data
           </h5>
-          <div className="text-center mt-5 mb-5 d-flex flex-row flex-wrap justify-content-evenly ">
-            <h5 className="fw-bold ">
+
+          {/* Wrapped Total Amount, Pending Work, and Calendar in a single row */}
+          <div className="text-center mt-5 mb-5 d-flex flex-row flex-wrap justify-content-evenly align-items-center">
+            <h5 className="fw-bold m-0">
               Total Transaction Amount:{" "}
               <span className="text-primary">${totalAmount.toFixed(2)}</span>
             </h5>
 
-            <h5 className="fw-bold  ">
+            <h5 className="fw-bold m-0">
               Total Pending Work:{" "}
               <span className="text-warning">{totalPendingWork}</span>
             </h5>
+
+            {/* Date Picker in the same row */}
+            <Form.Control
+              type="date"
+              className="mx-2"
+              style={{
+                maxWidth: "150px",
+                cursor: "pointer",
+                padding: "5px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+              }}
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
           </div>
 
-          {/* <p className="mt-3 text-secondary text-end m-0">Select Date</p> */}
-
-          <Row className="mb-3 justify-content-end" >
-            <Col xs={8} sm={3} md={2}>
-              <Form.Control
-                type="date"
-                className="mx-auto"
-                style={{ maxWidth: "100%" ,cursor:"pointer"}}
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-            </Col>
-          </Row>
-
-          <table className="table table-bordered table-hover mt-3">
+          {/* Table remains unchanged */}
+          <table
+            className="table table-bordered table-hover mt-4"
+            style={{
+              borderCollapse: "separate",
+              borderSpacing: "0",
+              borderRadius: "12px",
+              overflow: "hidden",
+              border: "1px solid #ccc",
+            }}
+          >
             <thead className="table-light text-center">
               <tr>
-                <th>User</th>
+                <th style={{ borderTopLeftRadius: "12px" }}>User</th>
                 <th>Amount</th>
                 <th>Status</th>
-                <th>Date</th>
+                <th style={{ borderTopRightRadius: "12px" }}>Date</th>
               </tr>
             </thead>
             <tbody>
@@ -227,18 +265,14 @@ const SubscriptionStats = () => {
                   <tr
                     key={tx.id}
                     style={{
-                      backgroundColor:
-                        index % 2 === 1 ? "#f2f2f2" : "transparent",
+                      backgroundColor: index % 2 === 1 ? "#f2f2f2" : "transparent",
                     }}
                   >
-                    <td className=" text-center">{tx.user}</td>
+                    <td className="text-center">{tx.user}</td>
                     <td className="text-center">{tx.amount}</td>
                     <td
-                      className={`fw-bold text-center ${
-                        tx.status === "Completed"
-                          ? "text-success"
-                          : "text-warning"
-                      }`}
+                      className={`fw-bold text-center ${tx.status === "Completed" ? "text-success" : "text-warning"
+                        }`}
                     >
                       {tx.status}
                     </td>
@@ -252,6 +286,13 @@ const SubscriptionStats = () => {
                   </td>
                 </tr>
               )}
+              {/* Rounded Bottom Corners */}
+              <tr>
+                <td style={{ borderBottomLeftRadius: "12px" }} />
+                <td />
+                <td />
+                <td style={{ borderBottomRightRadius: "12px" }} />
+              </tr>
             </tbody>
           </table>
         </Card.Body>

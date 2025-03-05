@@ -1,4 +1,4 @@
-import { Fragment , useEffect, useState} from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -102,7 +102,7 @@ export default function PrivateNavbar() {
               <div className="flex items-center space-x-10 mr-10">
                 <Link
                   to={`/${userRole}`}
-                  className="bg-orange-600 text-white px-3 py-2 rounded-md hover:bg-indigo-500"
+                  className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
                 >
                   <MdOutlineDashboard className="inline mr-1" /> Dashboard
                 </Link>
@@ -180,34 +180,19 @@ export default function PrivateNavbar() {
                     </Menu.Items>
                   </Transition>
                 </Menu>
-                <Button
-                  className="flex items-center  p-2 space-x-2 transition duration-200"
-                  sx={{
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    borderRadius:"10px",
-                    "&:hover": {
-                      backgroundColor: "transparent",
-                      border: "1px solid #007bff",
-                      color: "black",
+                <Button className="bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
 
-                    },
-                  }}
                   onClick={checkmodalopenclose}
                 >
                   <Plus
-                    sx={{
-                      "&:hover": {
-                        color: "black", // Change icon color to black on hover
-                      },
-                    }}
+
                     className="w-6 h-6 "
                   />
                   <span>New Content</span>
                 </Button>
 
 
-              
+
 
                 {/* Modal Component */}
                 <Checkposttypemodal
