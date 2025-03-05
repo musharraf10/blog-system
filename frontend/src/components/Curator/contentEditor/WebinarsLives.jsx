@@ -151,127 +151,128 @@ const WebinarsLives = () => {
   // Render desktop table view
   const renderDesktopTable = () => (
     <TableContainer 
-      component={Paper} 
-      sx={{ 
-        boxShadow: 3,
-        borderRadius: 2,
-        overflow: "hidden"
-      }}
-    >
-      <Table>
-        <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
-          <TableRow>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Subject</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Concepts</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Live/Webinar</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Host Details</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Schedule</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Time/Date</TableCell>
-            <TableCell sx={{ color: "white", fontWeight: "bold" }}>Reminder</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rowsData.map((row, index) => (
-            <TableRow 
-              key={index} 
+    component={Paper} 
+    sx={{ 
+      boxShadow: 4, 
+      borderRadius: 3, 
+      overflow: "hidden",
+      border: "1px solid #e0e0e0"
+    }}
+  >
+    <Table sx={{ minWidth: 900 }}>
+      <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
+        <TableRow>
+          {["Subject", "Concepts", "Live/Webinar", "Host Details", "Schedule", "Time", "Date", "Reminder"].map((header) => (
+            <TableCell 
+              key={header} 
               sx={{ 
-                "&:nth-of-type(odd)": { backgroundColor: "#f5f5f5" },
-                "&:hover": { backgroundColor: "#e8f4fd" },
-                transition: "background-color 0.2s"
+                color: "white", 
+                fontWeight: "bold", 
+                textAlign: "center",
+                fontSize: "1rem",
+                padding: "12px"
               }}
             >
-              <TableCell sx={{ fontWeight: "medium" }}>{row.subject}</TableCell>
-              <TableCell>{row.concepts}</TableCell>
-              <TableCell>
-                <Link
-                  href={row.liveWebinarUrl}
-                  underline="hover"
-                  sx={{ 
-                    cursor: "pointer",
-                    fontWeight: "medium",
-                    color: theme.palette.primary.main,
-                    "&:hover": { color: theme.palette.primary.dark }
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleWebinarClick(row.subject, row.concepts);
-                  }}
-                >
-                  {row.liveWebinar}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-                  <Typography variant="body2" sx={{ fontWeight: "medium" }}>
-                    {row.hostDetails.name}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    ID: {row.hostDetails.id}
-                  </Typography>
-                  <Chip 
-                    label={row.hostDetails.role} 
-                    size="small" 
-                    sx={{ 
-                      width: "fit-content",
-                      backgroundColor: row.hostDetails.role === "Admin" ? "#e3f2fd" : 
-                                      row.hostDetails.role === "Editor" ? "#e8f5e9" : "#fff3e0"
-                    }}
-                  />
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Chip 
-                  label={row.schedule} 
-                  color={row.schedule === "Yes" ? "success" : "default"} 
-                  size="small"
-                />
-              </TableCell>
-              <TableCell>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  <IconButton 
-                    size="small" 
-                    onClick={() => handleTimeClick(index)}
-                    sx={{ color: theme.palette.primary.main }}
-                  >
-                    <AccessTime fontSize="small" />
-                  </IconButton>
-                  <IconButton 
-                    size="small" 
-                    onClick={() => handleDateClick(index)}
-                    sx={{ color: theme.palette.primary.main }}
-                  >
-                    <Event fontSize="small" />
-                  </IconButton>
-                </Box>
-                <Typography variant="body2">
-                  {new Date(row.timeDate).toLocaleString()}
-                </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
-                  {calculateRemainingTime(row.timeDate)}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Button 
-                  variant="contained" 
-                  size="small" 
-                  startIcon={<Notifications />}
-                  onClick={() => handleReminderClick(index)}
-                  sx={{ 
-                    borderRadius: 2,
-                    boxShadow: 1,
-                    "&:hover": {
-                      boxShadow: 2
-                    }
-                  }}
-                >
-                  Reminder
-                </Button>
-              </TableCell>
-            </TableRow>
+              {header}
+            </TableCell>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rowsData.map((row, index) => (
+          <TableRow 
+            key={index} 
+            sx={{ 
+              "&:nth-of-type(odd)": { backgroundColor: "#fafafa" }, 
+              "&:hover": { backgroundColor: "#e3f2fd" }, 
+              transition: "background-color 0.2s ease"
+            }}
+          >
+            {/* Bold Subject */}
+            <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>{row.subject}</TableCell>
+            <TableCell sx={{ textAlign: "center" }}>{row.concepts}</TableCell>
+            <TableCell sx={{ textAlign: "center" }}>
+              <Link
+                href={row.liveWebinarUrl}
+                underline="hover"
+                sx={{ 
+                  cursor: "pointer",
+                  fontWeight: "medium",
+                  color: theme.palette.primary.main,
+                  "&:hover": { color: theme.palette.primary.dark }
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleWebinarClick(row.subject, row.concepts);
+                }}
+              >
+                {row.liveWebinar}
+              </Link>
+            </TableCell>
+            {/* Host Details */}
+            <TableCell sx={{ textAlign: "center" }}>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
+                <Typography variant="body2" sx={{ fontWeight: "medium" }}>
+                  {row.hostDetails.name}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  ID: {row.hostDetails.id}
+                </Typography>
+                <Chip 
+                  label={row.hostDetails.role} 
+                  size="small" 
+                  sx={{ 
+                    width: "fit-content",
+                    backgroundColor: row.hostDetails.role === "Admin" ? "#e3f2fd" : 
+                                    row.hostDetails.role === "Editor" ? "#e8f5e9" : "#fff3e0"
+                  }}
+                />
+              </Box>
+            </TableCell>
+            <TableCell sx={{ textAlign: "center" }}>
+              <Chip 
+                label={row.schedule} 
+                color={row.schedule === "Yes" ? "success" : "default"} 
+                size="small"
+              />
+            </TableCell>
+            {/* Time Column */}
+            <TableCell sx={{ textAlign: "center" }}>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+                <AccessTime fontSize="small" sx={{ color: theme.palette.primary.main }} />
+                <Typography variant="body2">{new Date(row.timeDate).toLocaleTimeString()}</Typography>
+              </Box>
+            </TableCell>
+            {/* Date Column */}
+            <TableCell sx={{ textAlign: "center" }}>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+                <Event fontSize="small" sx={{ color: theme.palette.primary.main }} />
+                <Typography variant="body2">{new Date(row.timeDate).toLocaleDateString()}</Typography>
+              </Box>
+            </TableCell>
+            <TableCell sx={{ textAlign: "center" }}>
+              <Button 
+                variant="contained" 
+                size="small" 
+                startIcon={<Notifications />}
+                onClick={() => handleReminderClick(index)}
+                sx={{ 
+                  borderRadius: 2,
+                  boxShadow: 1,
+                  "&:hover": {
+                    boxShadow: 2
+                  }
+                }}
+              >
+                Reminder
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+  
   );
 
   // Render mobile card view

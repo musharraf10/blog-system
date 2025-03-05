@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment , useEffect, useState} from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -51,11 +51,12 @@ export default function PrivateNavbar() {
   });
 
   if (isLoading) return <AuthCheckingComponent />;
-  const userRole = data?.role;
+  let userRole = data?.role;
 
   const logoutHandler = async () => {
     try {
       await logoutMutation.mutateAsync();
+      // await logoutMutation.invalidateQueries(["user-auth"]);
       dispatch(logout());
       navigate("/login");
     } catch (error) {
@@ -64,7 +65,7 @@ export default function PrivateNavbar() {
   };
 
   const navLinks = [
-    { name: "Latest Posts", path: `${userRole}/latestposts` },
+    { name: "Latest Posts", path: `/${userRole}/latestposts` },
     { name: "Creators Ranking", path: "/ranking" },
     userRole !== "admin" && { name: "Pricing", path: `/${userRole}/pricing` },
   ].filter(Boolean);

@@ -16,7 +16,7 @@
 
 //   await Category.findByIdAndUpdate(category, { $push: { posts: postCreated._id } });
 //   await User.findByIdAndUpdate(req.user, { $push: { posts: postCreated._id } });
-//   await Notification.create({ userId: req.user, postId: postCreated._id, message: `New post created by ${userFound.username}` });
+//   await Notification.create({ userId: req.user, postId: postCreated._id, message: New post created by ${userFound.username} });
 
 //   res.json({ message: "Post submitted for review", postCreated });
 // }),
@@ -39,7 +39,9 @@ const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 const sendNotificatiomMsg = require("../../utils/sendNotificatiomMsg");
 
+
 const postController = {
+
   //!Create post
   createPost: asyncHandler(async (req, res) => {
     const {content}=req.body
@@ -86,7 +88,7 @@ const postController = {
     //     throw new Error("User not found");
     //   }
   
-    //   // Ensure `posts` array exists before pushing
+    //   // Ensure posts array exists before pushing
     //   if (!userFound.posts) {
     //     userFound.posts = [];
     //   }
@@ -97,7 +99,7 @@ const postController = {
     //   await Notification.create({
     //     userId: req.user,
     //     postId: postCreated._id,
-    //     message: `New post created by ${userFound.username}`,
+    //     message: New post created by ${userFound.username},
     //   });
   
     //   //Send email to all hus/her followers
@@ -126,7 +128,7 @@ const postController = {
       
     });
   }),
-
+  
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     await Post.findByIdAndUpdate(postId, { status: "approved" });
@@ -156,7 +158,6 @@ const postController = {
     }
 
     const posts = await Post.find(filter)
-      .populate("category")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
@@ -175,13 +176,13 @@ const postController = {
   getallpostsinadmincontroller: asyncHandler(async (req, res) => {
     try {
       const postsdata = await Post.find({})
-        .populate("author")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "author",
-          },
-        });
+        // .populate("author")
+        // .populate({
+        //   path: "comments",
+        //   populate: {
+        //     path: "author",
+        //   },
+        // });
       // .limit(1);
 
 
@@ -454,6 +455,73 @@ const postController = {
       message: "Post Disliked",
     });
   }),
+
+  BookMarkPost: asyncHandler(async (req, res) => {
+    try {
+    const {postId} = req.params;
+    const userId = req.user;
+
+    const post = await Post.findById(postId);
+    if (post?.bookmarkedBy?.includes(userId)) {
+      return res.status(400).json({ message: "Post already bookmarked" });
+    }
+    post?.bookmarkedBy?.push(userId);
+
+    await post.save();
+
+    res.json({
+      message: "Post Bookmarked",
+    });
+      
+    } catch (error) {
+      console.error("Error bookmarking post:", error);
+      res.status(500).json({ message: error.message});
+    }
+  }),
+
+  unBookMarkPost: asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+
+    post?.bookmarkedBy?.pull(userId);
+
+    await post.save();
+
+    res.json({
+      message: "Post Unbookmarked",
+    });
+  }),
+  getallpost:asyncHandler(async(req,res)=>{
+    try{
+      const posts = await Post.find()
+      .populate("author")
+      .populate("refId"); 
+    
+res.json({ data: posts });
+      
+    }catch(err){
+      console.error("Error fetching posts:", err);
+    }
+  }),
+  getBookmarkedPosts : asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user;
+      const posts = await Post.find({ bookmarkedBy: userId });
+      // console.log(posts);
+  
+      res.status(200).json({
+        message: "Bookmarked Posts Fetched",
+        posts,
+      });
+    } catch (error) {
+      console.error("Error fetching bookmarked posts:", error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  })
 };
 
 module.exports = postController;
+
+//OG
