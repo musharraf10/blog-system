@@ -157,7 +157,10 @@ const UserManagementTable = () => {
 
   // Returns avatar with profile image if available; otherwise, first letter.
   const getUserAvatar = (user) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 486a5752edf08478a0c26ffd87f08ad3f9d1bb9b
     if (user.profilePicture) {
       return (
         <Avatar alt={user.username} src={user.profilePicture.path} sx={{ width: 60, height: 60 }} />
@@ -194,9 +197,13 @@ const UserManagementTable = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
+<<<<<<< HEAD
 
           <b>  USER MANAGEMENT</b>
 
+=======
+          <b>  USER MANAGEMENT</b>
+>>>>>>> 486a5752edf08478a0c26ffd87f08ad3f9d1bb9b
           </Typography>
         </Box>
 
@@ -254,10 +261,15 @@ const UserManagementTable = () => {
               {filteredUsers.map((user) => (
                 <TableRow key={user._id} className="hover-row animated-row">
                   <TableCell>
+<<<<<<< HEAD
 
                     {user.profilePicture ? (
                       <img src={user.profilePicture.path} alt={user.username} className="user-profile-img" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
 
+=======
+                    {user.profilePicture ? (
+                      <img src={user.profilePicture.path} alt={user.username} className="user-profile-img" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+>>>>>>> 486a5752edf08478a0c26ffd87f08ad3f9d1bb9b
                     ) : (
                       <div className="user-profile-placeholder" style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {user.username.charAt(0).toUpperCase()}
