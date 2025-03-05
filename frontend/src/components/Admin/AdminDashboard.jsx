@@ -54,7 +54,7 @@ export default function AdminDashboard() {
             >
               <Dialog.Panel className="relative flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen shadow-xl">
                 <button
-                  className="absolute top-4 right-4 bg-white/80 rounded-full p-1.5 transition-all duration-300 hover:bg-white shadow-sm"
+                  className="absolute top-4 right-4 bg-white/80 rounded-full p-1.5 transition-all duration-300 hover:bg-gray-300" // Changed hover color
                   onClick={() => setSidebarOpen(false)}
                 >
                   <XMarkIcon className="h-6 w-6 text-gray-700" />
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
       </Transition.Root>
 
       <div className="flex">
-        <aside className="hidden lg:flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen fixed top-16 shadow-md border-r border-blue-100">
+        <aside className="hidden lg:flex w-78 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen fixed top-16 shadow-md border-r border-blue-100">
           <Link to="/" className="mb-8 flex items-center justify-center">
             <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
               <FaBlog className="h-6 w-auto text-white" />
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
                   className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
                     isActive
                       ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
-                      : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                      : "text-gray-700 hover:bg-gray-200 hover:shadow-md" // Changed hover color
                   }`}
                 >
                   <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
