@@ -144,8 +144,8 @@ const UpcomingEvent = () => {
                             </div>
                             <div className="text-dark text-center rounded-bottom mb-3">
     <strong>Time Remaining:</strong> {getTimeRemaining(item.date)}
-    <h4 className="fw-bold">Event On</h4>
-    <p>{new Date(item.date).toLocaleDateString()}</p>
+    <h4 className="fw-bold">Event On {new Date(item.date).toLocaleDateString()}</h4>
+   
 </div>
 
                             <div className='card-footer'><button className="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleEditClick(item)}>
