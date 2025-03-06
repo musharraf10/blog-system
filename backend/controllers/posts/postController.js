@@ -121,7 +121,47 @@ const postController = {
       message: "Post created successfully",
     });
   }),
-
+  deletepost:asyncHandler(async(req,res)=>{
+    try{
+      const post = await Post.findByIdAndDelete(req.params.id);
+      if(!post){
+        return res.status(404).json({status:"error",message:"Post not found"})
+      }
+      res.json({message:"Deleted Successfully"})
+    }
+    catch(err){
+      console.error("Error deleting post:", err);
+    }
+  }),
+  getonepost:asyncHandler(async(req,res)=>{
+    try{
+      const post = await Post.findById(req.params.id)
+      if(!post){
+        return res.status(404).json({status:"error",message:"Post not found"})
+        }
+        res.json(post)
+    }
+    catch(err){
+      console.log(err);
+    }
+  }),
+  updatepost: asyncHandler(async (req, res) => {
+    try {
+      const post = await Post.findByIdAndUpdate(
+        req.params.id, 
+        req.body
+      );
+      if (!post) {
+        return res.status(404).json({ status: "error", message: "Post not found" });
+      }
+      res.json({ message: "Updated Successfully", post });
+    } catch (err) {
+      console.error("Error Updating post:", err);
+      res.status(500).json({ status: "error", message: "Internal Server Error" });
+    }
+  }),
+  
+  
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
     await Post.findByIdAndUpdate(postId, { status: "approved" });
