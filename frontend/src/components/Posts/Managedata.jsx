@@ -40,10 +40,15 @@ const ManageData = () => {
       try {
         const response = await axios.get(
           `${BackendServername}/posts/managecontent/getpost`,
-          { params: { userId } }
+          {
+            params: { userId },
+            withCredentials: true, // Allows sending cookies and authentication headers
+          }
         );
+        
         const data = response.data;
         console.log(data.data);
+        
         setContentItems(data.data);
       } catch (error) {
         alert(error);
@@ -318,7 +323,7 @@ const ManageData = () => {
                           {new Date(item.date).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 text-sm font-medium space-x-2">
-                          <Eye onClick={() => handleOpenModalofposts(item)} />
+                          {/* <Eye onClick={() => handleOpenModalofposts(item)} /> */}
                           <button className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
                             Edit
                           </button>
@@ -341,13 +346,13 @@ const ManageData = () => {
           </div>
         </div>
       </div>
-      {selectedeyebutton && (
+      {/* {selectedeyebutton && (
         <Previewdata
           post={selectedcontent}
           onHide={handleCloseModalofposts}
           show={true}
         />
-      )}
+      )} */}
     </>
   );
 };
