@@ -74,12 +74,7 @@ const BookmarkPost = () => {
                   day: "numeric",
                 })}
               </p>
-              <div
-                className="text-gray-700 text-sm"
-                dangerouslySetInnerHTML={{
-                  __html: post.description.substring(0, 100) + "...",
-                }}
-              />
+             
             </div>
           </div>
         ))}

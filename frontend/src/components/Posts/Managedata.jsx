@@ -189,10 +189,10 @@ const ManageData = () => {
           <div className="px-4 py-5 bg-gray-50 border-b border-gray-200 flex flex-wrap">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
+              className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
                 activeFilter === "all"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
               }`}
             >
               All Content ({contentItems.length})
@@ -205,10 +205,10 @@ const ManageData = () => {
                 <button
                   key={type.type}
                   onClick={() => setActiveFilter(type.type)}
-                  className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
+                  className={`mr-3 mb-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-medium ${
                     activeFilter === type.type
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                      ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                   }`}
                 >
                   {type.type} ({count})

@@ -198,7 +198,6 @@ const postController = {
     }
 
     const posts = await Post.find(filter)
-      .populate("category")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);

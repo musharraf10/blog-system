@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+
 import {
   Table,
   TableContainer,
@@ -20,6 +22,7 @@ import {
   Select,
   TextField,
   FormControl,
+  Slider,
 } from "@mui/material";
 import {
   MoreVert,
@@ -33,7 +36,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "@mui/icons-material";
-import { Pie, Bar } from "react-chartjs-2";
+import { Pie, Bar, Doughnut } from "react-chartjs-2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchPendingPosts,
@@ -50,6 +53,16 @@ import "./contentmodsub.css";
 const ContentPart = () => {
   const [selectedPostinadminpanel, setselectedPostinadminpanel] =
     useState(null);
+
+    const [counts, setCounts] = useState({
+      approved: 0,
+      pending: 0,
+      rejected: 0,
+    });
+
+
+   
+  
 
   const handleOpenModalofposts = (post) => {
     setselectedPostinadminpanel(post);
@@ -82,6 +95,46 @@ const ContentPart = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const finalCounts = {
+      approved: filteredposts.filter((e) => e.status.toLowerCase() === "approved").length,
+      pending: filteredposts.filter((e) => e.status.toLowerCase() === "pending").length,
+      rejected: filteredposts.filter((e) => e.status.toLowerCase() === "rejected").length,
+    };
+
+    // Reset counts on refresh
+    setCounts({ approved: 0, pending: 0, rejected: 0 });
+
+    let currentCounts = { approved: 0, pending: 0, rejected: 0 };
+
+    const interval = setInterval(() => {
+      setCounts((prev) => {
+        let updatedCounts = { ...prev };
+
+        Object.keys(finalCounts).forEach((key) => {
+          updatedCounts[key] = Math.min(prev[key] + 1, finalCounts[key]); // Ensure it stops at final count
+        });
+
+        return updatedCounts;
+      });
+
+      currentCounts.approved++;
+      currentCounts.pending++;
+      currentCounts.rejected++;
+
+      // Stop the interval when all counts are reached
+      if (
+        currentCounts.approved >= finalCounts.approved &&
+        currentCounts.pending >= finalCounts.pending &&
+        currentCounts.rejected >= finalCounts.rejected
+      ) {
+        clearInterval(interval);
+      }
+    }, 100); // Adjust speed if needed
+
+    return () => clearInterval(interval);
+  }, [filteredposts]);
+
   const [page, setPage] = useState(0);
   const [postsPerPage, setpostsPerPage] = useState(5);
   const totalPages = Math.ceil(filteredposts.length / postsPerPage);
@@ -98,6 +151,8 @@ const ContentPart = () => {
     page * postsPerPage,
     (page + 1) * postsPerPage
   );
+
+  
 
 
   const [statusFilter, setStatusFilter] = useState("All");
@@ -324,7 +379,7 @@ const ContentPart = () => {
 
   // Handle Modal Open/Close
   const handleOpenModal = (post) => {
-    z;
+    
     setSelectedPost(post);
     setModalOpen(true);
   };
@@ -372,8 +427,13 @@ const ContentPart = () => {
     ],
   };
 
+
+
+
   return (
     <div className="content-management">
+     <h5 style={{fontSize:"2.2rem", fontWeight:"bold", color:"#3a69a6"}}>Content Management</h5>
+     <br/>
       <div
         className="status-cards"
         style={{
@@ -382,6 +442,7 @@ const ContentPart = () => {
           marginBottom: "20px",
         }}
       >
+       
         <div className="boxdata d-flex justify-content-evenly w-100">
           <Box
             className="cm-data"
@@ -398,16 +459,23 @@ const ContentPart = () => {
               },
             }}
           >
-            <CheckCircle sx={{ fontSize: 50, color: "green" }} />
+            <CheckCircle sx={{ fontSize: 30, color: "green" }} />
             <Typography variant="h5">Approved</Typography>
-            <Typography style={{ fontSize: "2.5rem", fontWeight: "bold" }}>
-              {
+            
+            <Typography style={{ fontSize: "2rem", fontWeight: "bold" }}>
+              {counts.approved}
+            {/* {
                 filteredposts.filter(
                   (e) => e.status.toLowerCase() === "approved"
                 ).length
-              }
+                
+              } */}
+             
             </Typography>
           </Box>
+
+
+
 
           <Box
             className="cm-data"
@@ -424,14 +492,15 @@ const ContentPart = () => {
               },
             }}
           >
-            <HourglassEmpty sx={{ fontSize: 50, color: "orange" }} />
+            <HourglassEmpty sx={{ fontSize: 30, color: "orange" }} />
             <Typography variant="h5">Pending</Typography>
-            <Typography style={{ fontSize: "2.5rem", fontWeight: "bold" }}>
-              {
+            <Typography style={{ fontSize: "2rem", fontWeight: "bold" }}>
+              {counts.pending}
+              {/* {
                 filteredposts.filter(
                   (e) => e.status.toLowerCase() === "pending"
                 ).length
-              }
+              } */}
             </Typography>
           </Box>
 
@@ -450,27 +519,267 @@ const ContentPart = () => {
               },
             }}
           >
-            <Cancel sx={{ fontSize: 50, color: "red" }} />
+            <Cancel sx={{ fontSize: 30, color: "red" }} />
             <Typography variant="h5">Rejected</Typography>
-            <Typography style={{ fontSize: "2.5rem", fontWeight: "bold" }}>
-              {
+            <Typography style={{ fontSize: "2rem", fontWeight: "bold" }}>
+              {counts.rejected}
+              {/* {
                 filteredposts.filter(
                   (e) => e.status.toLowerCase() === "rejected"
                 ).length
-              }
+              } */}
             </Typography>
           </Box>
         </div>
+
+
+
       </div>
+       <Box
+                sx={{
+                  marginBottom: 4,
+                  background: "whitesmoke",
+                  color: "black",
+                  padding:3 ,
+                  borderRadius: 2,
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    marginBottom: 2,
+                    color: "blue",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    letterSpacing: 1.2,
+                  }}
+                >
+                  Content Analytics
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    // alignItems: "center",
+                    // justifyContent: "center",
+                    justifyContent:"space-evenly",
+                    gap: 4,
+                    width: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: { xs: "90%", md: "40%" }, // Same as Bar Chart
+                      height: 250, // Reduced height for a smaller Pie Chart
+                      backgroundColor: "white", // White background
+                      padding: 3,
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Black glow effect
+                      transition: "transform 0.3s ease-in-out", // Smooth transition
+                      "&:hover": {
+                        transform: "scale(1.05)", // Hover effect
+                      },
+                    }}
+                  >
+                    {/* <Pie
+                      data={{
+                        labels: ["Videos", "Webinars", "Articles", "Guides"],
+                        datasets: [
+                          {
+                            data: [40, 20, 30, 10], // Matching proportions
+                            backgroundColor: [
+                              "#000000",
+                              "#333333",
+                              "#777777",
+                              "#aaaaaa",
+                            ],
+                            borderColor: "#ffffff",
+                            borderWidth: 2,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            position: "bottom",
+                            labels: {
+                              color: "black",
+                              font: { size: 14 },
+                            },
+                          },
+                        },
+                      }}
+                    /> */}
+                    <Doughnut
+  data={{
+    labels: ["Videos", "Webinars", "Articles", "Guides"],
+    datasets: [
+      {
+        data: [40, 20, 30, 10], // Matching proportions
+        backgroundColor: [
+          "#1E3A8A",
+          "#0d6efa",
+          
+          "#6610F2",
+          "#0dcaf0",
+        ],
+        borderColor: "#ffffff",
+        borderWidth: 2,
+      },
+    ],
+  }}
+  options={{
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "60%", // Creates the empty center
+    plugins: {
+      legend: {
+        position: "right", // Moves details to the side
+        labels: {
+          color: "black",
+          font: { size: 20 },
+        },
+      },
+    },
+  }}
+/>
+
+
+                    
+                  </Box>
+      
+                  <Box
+                    sx={{
+                      width: { xs: "90%", md: "40%" },
+                      height: 250, // Matching height with Pie Chart
+                      backgroundColor: "white", // White background
+                      padding: 3,
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+                      transition: "transform 0.3s ease-in-out", // Smooth transition
+                      "&:hover": {
+                        transform: "scale(1.05)", // Hover effect
+                      },
+                    }}
+                  >
+
+
+{/* <Bar
+  data={{
+    labels: ["Videos", "Webinars", "Articles", "Guides"],
+    datasets: [
+      {
+        label: "Content Count",
+        data: [40, 20, 30, 10],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.8)", // Soft red
+          "rgba(54, 162, 235, 0.8)", // Soft blue
+          "rgba(255, 206, 86, 0.8)", // Soft yellow
+          "rgba(75, 192, 192, 0.8)", // Soft teal
+        ],
+        borderRadius: 8, // Rounded edges
+        borderWidth: 0, // No border for a cleaner look
+        barThickness: 40, // Controlled bar width
+        hoverBackgroundColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+        ], // Slightly darker on hover
+      },
+    ],
+  }}
+  options={{
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: { color: "#333", font: { size: 14 } },
+        grid: { display: false }, // Hide X-axis grid for a cleaner look
+      },
+      y: {
+        ticks: { color: "#333", font: { size: 14 } },
+        grid: { color: "rgba(0, 0, 0, 0.1)" }, // Light gray grid
+      },
+    },
+    plugins: {
+      legend: {
+        display: false, // Hide legend for simplicity
+      },
+    },
+  }}
+/> */}
+
+<Bar
+  data={{
+    labels: ["Videos", "Webinars", "Articles", "Guides"],
+    datasets: [
+      {
+        label: "Content Count",
+        data: [40, 20, 30, 10],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.8)", // Soft red
+          "rgba(54, 162, 235, 0.8)", // Soft blue
+          "rgba(255, 206, 86, 0.8)", // Soft yellow
+          "rgba(75, 192, 192, 0.8)", // Soft teal
+        ],
+        borderRadius: 8, // Rounded edges
+        borderWidth: 0, // No border for a cleaner look
+        barThickness: 40, // Controlled bar width
+        hoverBackgroundColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+        ], // Slightly darker on hover
+      },
+    ],
+  }}
+  options={{
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: { color: "#333", font: { size: 14 } },
+        grid: { display: false }, // Hide X-axis grid for a cleaner look
+      },
+      y: {
+        ticks: { color: "#333", font: { size: 14 } },
+        grid: { color: "rgba(0, 0, 0, 0.1)" }, // Light gray grid
+      },
+    },
+    plugins: {
+      legend: {
+        display: false, // Hide legend for simplicity
+      },
+    },
+    animation: {
+      duration: 1000, // Animation duration (1 second)
+      easing: "easeInOutQuart", // Smooth easing effect
+    },
+    hover: {
+      animationDuration: 500, // Smooth hover effect
+    },
+  }}
+/>
+
+
+                  </Box>
+                </Box>
+              </Box>
       <Typography
         variant="h6"
         sx={{
           marginTop: 2,
           width: "100%",
           fontWeight: "bold",
-          textAlign: "center",
+          marginLeft:-10,
           textTransform: "uppercase",
-          letterSpacing: "1.5px",
+          letterSpacing: "1.0px",
           padding: "15px 0",
           display: "inline-block",
           color: "#007bff",
@@ -489,9 +798,10 @@ const ContentPart = () => {
           onChange={handleStatusFilterChange}
           displayEmpty
           sx={{
-            minWidth: "200px",
+            minWidth: "100px",
             backgroundColor: "white",
             borderRadius: "8px",
+            height:43
           }}
         >
           <MenuItem value="All">All Posts</MenuItem>
@@ -499,7 +809,8 @@ const ContentPart = () => {
           <MenuItem value="approved">✅ Approved</MenuItem>
           <MenuItem value="rejected">❌ Rejected</MenuItem>
         </Select>
-
+        <button className="btn btn-success px-3">All Approved</button>
+        <button className="btn btn-danger px-3">All Rejected</button>
         {/* Search Bar */}
         <Box
           sx={{
@@ -519,13 +830,15 @@ const ContentPart = () => {
               flex: 1,
               borderRadius: "8px",
               backgroundColor: "#f5f5f5",
+           
               "& fieldset": { borderColor: "#ccc" },
               "&:hover fieldset": { borderColor: "#888" },
               "&.Mui-focused fieldset": { borderColor: "#007bff" },
               "& .MuiInputBase-input": { padding: "10px 14px" },
             }}
           />
-          <button className="btn btn-primary px-3">Search</button>
+          <button className="contentSubbutton" style={{background: 'linear-gradient(to right, #1E3A81, #3B82F6)', width:80, height:40,color:"white" ,  
+}}>Search</button>
         </Box>
 
         {/* Date Filter */}
@@ -535,7 +848,7 @@ const ContentPart = () => {
             alignItems: "center",
             gap: "10px",
             backgroundColor: "#f5f5f5",
-            padding: "8px 12px",
+            padding: "6px 12px",
             borderRadius: "8px",
             border: "1px solid #ccc",
             flexWrap: "wrap",
@@ -551,6 +864,7 @@ const ContentPart = () => {
               borderRadius: "8px",
               "& .MuiSelect-select": {
                 padding: "10px",
+                height:5
               },
             }}
           >
@@ -752,23 +1066,35 @@ const ContentPart = () => {
         <Table sx={{ minWidth: 750, textTransform: "capitalize" }}>
           <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
-              <TableCell align="center">
+              <TableCell align="center" sx={{fontSize:"16px"}}>
                 <b>Sl.no</b>
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" sx={{fontSize:"16px"}}>
                 <b>User Name</b>
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" sx={{fontSize:"16px"}}>
                 <b>Change Status</b>
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" sx={{fontSize:"16px"}}>
                 <b>Current Status</b>
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" sx={{fontSize:"16px"}}>
                 <b>Updated At</b>
               </TableCell>
-              <TableCell align="center">
-                <b>Details</b>
+              <TableCell align="center" sx={{fontSize:"16px"}}>
+                {/* <b style={{background:"linear-gradient"}}>Details</b> */}
+
+                <b
+      style={{
+        background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        fontSize: "24px",
+        fontWeight: "bold"
+      }}
+    >
+      Details
+    </b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -863,9 +1189,9 @@ const ContentPart = () => {
                     {new Date(item.updatedAt).toLocaleDateString("en-GB")}
                   </TableCell>
                   <TableCell align="center">
-                    <button
+                    <button  className="contentSubbutton"
                       style={{
-                        backgroundColor: "#007bff",
+                        background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
                         color: "#ffffff",
                         padding: "10px",
                         border: "1px solid #007bff",
@@ -874,7 +1200,7 @@ const ContentPart = () => {
                       }}
                       onClick={() => handleOpenModalofposts(item)}
                     >
-                      Details {"\u27A1"}
+                      Details
                     </button>
                   </TableCell>
                 </TableRow>
@@ -919,4 +1245,4 @@ const ContentPart = () => {
   );
 };
 
-export default ContentPart;
+export default ContentPart;
