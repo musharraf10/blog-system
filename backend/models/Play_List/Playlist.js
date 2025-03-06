@@ -64,3 +64,4 @@ const playlistSchema = new mongoose.Schema({
 const Playlist = mongoose.model("VideoTutorial", playlistSchema);
 
 module.exports = Playlist;
+
