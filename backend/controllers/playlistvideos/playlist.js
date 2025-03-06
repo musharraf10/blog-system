@@ -1,7 +1,6 @@
+const PlaylistVideo =require( "../../models/Play_List/Playlist.js");
+const Tag = require("../../models/Tags/Tags.js");
 
-const PlaylistVideo = require("../../models/Play_List/Playlist.js");
-// import Tag from "../../models/Tags/Tags.js";
-const Tag = require ("../../models/Tags/Tags.js")
 // Create a new playlist video
 const createPlaylist = async (req, res) => {
   try {
@@ -94,7 +93,7 @@ const deletePlaylist = async (req, res) => {
   }
 };
 
-export default {
+module.exports= {
   createPlaylist,
   getAllPlaylists,
   getPlaylistById,
