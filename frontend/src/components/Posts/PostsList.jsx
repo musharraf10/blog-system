@@ -208,7 +208,7 @@ const PostsList = () => {
 <div className="relative flex items-center justify-center mt-6">
   <form 
     onSubmit={handleSearchSubmit} 
-    className="relative flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-100 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
+    className="relative flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-50 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
   >
     {/* Search Icon */}
     <FaSearch className="absolute left-4 text-blue-600 text-lg animate-pulse" />

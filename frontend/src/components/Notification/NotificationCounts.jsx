@@ -32,10 +32,11 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { IoMdNotifications } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { fetchNotificationsAPI } from "../../APIServices/notifications/nofitificationsAPI";
 
 const NotificationCounts = ({ userRole }) => {
+  
   const { data } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotificationsAPI,
