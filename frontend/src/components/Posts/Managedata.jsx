@@ -132,9 +132,10 @@ const ManageData = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {categoryDetails.map((contentType) => (
-                <div
-                  key={contentType.type}
-                  className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
+                
+
+                
+                <div key={contentType.type} className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
                   onClick={() => navigate(`/admin/create-post/${contentType.type}`)}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] opacity-0 transition-opacity duration-300 group-hover:opacity-5"></div>
