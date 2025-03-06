@@ -1,18 +1,26 @@
 const express = require("express");
 const isAuthenticated = require("../../middlewares/isAuthenticated");
-const stripePaymentController = require("../../controllers/stripePayment/stripePaymentController");
 const checkUserPlan = require("../../middlewares/checkUserPlan");
+const stripePaymentController = require("../../controllers/stripePayment/stripePaymentController");
 
 const stripePaymentRouter = express.Router();
 
-// Create Payment (Subscription & Pay-Per-View)
-stripePaymentRouter.post("/checkout", isAuthenticated, stripePaymentController.payment);
+stripePaymentRouter.post("/create-payment", isAuthenticated, stripePaymentController.createCheckoutSession);
 
-// Verify Payment
-stripePaymentRouter.get("/verify/:paymentId", isAuthenticated, stripePaymentController.verify);
+stripePaymentRouter.get("/verify/:paymentId", isAuthenticated, stripePaymentController.verifyPayment);
 
-stripePaymentRouter.get("/free-plan", isAuthenticated, stripePaymentController.free);
+stripePaymentRouter.post("/free-plan", isAuthenticated, stripePaymentController.free);
 
-stripePaymentRouter.get("/current-plan", isAuthenticated, checkUserPlan, stripePaymentController.CurrentUserPlan); 
+stripePaymentRouter.get("/current-plan", isAuthenticated, checkUserPlan, stripePaymentController.CurrentUserPlan);
+
+stripePaymentRouter.get("/user-payments", isAuthenticated, stripePaymentController.getUserPayments);
+
+stripePaymentRouter.get("/:planId", isAuthenticated, stripePaymentController.getPlanId)
+
+// stripePaymentRouter.post(
+//   "/webhook",
+//   express.raw({ type: "application/json" }), 
+//   stripePaymentController.handleWebhook
+// );
 
 module.exports = stripePaymentRouter;

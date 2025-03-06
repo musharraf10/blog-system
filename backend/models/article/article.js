@@ -12,6 +12,7 @@ const ArticleSchema = new Schema({
     type: String,
     required: [true, "Description is required"],
   },
+  tags:[{type:String}]
   
   
 });

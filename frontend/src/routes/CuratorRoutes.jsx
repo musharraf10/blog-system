@@ -21,6 +21,9 @@ import ContentDashBoard from "../components/Curator/ContentDashBoard";
 import DashBoard from "../components/Curator/contentEditor/DashBoard";
 import Analytics from "../components/Curator/contentEditor/Analytics";
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import WebinarForm from "../components/Posts/WebinarForm";
+import Pricing from "../components/Plans/Pricing";
+import CheckoutForm from "../components/Plans/CheckoutForm";
 
 
 
@@ -40,9 +43,9 @@ const CuratorRoutes = () => {
           <Route path="DashBoard" element={<DashBoard />} />
           <Route path="Analytics" element={<Analytics />} />
           <Route path="AddCategory" element={<AddCategory />} />
-
           <Route path="profile" element={<AccountSummaryDashboard />} />
-          <Route path="create-post" element={<CreatePost />} />
+          <Route path="create-post/article" element={<CreatePost />} />
+          <Route path="create-post/webinar" element={<WebinarForm />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
@@ -52,13 +55,14 @@ const CuratorRoutes = () => {
           <Route path="my-followers" element={<MyFollowers />} />
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="pricing" element={<Pricing />} />
+          <Route path="checkout/:planId" element={<CheckoutForm />} />
 
-          <Route
-            path="account-verification/:verifyToken"
+        </Route>
+        <Route
+            path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
-          <Route path="add-category" element={<AddCategory />} />
-        </Route>
         <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
       </Routes>
     );

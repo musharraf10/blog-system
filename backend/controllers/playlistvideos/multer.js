@@ -1,18 +1,20 @@
-// require("dotenv").config();
+const multer = require("multer");
+const path = require("path");
 
-// const multer = require('multer');
+// Storage configuration for multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Ensure that the "uploads/" folder exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Timestamp for unique filenames
+  },
+});
 
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'assets/rentimages/');
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + file.originalname);
-//   }
-// });
+// Single file upload middleware (for video)
+const uploadSingle = multer({ storage }).single("video");
 
-// //you can export this 
-// const upload = multer({ storage: storage });
+// Multiple file upload middleware (for multiple videos)
+const uploadMultiple = multer({ storage }).array("videos", 10);
 
-
-// module.exports=upload
+module.exports = { uploadSingle, uploadMultiple };

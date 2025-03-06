@@ -3,17 +3,20 @@ const Plan = require("../../models/Plan/Plan");
 
 const planController = {
   createPlan: asyncHandler(async (req, res) => {
-    const { planName, features, price, billingCycle,discountPercentage } = req.body;
-    if (await Plan.findOne({ planName })) throw new Error("Plan already exists");
-    if (await Plan.countDocuments() >= 5) throw new Error("Maximum plan limit reached");
+    const { planName, features, price, billingcycle } = req.body;
+    if (await Plan.findOne({ planName }))
+      throw new Error("Plan already exists");
+    if ((await Plan.countDocuments()) >= 5) {
+      return res.status(400).json({ error: "Maximum plan limit reached" });
+    }
+
     if (price <= 0) throw new Error("Price must be a positive value");
 
     const planCreated = await Plan.create({
       planName,
       features,
       price,
-      billingCycle,
-      discountPercentage,
+      billingcycle,
     });
     res.json({ message: "Plan created successfully", planCreated });
   }),
@@ -41,10 +44,12 @@ const planController = {
   }),
 
   update: asyncHandler(async (req, res) => {
-    const { planName, features, price, billingCycle, hasTrial, trialDays, discountPercentage } = req.body;
+    const { planName, features, price, billingcycle } = req.body;
+    console.log(req.body);
+    console.log(req.params);
     const planUpdated = await Plan.findByIdAndUpdate(
       req.params.planId,
-      { planName, features, price, billingCycle, hasTrial, trialDays, discountPercentage },
+      { planName, features, price, billingcycle },
       { new: true }
     );
     if (!planUpdated) throw new Error("Plan not found");

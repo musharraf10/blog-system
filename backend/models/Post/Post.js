@@ -5,7 +5,7 @@ const postSchema = new mongoose.Schema(
   { 
     contentData:{
       type:String,
-      enum:["Article","Webinar"],
+      enum:["Article", "Webinar", "StepbyStepGuide", "VideoTutorial"],
     },
     refId:{
       type:mongoose.Schema.Types.ObjectId,
@@ -24,13 +24,11 @@ const postSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected","draft"],
       default: "pending",
     },
-    category:[ {
-        enum:["article","webinar","video","step-by-step-guide","video-tutorials"]
-    }],
+   
     nextEarningDate: {
       type: Date,
       default: () =>
-        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1), // Default to the first day of the next month
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1),
     },
     publisheddate:{type:Date},
     thisMonthEarnings: { type: Number, default: 0 },
@@ -48,4 +46,6 @@ const postSchema = new mongoose.Schema(
 
 );
 
-module.exports = mongoose.model("Post", postSchema);
+const Post = mongoose.model("Post", postSchema);
+
+module.exports = Post

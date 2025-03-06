@@ -1,6 +1,6 @@
 import AuthRoute from "../components/AuthRoute/AuthRoute";
 import Home from "../components/Home/Home";
-import Login from "../components/Subscribers/Login";
+// import Login from "../components/Subscribers/Login";
 import Unauthorized from "../components/Templates/Unauthorized";
 import PostDetails from "../components/Posts/PostDetails"
 
@@ -13,6 +13,8 @@ import Register from "../components/Subscribers/Register";
 import RequestResetPassword from "../components/Subscribers/RequestResetPassword"
 
 import Rankings from "../components/Admin/CreatorsRanking"
+import Login from "../components/Subscribers/Login";
+import PaymentSuccess from "../components/Plans/PaymentSuccess";
 
 
 
@@ -27,6 +29,7 @@ export default function PublicRoutes() {
         <Route element={<Rankings />} path="/ranking" />
         <Route element={<PostsList />} path="/posts" />
         <Route path="posts/:postId" element={<AuthRoute allowedRoles={["curator","subscriber","admin"]}> <PostDetails /></AuthRoute>} />
+        <Route path="/success" element={<AuthRoute allowedRoles={["curator","subscriber","admin"]}><PaymentSuccess/></AuthRoute>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
   )
