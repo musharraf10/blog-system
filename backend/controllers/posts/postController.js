@@ -200,7 +200,7 @@ const postController = {
           populate: {
             path: "author",
           },
-        });
+        }).populate("refId");
 
       res.status(200).json({
         status: "success",

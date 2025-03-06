@@ -30,11 +30,13 @@ const PostsList = () => {
       });
 
       console.log("Fetched Plan:", response.data.plan);
-      setPlanName(response.data.plan?.planName || "Free"); // Avoid errors if `plan` is missing
+      setPlanName(response.data.plan?.planName || "Free"); 
     } catch (error) {
       console.error("Error fetching plan:", error);
     }
   };
+
+
 
   useEffect(() => {
     getPlan();
@@ -134,7 +136,7 @@ const PostsList = () => {
         &lt;
       </button>
     );
-    console.log(data)
+    console.log("Posts FEED",data)
     console.log("Fetched Posts Data:", data?.posts);
 
     
@@ -244,7 +246,7 @@ const PostsList = () => {
                       <div className="post-image-container">
                         <img
                           className="post-image"
-                          src={post?.image}
+                          src={post?.refId.thumbnail}
                           alt={post?.price || "Post image"}
                         />
                        

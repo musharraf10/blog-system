@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 import axios from "axios";
+import { FiUpload } from "react-icons/fi";
+
 import {
   Box,
   Button,
@@ -15,7 +17,9 @@ const CreatePost = () => {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState(""); 
   const [tags, setTags] = useState(""); 
-  const [price, setprice] = useState(""); 
+  const [price, setPrice] = useState(""); 
+  const [thumbnail, setThumbnail] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
@@ -25,36 +29,43 @@ const CreatePost = () => {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("status", postStatus);
+    formData.append("tags", tags.split(",").map((tag) => tag.trim()));
+    formData.append("price", price);
+    
+    if (thumbnail) {
+      formData.append("thumbnail", thumbnail);  // FIX: Ensure key matches backend
+    }
+
     try {
       const response = await axios.post(
         `${BackendServername}/article/addarticle`,
-        {
-          title,
-          content,
-          status: postStatus,
-          tags: tags.split(",").map((tag) => tag.trim()),
-          price
-        },
+        formData,
         {
           withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
       if (response.status === 200 || response.status === 201) {
         console.log("Success");
-        alert("article saved succesfully");
+        alert("Article saved successfully");
         setContent("");
         setTitle("");
         setTags("");
-        setprice("")
+        setPrice("");
+        setThumbnail(null);
       } else {
         alert("Something went wrong! Please try again.");
       }
     } catch (error) {
       console.error("Error saving content:", error);
-      alert(
-        "Failed to save content. Please check your connection and try again."
-      );
+      alert("Failed to save content. Please check your connection and try again.");
     }
   };
 
@@ -63,10 +74,22 @@ const CreatePost = () => {
     toolbarAdaptive: false,
     height: 500,
     width: "100%",
-    // uploader: { insertImageAsBase64URI: true },
     askBeforePasteHTML: false,
     pastePlainText: true,
   };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setThumbnail(file); // Set file in state
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result); // Show preview
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -99,12 +122,40 @@ const CreatePost = () => {
           sx={{ mb: 3 }}
         />
 
+        {/* Thumbnail Upload */}
+        {/* <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setThumbnail(e.target.files[0])}
+          style={{ marginBottom: "20px" }}
+        /> */}
+
+        <div className="text-center border mb-4">
+          {previewImage ? (
+            <img src={previewImage} alt="ID Preview" className="mx-auto h-32 w-auto object-cover rounded" />
+          ) : (
+            <>
+              <FiUpload className="mx-auto h-12 w-12 text-gray-400" />
+              <label className="cursor-pointer text-blue-600 hover:text-blue-500">
+                <span>Upload Thumbnail Image</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </label>
+              <p className="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
+            </>
+          )}
+        </div>
+
         <TextField
           label="Add Price"
           variant="outlined"
           fullWidth
           value={price}
-          onChange={(e) => setprice(e.target.value)}
+          onChange={(e) => setPrice(e.target.value)}
           sx={{ mb: 3 }}
         />
 
@@ -118,8 +169,6 @@ const CreatePost = () => {
             className="w-full"
           />
         </Box>
-
-        {/* Tags Input */}
 
         {/* Buttons */}
         <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
@@ -156,7 +205,7 @@ const CreatePost = () => {
             }}
             onClick={() => savePost("pending")}
           >
-            Sent to reveiw
+            Send to Review
           </Button>
         </Box>
       </Paper>
