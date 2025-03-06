@@ -32,15 +32,7 @@ const PostDetails = () => {
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
   const [selectedPost, setSelectedPost] = useState(postId);
 
-  useEffect(() => {
-    const userSubscriptionStatus = localStorage.getItem("userSubscriptionStatus");
-    setIsUserSubscribed(userSubscriptionStatus === "subscribed");
-  }, []);
-
-  useEffect(() => {
-    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedPosts")) || [];
-    setBookmarkedPosts(savedBookmarks);
-  }, []);
+  
 
   const toggleBookmark = (postId, e) => {
     e.preventDefault();

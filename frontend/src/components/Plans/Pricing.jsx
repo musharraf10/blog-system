@@ -2,12 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Link } from "react-router-dom";
 import { fetchPlansAPI } from "../../APIServices/plans/plans";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 
 const Pricing = () => {
   const { data, isError, isLoading, error } = useQuery({
     queryKey: ["pricing-lists"],
     queryFn: fetchPlansAPI,
   });
+
+  const { data: user } = useQuery({
+      queryKey: ["user-auth"],
+      queryFn: checkAuthStatusAPI,
+      refetchOnWindowFocus: true, 
+    });
+    
+    const userRole = user?.role; 
   //Get free plan
   const freePlan = data?.plans?.filter((plan) => plan.planName === "Free");
   //Get free premium plan
@@ -44,7 +53,7 @@ const Pricing = () => {
               </div>
 
               <Link
-                to="/subscriber/free-subscription"
+                to={`/${userRole}/free-subscription`}
                 className="h-14 inline-flex items-center justify-center w-full text-center py-4 px-6 rounded-full border border-gray-200 shadow text-sm font-semibold hover:bg-gray-50 focus:ring focus:ring-orange-200 transition duration-200 mb-10"
               >
                 <span>Sign up today</span>
@@ -94,7 +103,7 @@ const Pricing = () => {
               </div>
               <Link
                 className="w-full text-center h-14 py-4 px-6 rounded-full bg-white border border-gray-200 shadow hover:bg-gray-50 focus:ring focus:ring-orange-200 transition duration-200 mb-8 flex items-center justify-center gap-2"
-                to={`/checkout/${premiumPlan?.[0]?._id}`}
+                to={`/${userRole}/checkout/${premiumPlan?.[0]?._id}`}
               >
                 <span className="text-sm font-semibold ">Sign up today</span>
                 <svg

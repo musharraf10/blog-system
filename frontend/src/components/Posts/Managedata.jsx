@@ -1,9 +1,11 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { FileText, Video, BookOpen, Plus, Search, Edit, Trash2, Calendar } from "lucide-react"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+import { FileText, Video, BookOpen, Plus, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Modal, Button, Form } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/js/bootstrap.bundle.min.js"
+import { Search } from "lucide-react";
 
 const ManageData = () => {
   const navigate = useNavigate()
@@ -77,11 +79,36 @@ const ManageData = () => {
   const filteredItems =
     activeFilter === "all" ? contentItems : contentItems.filter((item) => item.contentData === activeFilter)
 
+  const handleEdit = (item) => {
+    // setEditingItem(item);
+    // setShowModal(true);
+    navigate(`/admin/update-post/${item.contentData.toLowerCase()}/${item._id}`)
+  };
   // Get type object by type name
   const getTypeInfo = (typeName) => {
     return categoryDetails.find((type) => type.type === typeName) || categoryDetails[0]
   }
 
+  
+
+ 
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+  
+    try {
+      await axios.delete(`${BackendServername}/posts/managecontent/deletepost/${id}`);
+      
+      setContentItems((prevItems) => prevItems.filter((item) => item._id !== id));
+  
+      alert("Deleted Successfully");
+    } catch (error) {
+      console.error("Error Deleting Post:", error);
+      alert(`Error Deleting Post: ${error.response?.data?.message || error.message}`);
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
@@ -296,7 +323,6 @@ const ManageData = () => {
                 })}
               </tbody>
             </table>
-          </div>
 
           {filteredItems.length === 0 && (
             <div className="py-20 text-center text-gray-500">
@@ -316,8 +342,87 @@ const ManageData = () => {
               </button>
             </div>
           )}
+          </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {/* <Modal show={showModal} onHide={handleCloseModal}>
+  <Modal.Header>
+    <Modal.Title>Edit Content</Modal.Title>
+
+  </Modal.Header>
+
+  <Modal.Body>
+    <Form>
+    <Form.Group className="mb-3">
+  <Form.Label>Title</Form.Label>
+  <Form.Control
+    type="text"
+    value={editingItem?.refId?.title || ''}
+    onChange={(e) =>
+      setEditingItem((prevState) => ({
+        ...prevState,
+        refId: prevState.refId
+          ? { ...prevState.refId, title: e.target.value }
+          : { title: e.target.value },
+      }))
+    }
+  />
+</Form.Group>
+
+<Form.Group className="mb-3">
+  <Form.Label>Description</Form.Label>
+  <Form.Control
+    as="textarea"
+    rows={3}
+    value={editingItem?.refId?.description || ''}
+    onChange={(e) =>
+      setEditingItem((prevState) => ({
+        ...prevState,
+        refId: prevState.refId
+          ? { ...prevState.refId, description: e.target.value }
+          : { description: e.target.value },
+      }))
+    }
+  />
+</Form.Group>
+
+<Form.Group className="mb-3">
+  <Form.Label>Price</Form.Label>
+  <Form.Control
+    type="number"
+    value={editingItem?.price || 0} 
+    onChange={(e) =>
+      setEditingItem((prevState) => ({
+        ...prevState,
+        price: parseFloat(e.target.value) || 0, 
+      }))
+    }
+  />
+</Form.Group>
+
+    </Form>
+  </Modal.Body>
+
+  <Modal.Footer>
+    <Button
+      variant="secondary"
+      onClick={handleCloseModal}
+      className="text-gray-700 bg-gray-200 hover:bg-gray-300"
+    >
+      Close
+    </Button>
+    <Button
+      variant="primary"
+      onClick={handleSaveEdit}
+      className="text-white bg-blue-600 hover:bg-blue-700"
+    >
+      Save Changes
+    </Button>
+  </Modal.Footer>
+</Modal> */}
+
     </div>
   )
 }

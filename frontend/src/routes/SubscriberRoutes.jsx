@@ -28,6 +28,9 @@ import Trending from "../components/Subscribers/Trending/Trending";
 import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import ViewGuide from "../components/Posts/ViewGuide";
+import GuideDetails from "../components/Posts/GuideDetails";
+import CheckoutForm from "../components/Plans/CheckoutForm";
 import PostDetails from "../components/Posts/PostDetails";
 import BookmarkDetails from "../components/Posts/BookmarkDetails";
 
@@ -64,12 +67,16 @@ const SubscriberRoutes = () => {
         <Route path="pricing" element={<Pricing />} />
         <Route path="free-subscription" element={<PayingFreePlan />} />
         <Route path="webinars" element={<Webinars />} />
+        <Route path="stepbystepguide" element={<ViewGuide />} />
+        <Route path="guide/:guideId" element={<GuideDetails />} />
+        <Route path="checkout/:planId" element={<CheckoutForm />} />
 
-        <Route
-          path="account-verification/:verifyToken"
-          element={<AccountVerifiedComponent />}
-        />
+       
       </Route>
+      <Route
+            path="/account-verification/:verifyToken"
+            element={<AccountVerifiedComponent />}
+          />
       <Route path="/posts/:postId" element={<PostDetails/>}/>
       <Route path="/bookmarks/:postId" element={<BookmarkDetails/>}/>
 

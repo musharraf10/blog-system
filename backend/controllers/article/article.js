@@ -4,57 +4,43 @@ const Article = require("../../models/article/article.js");
 const Post = require("../../models/Post/Post.js");
 
 const addarticleconroller = async (req, res) => {
-  const { title, content, status, tags,price } = req.body;
-
-
-  if (!title || !content || !status) {
-    return res.status(400).json({
-      status: "error",
-      message: "Title, content, and status are required.",
-    });
-  }
-
   try {
+    const { title, content, status, tags, price } = req.body;
+    const thumbnail = req.file ? req.file.path : null; 
+
+    if (!title || !content || !status) {
+      return res.status(400).json({
+        status: "error",
+        message: "Title, content, and status are required.",
+      });
+    }
+
+    // Create new article
     const newArticle = new Article({
       title,
       description: content,
-      tags
+      tags,
+      thumbnail,
     });
 
-    const createPost=new Post({
-      author:req.user,
+    
+    const createPost = new Post({
+      author: req.user,
       status,
-      contentData: "Article",  
+      contentData: "Article",
       refId: newArticle._id,
-      price
-    })
-    await newArticle.save()
-    await createPost.save()
+      price,
+      thumbnail, 
+    });
 
-
-
-
-   
-    for (const tagName of tags) {
-      const tag = await Tag.findOneAndUpdate(
-        { tagname: tagName },
-        {
-          $setOnInsert: { tagname: tagName, createdBy: req.user },
-          $push: { allposts: createPost._id },
-        },
-        { new: true, upsert: true }
-      );
-      await newArticle.save()
-
-      
-    }
-    await createPost.save()
+    await newArticle.save();
+    await createPost.save();
 
     return res.status(201).json({
       status: "success",
       message: "Article created successfully!",
       article: newArticle,
-      post: createPost,  // Returning the post as well
+      post: createPost,
     });
   } catch (error) {
     console.error("Error saving article:", error);
@@ -64,6 +50,7 @@ const addarticleconroller = async (req, res) => {
     });
   }
 };
+
 
 
 

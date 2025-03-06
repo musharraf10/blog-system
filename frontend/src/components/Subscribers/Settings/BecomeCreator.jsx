@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 import { FiUpload, FiUser, FiPhone } from 'react-icons/fi';
-import { becomeCreatorAPI } from '../../../APIServices/users/usersAPI';
 
 const validationSchema = Yup.object({
   phone: Yup.string()
@@ -18,6 +18,7 @@ const validationSchema = Yup.object({
 export default function BecomeCreator() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
   const formik = useFormik({
     initialValues: {
@@ -30,23 +31,26 @@ export default function BecomeCreator() {
     onSubmit: async (values) => {
       setIsSubmitting(true);
       const formData = new FormData();
-    
-      // Append form values
+      
       Object.keys(values).forEach((key) => {
-        if (key === "govID" && values[key]) {
-          formData.append(key, values[key]); // Append file separately
-        } else {
-          formData.append(key, values[key]);
-        }
+        formData.append(key, values[key]);
       });
-    
+      
       try {
-        const response = await becomeCreatorAPI(formData);
-        alert("Application submitted successfully!");
-        console.log("Success:", response);
+        const response = await axios.post(`${BackendServername}/users/become-creator`, formData,{
+          withCredentials:true
+        } ,{
+          headers: { 'Content-Type': 'multipart/form-data' },
+          
+        });
+        alert('Application submitted successfully!');
+
+        
+        resetForm();
+        setPreviewImage(null);
       } catch (error) {
-        console.error("Error submitting form:", error.message);
-        alert("Submission failed. Please try again.");
+        console.error('Error submitting form:', error.message);
+        alert('Submission failed. Please try again.');
       } finally {
         setIsSubmitting(false);
       }
@@ -74,7 +78,6 @@ export default function BecomeCreator() {
 
         <form onSubmit={formik.handleSubmit} className="bg-white shadow-xl rounded-lg px-8 pt-6 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Phone Number */}
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
               <div className="relative">
@@ -91,7 +94,6 @@ export default function BecomeCreator() {
               )}
             </div>
 
-            {/* Channel Name */}
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">Channel Name</label>
               <div className="relative">
@@ -109,7 +111,6 @@ export default function BecomeCreator() {
             </div>
           </div>
 
-          {/* Government ID Type */}
           <div className="mt-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">Government ID Type</label>
             <select
@@ -127,25 +128,12 @@ export default function BecomeCreator() {
             )}
           </div>
 
-          {/* Government ID Upload */}
           <div className="mt-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">Government ID</label>
             <div className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
               <div className="text-center">
                 {previewImage ? (
-                  <div className="relative">
-                    <img src={previewImage} alt="ID Preview" className="mx-auto h-32 w-auto object-cover rounded" />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPreviewImage(null);
-                        formik.setFieldValue('govID', null);
-                      }}
-                      className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1"
-                    >
-                      ×
-                    </button>
-                  </div>
+                  <img src={previewImage} alt="ID Preview" className="mx-auto h-32 w-auto object-cover rounded" />
                 ) : (
                   <>
                     <FiUpload className="mx-auto h-12 w-12 text-gray-400" />
@@ -168,13 +156,8 @@ export default function BecomeCreator() {
             )}
           </div>
 
-          {/* Submit Button */}
           <div className="mt-8">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 px-4 bg-blue-600 text-white rounded-md"
-            >
+            <button type="submit" disabled={isSubmitting} className="w-full py-3 px-4 bg-blue-600 text-white rounded-md">
               {isSubmitting ? 'Submitting...' : 'Submit Application'}
             </button>
           </div>

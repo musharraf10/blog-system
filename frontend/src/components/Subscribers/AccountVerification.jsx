@@ -22,6 +22,13 @@ const AccountVerifiedComponent = () => {
     mutationFn: verifyUserAccountAPI,
   });
 
+  const { isLoading, data } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+  });
+  let userRole = data?.role;
+
+
   //Useeffect for automatically call the mutation
   useEffect(() => {
     mutation.mutate(verifyToken);
@@ -51,7 +58,7 @@ const AccountVerifiedComponent = () => {
               <p className="mt-2 text-gray-600">
                 Your account has been successfully verified!
               </p>
-              <Link to="/dashboard">
+              <Link to={`${userRole}`}>
                 <button className="mt-4 w-full bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center">
                   <AiOutlineDashboard className="mr-2" /> Go to Dashboard
                 </button>
