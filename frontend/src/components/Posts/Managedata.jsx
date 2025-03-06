@@ -5,6 +5,7 @@ import axios from "axios";
 import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.bundle.min.js"
+import { Search } from "lucide-react";
 
 const ManageData = () => {
   const navigate = useNavigate()

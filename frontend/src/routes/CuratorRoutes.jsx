@@ -24,6 +24,7 @@ import ResetPassword from "../components/Subscribers/ResetPassword";
 import WebinarForm from "../components/Posts/WebinarForm";
 import Pricing from "../components/Plans/Pricing";
 import CheckoutForm from "../components/Plans/CheckoutForm";
+import ManageData from "../components/Posts/Managedata";
 
 const CuratorRoutes = () => {
     return (
@@ -38,7 +39,7 @@ const CuratorRoutes = () => {
         >
           <Route path="editor" element={<ContentEditor />} />
           <Route path="contentdashBoard" element={<ContentDashBoard />} />
-          <Route path="DashBoard" element={<DashBoard />} />
+          <Route path="DashBoard" element={<ManageData />} />
           <Route path="Analytics" element={<Analytics />} />
           <Route path="AddCategory" element={<AddCategory />} />
           <Route path="profile" element={<AccountSummaryDashboard />} />

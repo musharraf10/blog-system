@@ -8,7 +8,6 @@ import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
   { name: "Dashboard", href: "/curator/ContentDashBoard", icon: HomeIcon },
-  { name: "Create Post", href: "/curator/create-post", icon: FaUserEdit },
   { name: "Content Dashboard", href: "/curator/DashBoard", icon: MdContentPaste },
   { name: "Manage Categories", href: "/curator/AddCategory", icon: FaTags },
 ];

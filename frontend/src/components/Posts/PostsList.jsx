@@ -232,7 +232,7 @@ const PostsList = () => {
           <div className="relative flex items-center justify-center mt-6">
             <form
               onSubmit={handleSearchSubmit}
-              className="relative flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-100 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
+              className="relative mb-5 flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-100 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
             >
               <FaSearch className="absolute left-4 text-blue-600 text-lg animate-pulse" />
               <input
@@ -240,7 +240,7 @@ const PostsList = () => {
                 placeholder="Search for content..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="w-full py-3 pl-12 pr-12 text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
+                className="w-full py-3 pl-12 pr-12  text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
               />
               {searchTerm && (
                 <button
@@ -267,7 +267,7 @@ const PostsList = () => {
             <>
               {/* Posts Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {data?.posts?.map((post) => {
+                {nonPremiumPosts?.map((post) => {
                   const isPremium = isPremiumPost(post);
                   const isBookmarked = bookmarkedPosts.includes(post._id);
 
@@ -284,13 +284,13 @@ const PostsList = () => {
                           src={post?.refId.thumbnail}
                           alt={post?.price || "Post image"}
                         />
-                        <button
+                        {/* <button
                           className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
                           onClick={(e) => toggleBookmark(post._id, e)}
                           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
                         >
                           <FaBookmark />
-                        </button>
+                        </button> */}
                       </div>
                       {isPremium && !isUserSubscribed && (
                         <div className="premium-overlay">
