@@ -36,15 +36,8 @@ import CheckoutForm from "../components/Plans/CheckoutForm";
 const SubscriberRoutes = () => {
   return (
     <Routes>
-      <Route
-        path="/subscriber"
-        element={
-          <AuthRoute allowedRoles={["subscriber"]}>
-            <SubscriberDashboard />
-          </AuthRoute>
-        }
-      >
-        <Route path="feed" element={<PostsList />} />
+      <Route path="/subscriber" element={ <AuthRoute allowedRoles={["subscriber"]}> <SubscriberDashboard /> </AuthRoute> } >
+        <Route index  element={<PostsList />} />
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route path="profilesettings" element={<SettingsSubPage />} />
