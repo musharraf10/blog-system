@@ -29,6 +29,7 @@ import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 import ResetPassword from "../components/Subscribers/ResetPassword";
 import PostDetails from "../components/Posts/PostDetails";
+import BookmarkDetails from "../components/Posts/BookmarkDetails";
 
 const SubscriberRoutes = () => {
   return (
@@ -70,6 +71,7 @@ const SubscriberRoutes = () => {
         />
       </Route>
       <Route path="/posts/:postId" element={<PostDetails/>}/>
+      <Route path="/bookmarks/:postId" element={<BookmarkDetails/>}/>
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>
