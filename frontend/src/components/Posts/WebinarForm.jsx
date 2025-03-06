@@ -25,7 +25,7 @@ const WebinarForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       // Sending form data to the backend API without token or headers
       const response = await axios.post(`${BackendServername}/webinar/addwebinar`, formData,
@@ -38,7 +38,8 @@ const WebinarForm = () => {
       console.log("Webinar added successfully:", response.data);
       alert("Webinar registration submitted successfully!");
 
-      setFormData({  title: "",
+      setFormData({
+        title: "",
         link: "",
         date: "",
         time: "",

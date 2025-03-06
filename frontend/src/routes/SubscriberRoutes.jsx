@@ -57,6 +57,7 @@ const SubscriberRoutes = () => {
 
         <Route path="bookmarks" element={<BookmarkPost />} />
         <Route path="profile" element={<AccountSummaryDashboard />} />
+        
         <Route path="my-followings" element={<MyFollowing />} />
         <Route path="my-followers" element={<MyFollowers />} />
         <Route path="add-email" element={<AddEmailComponent />} />

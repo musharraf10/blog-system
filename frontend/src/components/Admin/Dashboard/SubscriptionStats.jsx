@@ -236,7 +236,7 @@ const SubscriptionStats = () => {
             </tbody>
           </table>
 
-          <h5 className="fs-2 fw-bold text-start text-center mt-2 mb-5 text-[#1E3A8A]"  // or use text-[#3B82F6]
+          <h5 className="fs-2 fw-bold text-start text-center mt-2 mb-5 text-[#1E3A8A]"
           >
             Transactions Data
           </h5>

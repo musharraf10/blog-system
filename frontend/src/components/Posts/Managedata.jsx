@@ -125,34 +125,32 @@ const ManageData = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Content Types
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {categoryDetails.map((contentType) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categorydetails.map((contentType) => (
                 <div
                   key={contentType.type}
-                  className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() =>
-                    navigate(`/admin/create-post/${contentType.type}`)
-                  }
+                  className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
+                  onClick={() => navigate(`/admin/create-post/${contentType.type}`)}
                 >
-                  <div className="flex items-center mb-2">
-                    <div className="bg-indigo-100 p-2 rounded-md mr-3">
-                      <contentType.icon className="h-6 w-6 text-indigo-600" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] opacity-0 transition-opacity duration-300 group-hover:opacity-5"></div>
+                  <div className="flex items-center mb-4">
+                    <div className="bg-blue-50 p-3 rounded-lg mr-4 transition-colors duration-300 group-hover:bg-blue-100">
+                      <contentType.icon className="h-7 w-7 text-[#1565C0] transition-colors duration-300 group-hover:text-[#0D47A1]" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900">
+                    <h3 className="text-lg font-semibold text-gray-800 transition-colors duration-300 group-hover:text-[#1565C0]">
                       {contentType.label}
                     </h3>
                   </div>
-                  <p className="text-sm text-gray-500">
-                    {contentType.description}
-                  </p>
+                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">{contentType.description}</p>
                   <button
-                    className="mt-3 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800"
+                    className="mt-2 inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white text-sm font-medium transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md relative overflow-hidden group-hover:scale-105"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/admin/create-post/${contentType.type}`);
+                      e.stopPropagation()
+                      navigate(`/admin/create-post/${contentType.type}`)
                     }}
                   >
-                    <Plus className="h-4 w-4 mr-1" />
+                    <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 hover:opacity-20"></span>
+                    <Plus className="h-4 w-4 mr-1.5" />
                     Create New
                   </button>
                 </div>
