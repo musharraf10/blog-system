@@ -494,15 +494,25 @@ const postController = {
       message: "Post Unbookmarked",
     });
   }),
-  getallpost:asyncHandler(async(req,res)=>{
-    try{
-      const posts = await Post.find()
-      .populate("author")
-      .populate("refId"); 
-    
-res.json({ data: posts });
-      
-    }catch(err){
+  getallpost: asyncHandler(async (req, res) => {
+    try {
+      console.log(req.user.role);
+      if (req.user.role === "admin") {
+        const posts = await Post.find({}).populate("author").populate("refId");
+        res.json({ data: posts });
+      } else {
+        const { userId } = req.query;
+
+        if (!userId) {
+          return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const posts = await Post.find({ author: userId })
+          .populate("author")
+          .populate("refId");
+        res.json({ data: posts });
+      }
+    } catch (err) {
       console.error("Error fetching posts:", err);
     }
   }),
