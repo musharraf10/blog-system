@@ -86,9 +86,13 @@ export default function AddPlanPopup({
       refreshdata();
     } catch (error) {
       console.error("Error submitting data:", error);
-      alert(
-        `There was an error ${plandetails ? "updating" : "creating"} the plan.`
-      );
+
+      if (error.response && error.response.data && error.response.data.error) {
+        alert(error.response.data.error);
+      } else {
+        alert( `There was an error ${plandetails ? "updating" : "creating"} the plan.`
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -113,15 +117,18 @@ export default function AddPlanPopup({
             <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
               <div className="px-8 py-6 bg-blue-900 text-white">
                 <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2">
-                  <Package className="w-6 h-6" />{" "}
+                  <Package className="w-6 text-white  h-6" />{" "}
+                  <h5 className="text-white">
+
                   {plandetails._id ? "Update Plan" : "Create Subscription Plan"}
+                  </h5>
                 </h2>
               </div>
               <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
                 {loading && <p>Loading, please wait...</p>}
                 {message && <p>{message}</p>}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium  mb-2">
                     Plan Name
                   </label>
                   <input

@@ -6,8 +6,10 @@ const planController = {
     const { planName, features, price, billingcycle } = req.body;
     if (await Plan.findOne({ planName }))
       throw new Error("Plan already exists");
-    if ((await Plan.countDocuments()) >= 5)
-      throw new Error("Maximum plan limit reached");
+    if ((await Plan.countDocuments()) >= 5) {
+      return res.status(400).json({ error: "Maximum plan limit reached" });
+    }
+
     if (price <= 0) throw new Error("Price must be a positive value");
 
     const planCreated = await Plan.create({
