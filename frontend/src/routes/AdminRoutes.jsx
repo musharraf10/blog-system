@@ -17,7 +17,7 @@ import MyFollowers from "../components/Admin/MyFollowers"
 import MyEarnings from "../components/Admin/MyEarnings"
 import Notifications from "../components/Notification/NotificationLists"
 import AccountVerifiedComponent from "../components/Admin/AccountVerification"
-import CreatePlan from "../components/Plans/CreatePlan"
+
 import AddCategory from "../components/Category/AddCategory"
 import PostsList from "../components/Posts/PostsList";
 import Dashboard from "../components/Admin/Dashboard/Dashboard";
@@ -27,6 +27,7 @@ import UserManagement from "../components/Admin/UserManagement/Usersmanagement";
 import ManageData from "../components/Posts/Managedata";
 import WebinarForm from "../components/Posts/WebinarForm";
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import PlanDetails from "../components/Plans/PlanDetails";
 
 
 
@@ -64,7 +65,7 @@ const AdminRoutes = () => {
             path="account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
-          <Route path="create-plan" element={<CreatePlan />} />
+          <Route path="plan-details" element={<PlanDetails />} />
           <Route path="add-category" element={<AddCategory />} />
           <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         </Route>

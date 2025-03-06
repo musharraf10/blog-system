@@ -28,6 +28,7 @@ import Trending from "../components/Subscribers/Trending/Trending";
 import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import PlanDetails from "../components/Plans/PlanDetails";
 
 const SubscriberRoutes = () => {
   return (
@@ -40,7 +41,7 @@ const SubscriberRoutes = () => {
           </AuthRoute>
         }
       >
-        <Route path="feed" element={<PostsList />} />
+        <Route path="feed" element={<PlanDetails />} />
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route path="profilesettings" element={<SettingsSubPage />} />

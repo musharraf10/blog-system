@@ -15,7 +15,7 @@ const navigation = [
   { name: "User Management", href: "/admin/user-management", icon: FaUsersCog },
   { name: "Payment Management", href: "/admin/payment-management", icon: MdPayment },
   { name: "Manage Content", href: "/admin/manage-content", icon: FaUserEdit },
-  { name: "Create Plan", href: "/admin/create-plan", icon: FaCalendarPlus },
+  { name: "Plan Details", href: "/admin/plan-details", icon: FaCalendarPlus },
 ]
 
 export default function AdminDashboard() {
