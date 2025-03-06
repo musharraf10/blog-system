@@ -126,7 +126,7 @@ const ManageData = () => {
               Content Types
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {categorydetails.map((contentType) => (
+              {categoryDetails.map((contentType) => (
                 <div
                   key={contentType.type}
                   className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
