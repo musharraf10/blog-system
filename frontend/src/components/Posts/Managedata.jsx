@@ -1,134 +1,89 @@
 "use client"
 
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
 import { FileText, Video, BookOpen, Plus, Search, Edit, Trash2, Calendar } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const ManageData = () => {
-  const navigate = useNavigate();
-  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
-  const [contentItems, setContentItems] = useState([]);
+  const navigate = useNavigate()
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME
+  const [contentItems, setContentItems] = useState([])
+
   useEffect(() => {
     const fetchContentItems = async () => {
       try {
-        const response = await axios.get(
-          `${BackendServername}/posts/managecontent/getpost`
-        );
-        const data = response.data;
-        console.log(data.data);
-        setContentItems(data.data);
+        const response = await axios.get(`${BackendServername}/posts/managecontent/getpost`)
+        const data = response.data
+        console.log(data.data)
+        setContentItems(data.data)
       } catch (error) {
-        alert(error);
-        console.error("Error fetching content items:", error);
+        alert(error)
+        console.error("Error fetching content items:", error)
       }
-    };
+    }
 
-    fetchContentItems();
-  }, []);
-  const [activeFilter, setActiveFilter] = useState("all");
+    fetchContentItems()
+  }, [])
 
+  const [activeFilter, setActiveFilter] = useState("all")
+
+  // Content type metadata
   const categoryDetails = [
     {
       type: "Article",
       label: "Articles",
       icon: FileText,
       description: "Rich text, images, embedded media",
-      color: "#3b82f6",
+      color: "bg-blue-600",
+      badge: "bg-blue-100 text-blue-800",
+      hoverColor: "group-hover:bg-blue-700",
     },
     {
       type: "VideoTutorial",
       label: "Videos",
       icon: Video,
       description: "Host content with adaptive streaming",
-      color: "#ef4444",
+      color: "bg-indigo-600",
+      badge: "bg-indigo-100 text-indigo-800",
+      hoverColor: "group-hover:bg-indigo-700",
     },
     {
       type: "StepbyStepGuide",
       label: "Interactive Guides",
       icon: BookOpen,
       description: "Step-by-step tutorials with interactive elements",
-      color: "#22C55E",
+      color: "bg-cyan-600",
+      badge: "bg-cyan-100 text-cyan-800",
+      hoverColor: "group-hover:bg-cyan-700",
     },
     {
       type: "Webinar",
       label: "Webinars",
       icon: Calendar,
       description: "Scheduled live video sessions with chat/Q&A",
-      color: "#A855F7 ",
+      color: "bg-sky-600",
+      badge: "bg-sky-100 text-sky-800",
+      hoverColor: "group-hover:bg-sky-700",
     },
-  ];
+  ]
 
-  const articleCount = contentItems.filter(
-    (item) => item.contentData === "Article"
-  ).length;
-  const videoCount = contentItems.filter(
-    (item) => item.contentData === "video-tutorial"
-  ).length;
-  const guideCount = contentItems.filter(
-    (item) => item.contentData === "StepbyStepGuide"
-  ).length;
-  const webinarCount = contentItems.filter(
-    (item) => item.contentData === "Webinar"
-  ).length;
+  const articleCount = contentItems.filter((item) => item.contentData === "Article").length
+  const videoCount = contentItems.filter((item) => item.contentData === "video-tutorial").length
+  const guideCount = contentItems.filter((item) => item.contentData === "StepbyStepGuide").length
+  const webinarCount = contentItems.filter((item) => item.contentData === "Webinar").length
 
   // Filter content items
   const filteredItems =
-    activeFilter === "all"
-      ? contentItems
-      : contentItems.filter((item) => item.contentData === activeFilter);
+    activeFilter === "all" ? contentItems : contentItems.filter((item) => item.contentData === activeFilter)
 
+  // Get type object by type name
   const getTypeInfo = (typeName) => {
-    return (
-      categoryDetails.find((type) => type.type === typeName) ||
-      categoryDetails[0]
-    );
-  };
+    return categoryDetails.find((type) => type.type === typeName) || categoryDetails[0]
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Content Types
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {categorydetails.map((contentType) => (
-              <div
-                key={contentType.type}
-                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => navigate(`/admin/create-post/${contentType.type}`)}
-              >
-                <div className="flex items-center mb-2">
-                  <div className="bg-indigo-100 p-2 rounded-md mr-3">
-                    <contentType.icon className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900">
-                    {contentType.label}
-                  </h3>
-                </div>
-                <p className="text-sm text-gray-500">
-                  {contentType.description}
-                </p>
-                <button
-                  className="mt-3 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800"
-
-
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/admin/create-post/${contentType.type}`)
-                  }}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Create New
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Header Section */}
       <header className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white py-16 shadow-xl relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMCAwaDEyMHYyMEgweiIvPjxwYXRoIGQ9Ik0wIDBoMTIwdjIwSDB6IiBmaWxsPSIjRkZGIiBmaWxsLW9wYWNpdHk9Ii4yIi8+PC9nPjwvc3ZnPg==')] opacity-10"></div>
@@ -143,14 +98,14 @@ const ManageData = () => {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-12 max-w-7xl">
         {/* Content Types */}
-        <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
+        <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 transform transition-all duration-300 hover:shadow-xl">
           <div className="p-8 border-b border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <span className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] w-1.5 h-6 rounded mr-3 inline-block"></span>
               Content Types
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {categorydetails.map((contentType) => (
+              {categoryDetails.map((contentType) => (
                 <div
                   key={contentType.type}
                   className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
@@ -185,30 +140,35 @@ const ManageData = () => {
 
         {/* Type Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {contentTypes.map((type) => {
-            const count = contentItems.filter((item) => item.type === type.type).length
+          {categoryDetails.map((type) => {
+            let count = 0
+            if (type.type === "Article") count = articleCount
+            else if (type.type === "VideoTutorial") count = videoCount
+            else if (type.type === "StepbyStepGuide") count = guideCount
+            else if (type.type === "Webinar") count = webinarCount
+
             return (
               <div
                 key={type.type}
-                className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100 transform hover:-translate-y-1 group"
+                className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 group"
               >
-                <div
-                  className={`bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-6 text-white flex items-center justify-between transition-all duration-300`}
-                >
-                  <h3 className="font-semibold text-lg">{type.title}</h3>
+                <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-6 text-white flex items-center justify-between transition-all duration-300">
+                  <h3 className="font-semibold text-lg">{type.label}</h3>
                   <span className="text-3xl font-bold">{count}</span>
                 </div>
                 <div className="p-5 bg-white">
                   <div className="text-sm text-gray-600 flex items-center justify-between">
                     <span>{count === 1 ? "item" : "items"} published</span>
                     <span className="text-xs px-2 py-1 bg-gray-100 rounded-full transition-colors duration-300 group-hover:bg-gray-200">
-                      {Math.round((count / contentItems.length) * 100)}% of total
+                      {contentItems.length > 0 ? Math.round((count / contentItems.length) * 100) : 0}% of total
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mt-3">
                     <div
                       className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] h-1.5 rounded-full transition-all duration-500 ease-out group-hover:from-[#0D47A1] group-hover:to-[#1976D2]"
-                      style={{ width: `${Math.round((count / contentItems.length) * 100)}%` }}
+                      style={{
+                        width: `${contentItems.length > 0 ? Math.round((count / contentItems.length) * 100) : 0}%`,
+                      }}
                     ></div>
                   </div>
                 </div>
@@ -218,33 +178,42 @@ const ManageData = () => {
         </div>
 
         {/* Content Table */}
-        <div className="bg-white rounded-xl shadow-lg mb-12 border border-gray-100 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
-          <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 flex flex-wrap items-center">
-            <button
-              onClick={() => setActiveFilter("all")}
-              className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${activeFilter === "all"
-                ? "bg-indigo-600 text-white"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+        <div className="bg-white rounded-xl shadow-lg mb-12 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+          <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 overflow-x-auto">
+            <div className="flex items-center space-x-3 w-full">
+              <button
+                onClick={() => setActiveFilter("all")}
+                className={`px-5 py-2.5 rounded-lg transition-all duration-300 font-medium whitespace-nowrap ${
+                  activeFilter === "all"
+                    ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                 }`}
-            >
-              All Content ({contentItems.length})
-            </button>
+              >
+                All Content ({contentItems.length})
+              </button>
 
-            {contentTypes.map((type) => {
-              const count = contentItems.filter((item) => item.type === type.type).length
-              return (
-                <button
-                  key={type.type}
-                  onClick={() => setActiveFilter(type.type)}
-                  className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${activeFilter === type.type
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              {categoryDetails.map((type) => {
+                let count = 0
+                if (type.type === "Article") count = articleCount
+                else if (type.type === "VideoTutorial") count = videoCount
+                else if (type.type === "StepbyStepGuide") count = guideCount
+                else if (type.type === "Webinar") count = webinarCount
+
+                return (
+                  <button
+                    key={type.type}
+                    onClick={() => setActiveFilter(type.type)}
+                    className={`px-5 py-2.5 rounded-lg transition-all duration-300 font-medium whitespace-nowrap ${
+                      activeFilter === type.type
+                        ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                     }`}
-                >
-                  {type.title} ({count})
-                </button>
-              )
-            })}
+                  >
+                    {type.label} ({count})
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           {/* Content table */}
@@ -285,40 +254,46 @@ const ManageData = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-blue-50 transition-all duration-300">
-                    <td className="px-8 py-6">
-                      <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
-                        {item.title}
-                      </div>
-                      <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.description}</div>
-                    </td>
-                    <td className="px-6 py-6 text-center">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${getTypeInfo(item.type).badge
-                          }`}
-                      >
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-6 text-sm text-gray-600 text-center">{item.author}</td>
-                    <td className="px-6 py-6 text-sm text-gray-600 text-center">
-                      {new Date(item.date).toLocaleDateString()}
-                    </td>
-                    <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
-                      <button className="px-4 py-2 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
-                        <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
-                        <Edit className="h-3.5 w-3.5 inline mr-1.5" />
-                        Edit
-                      </button>
-                      <button className="px-4 py-2 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
-                        <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
-                        <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredItems.map((item) => {
+                  // Find matching category based on contentData
+                  const category = categoryDetails.find((cat) => cat.type === item.contentData)
+
+                  return (
+                    <tr key={item.id} className="hover:bg-blue-50 transition-all duration-300">
+                      <td className="px-8 py-6">
+                        <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
+                          {item.refId?.title}
+                        </div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.refId?.description}</div>
+                      </td>
+                      <td className="px-6 py-6 text-center">
+                        <span
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-full inline-block transition-all duration-300 ${
+                            category ? category.badge : "bg-gray-100 text-gray-800"
+                          } hover:shadow-sm`}
+                        >
+                          {category ? category.label : item.contentData}
+                        </span>
+                      </td>
+                      <td className="px-6 py-6 text-sm text-gray-600 text-center">{item.author?.username}</td>
+                      <td className="px-6 py-6 text-sm text-gray-600 text-center">
+                        {new Date(item.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
+                        <button className="px-4 py-2 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                          <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                          <Edit className="h-3.5 w-3.5 inline mr-1.5" />
+                          Edit
+                        </button>
+                        <button className="px-4 py-2 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                          <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                          <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -347,4 +322,5 @@ const ManageData = () => {
   )
 }
 
-export default ManageData;
+export default ManageData
+
