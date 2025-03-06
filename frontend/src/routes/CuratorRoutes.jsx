@@ -56,7 +56,7 @@ const CuratorRoutes = () => {
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="pricing" element={<Pricing />} />
-          <Route path="checkout/:_id" element={<CheckoutForm />} />
+          <Route path="checkout/:planId" element={<CheckoutForm />} />
 
         </Route>
         <Route

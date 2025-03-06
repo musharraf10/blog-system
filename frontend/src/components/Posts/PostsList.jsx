@@ -10,43 +10,65 @@ import { MdClear } from "react-icons/md";
 import truncateString from "../../utils/truncateString";
 import { useLocation } from "react-router-dom";
 import PublicNavbar from "../Navbar/PublicNavbar";
+import axios from "axios";
+
+import {loadStripe} from '@stripe/stripe-js';
 
 const PostsList = () => {
   const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
+  const [planName, setPlanName] = useState("");
 
-  // Simulate checking if user is subscribed
-  // In a real app, this would come from your auth context or API
-  useEffect(() => {
-    // For demo purposes, we'll check localStorage
-    // In production, this would be a proper auth check
-    const userSubscriptionStatus = localStorage.getItem("userSubscriptionStatus");
-    setIsUserSubscribed(userSubscriptionStatus === "subscribed");
-  }, []);
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
-  useEffect(() => {
-    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedPosts")) || [];
-    setBookmarkedPosts(savedBookmarks);
-  }, []);
+  const getPlan = async () => {
+    try {
+      const response = await axios.get(`${BackendServername}/users/fetchplan`, {
+        withCredentials: true,
+      });
 
-  
-  const toggleBookmark = (postId, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    let updatedBookmarks;
-    if (bookmarkedPosts.includes(postId)) {
-      updatedBookmarks = bookmarkedPosts.filter(id => id !== postId);
-    } else {
-      updatedBookmarks = [...bookmarkedPosts, postId];
+      console.log("Fetched Plan:", response.data.plan);
+      setPlanName(response.data.plan?.planName || "Free"); // Avoid errors if `plan` is missing
+    } catch (error) {
+      console.error("Error fetching plan:", error);
     }
-    setBookmarkedPosts(updatedBookmarks);
-    localStorage.setItem("bookmarkedPosts", JSON.stringify(updatedBookmarks));
   };
 
+  useEffect(() => {
+    getPlan();
+  }, []);
+
+  useEffect(() => {
+    setIsUserSubscribed(planName !== "Free");
+  }, [planName]);
+
+  const handleContent = async (postId, price) => {
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  
+    try {
+      const response = await axios.post(
+        `${BackendServername}/payments/create-checkout-session`,
+        {
+          postId,
+          price,
+        },
+        { withCredentials: true }
+      );
+  
+      const { sessionId } = response.data;
+      const result = await stripe.redirectToCheckout({ sessionId });
+  
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+    }
+  };
+  
+  
   const location = useLocation();
   const showHeaderFooter = location.pathname.includes("/posts");
 
@@ -87,11 +109,7 @@ const PostsList = () => {
   });
 
   // Function to simulate subscription
-  const handleSubscribe = () => {
-    
-    localStorage.setItem("userSubscriptionStatus", "subscribed");
-    setIsUserSubscribed(true);
-  };
+ 
 
   // Check if a post is premium (price > 0)
   const isPremiumPost = (post) => {
@@ -211,42 +229,47 @@ const PostsList = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {data?.posts?.map((post) => {
                   const isPremium = isPremiumPost(post.price);
-                  const isBookmarked = bookmarkedPosts.includes(post._id);
+                  
                   
                   return (
                     <div key={post._id} className="post-card bg-white">
-                      {/* Premium Badge */}
+                     
                       {isPremium && (
                         <div className="premium-badge">
-                          <FaCrown /> Premium
+                          <FaCrown />
                         </div>
                       )}
                       
-                      {/* Post Image */}
+                     
                       <div className="post-image-container">
                         <img
                           className="post-image"
                           src={post?.image}
                           alt={post?.price || "Post image"}
                         />
-                        
-                        {/* Bookmark Button */}
                        
                       </div>
                       
-                      {/* Premium Overlay for Locked Content */}
                       {isPremium && !isUserSubscribed && (
                         <div className="premium-overlay">
                           <FaLock className="premium-lock-icon" />
                           <p className="premium-message">
-                            This is premium content. Subscribe to unlock.
+                            This is premium content. Subscribe or buy this post to unlock.
                           </p>
+
                           <button 
                             className="unlock-button"
-                            onClick={handleSubscribe}
+                            onClick={() => handleContent(post._id, post.price)}
                           >
-                            Subscribe Now
+                            Buy Post for ${post.price}
                           </button>
+
+                          {/* <p className="text-sm mt-2 text-gray-600">
+                            {userPurchasedPosts.includes(post._id) 
+                              ? "You have already purchased this post." 
+                              : "Or subscribe for unlimited access."
+                            }
+                          </p> */}
                         </div>
                       )}
                       

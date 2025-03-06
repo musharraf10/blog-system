@@ -174,6 +174,7 @@ export default function PrivateNavbar() {
                     </Menu.Items>
                   </Transition>
                 </Menu>
+                {userRole !== "subscriber" && (
                 <Button
                   className="flex items-center  p-2 space-x-2 transition duration-200"
                   sx={{
@@ -199,8 +200,7 @@ export default function PrivateNavbar() {
                   />
                   <span>New Content</span>
                 </Button>
-
-
+                )}
               
 
                 {/* Modal Component */}

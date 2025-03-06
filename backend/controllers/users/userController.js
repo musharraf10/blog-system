@@ -317,7 +317,16 @@ const userController = {
     //email
     const { email } = req.body;
     console.log(email)
+    const checkEmail = await User.find({email})
+    if(checkEmail){
+      return res.status(302).json({message : "Email Already Exists"})
+    }
     const user = await User.findById(req.user);
+
+    if(user.email == email){
+      return res.status(400).json({message : "Enter New Email"})
+    }
+
    
     user.email = email;
     user.isEmailVerified = false;
@@ -430,15 +439,39 @@ const userController = {
     res.json({ message: "Password successfully changed" });
   }),
 
+  fetchPlan: asyncHandler(async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+  
+      const userId = req.user._id;
+      console.log("User ID:", userId);
+  
+      const findPlan = await User.findById(userId).populate("plan");
+      console.log("User Data:", findPlan);
+  
+      if (!findPlan) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.status(200).json({ plan: findPlan.plan });
+    } catch (error) {
+      console.error("Error fetching plan:", error);
+      res.status(500).json({ message: error.message });
+    }
+  }),
+  
+
   BecomeCreator: asyncHandler(async (req, res) => {
     const { phone, channelName, GovtIdType} = req.body;
     const govID = req.file ? req.file.path : null;
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user);
     user.phone = phone;
     user.channelName = channelName;
     user.GovtIdType = GovtIdType;
     user.GovtId = govID;
-    user.role = "creator";
+    user.role = "curator";
     await user.save();
     res.json({ message: "Application submitted successfully!" });
   }),
