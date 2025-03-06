@@ -1,115 +1,130 @@
 import React, { useEffect, useState } from "react";
-import { FileText, Video, BookOpen, Plus, Calendar } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { FileText, Video, BookOpen, Plus, Calendar, Eye, Search, Edit, Trash2 } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Modal, Button, Form } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "bootstrap/dist/js/bootstrap.bundle.min.js"
-import { Search } from "lucide-react";
+// import Previewdata from "./Previewdata";
+import { useQuery } from "@tanstack/react-query";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
+
+"use client"
+
 
 const ManageData = () => {
-  const navigate = useNavigate()
-  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME
-  const [contentItems, setContentItems] = useState([])
+  const { isLoading, data, refetch } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
+    cacheTime: 0,
+  });
+
+  console.log("userdata", data);
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  if (isLoading) return <AuthCheckingComponent />;
+
+  if (!data) {
+    return <Navigate to="/login" />;
+  } else {
+    var userId = data?._id;
+    console.log("userId",userId);
+  }
+
+  const navigate = useNavigate();
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+  const [selectedeyebutton, setselectedeyebutton] = useState(null);
+  const [selectedcontent, setselectedcontent] = useState(null);
+  const [contentItems, setContentItems] = useState([]);
 
   useEffect(() => {
     const fetchContentItems = async () => {
       try {
-        const response = await axios.get(`${BackendServername}/posts/managecontent/getpost`)
-        const data = response.data
-        console.log(data.data)
-        setContentItems(data.data)
+        const response = await axios.get(
+          `${BackendServername}/posts/managecontent/getpost`,
+          {
+            params: { userId },
+            withCredentials: true, // Allows sending cookies and authentication headers
+          }
+        );
+        
+        const data = response.data;
+        console.log(data.data);
+        
+        setContentItems(data.data);
       } catch (error) {
-        alert(error)
-        console.error("Error fetching content items:", error)
+        alert(error);
+        console.error("Error fetching content items:", error);
       }
-    }
+    };
 
-    fetchContentItems()
-  }, [])
+    fetchContentItems();
+  }, []);
+  const [activeFilter, setActiveFilter] = useState("all");
 
-  const [activeFilter, setActiveFilter] = useState("all")
-
-  // Content type metadata
   const categoryDetails = [
     {
       type: "Article",
       label: "Articles",
       icon: FileText,
       description: "Rich text, images, embedded media",
-      color: "bg-blue-600",
-      badge: "bg-blue-100 text-blue-800",
-      hoverColor: "group-hover:bg-blue-700",
+      color: "#3b82f6",
     },
     {
       type: "VideoTutorial",
       label: "Videos",
       icon: Video,
       description: "Host content with adaptive streaming",
-      color: "bg-indigo-600",
-      badge: "bg-indigo-100 text-indigo-800",
-      hoverColor: "group-hover:bg-indigo-700",
+      color: "#ef4444",
     },
     {
       type: "StepbyStepGuide",
       label: "Interactive Guides",
       icon: BookOpen,
       description: "Step-by-step tutorials with interactive elements",
-      color: "bg-cyan-600",
-      badge: "bg-cyan-100 text-cyan-800",
-      hoverColor: "group-hover:bg-cyan-700",
+      color: "#22C55E",
     },
     {
       type: "Webinar",
       label: "Webinars",
       icon: Calendar,
       description: "Scheduled live video sessions with chat/Q&A",
-      color: "bg-sky-600",
-      badge: "bg-sky-100 text-sky-800",
-      hoverColor: "group-hover:bg-sky-700",
+      color: "#A855F7 ",
     },
-  ]
+  ];
 
-  const articleCount = contentItems.filter((item) => item.contentData === "Article").length
-  const videoCount = contentItems.filter((item) => item.contentData === "video-tutorial").length
-  const guideCount = contentItems.filter((item) => item.contentData === "StepbyStepGuide").length
-  const webinarCount = contentItems.filter((item) => item.contentData === "Webinar").length
+  const articleCount = contentItems.filter(
+    (item) => item.contentData === "Article"
+  ).length;
+  const videoCount = contentItems.filter(
+    (item) => item.contentData === "video-tutorial"
+  ).length;
+  const guideCount = contentItems.filter(
+    (item) => item.contentData === "StepbyStepGuide"
+  ).length;
+  const webinarCount = contentItems.filter(
+    (item) => item.contentData === "Webinar"
+  ).length;
 
   // Filter content items
   const filteredItems =
-    activeFilter === "all" ? contentItems : contentItems.filter((item) => item.contentData === activeFilter)
+    activeFilter === "all"
+      ? contentItems
+      : contentItems.filter((item) => item.contentData === activeFilter);
 
-  const handleEdit = (item) => {
-    // setEditingItem(item);
-    // setShowModal(true);
-    navigate(`/admin/update-post/${item.contentData.toLowerCase()}/${item._id}`)
+  const handleOpenModalofposts = (post) => {
+    setselectedcontent(post);
+    setselectedeyebutton(true);
   };
-  // Get type object by type name
-  const getTypeInfo = (typeName) => {
-    return categoryDetails.find((type) => type.type === typeName) || categoryDetails[0]
-  }
 
-  
-
- 
-
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
-    if (!confirmDelete) return;
-  
-    try {
-      await axios.delete(`${BackendServername}/posts/managecontent/deletepost/${id}`);
-      
-      setContentItems((prevItems) => prevItems.filter((item) => item._id !== id));
-  
-      alert("Deleted Successfully");
-    } catch (error) {
-      console.error("Error Deleting Post:", error);
-      alert(`Error Deleting Post: ${error.response?.data?.message || error.message}`);
-    }
+  const handleCloseModalofposts = () => {
+    setselectedcontent(null);
+    setselectedeyebutton(null);
   };
-  
+
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
       <header className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white py-16 shadow-xl relative overflow-hidden">
@@ -123,7 +138,7 @@ const ManageData = () => {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-12 max-w-7xl">
+      <div className="w-full px-4 py-12 max-w-full overflow-hidden">
         {/* Content Types */}
         <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 transform transition-all duration-300 hover:shadow-xl">
           <div className="p-8 border-b border-gray-100">
@@ -131,7 +146,7 @@ const ManageData = () => {
               <span className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] w-1.5 h-6 rounded mr-3 inline-block"></span>
               Content Types
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {categoryDetails.map((contentType) => (
                 <div
                   key={contentType.type}
@@ -166,7 +181,7 @@ const ManageData = () => {
         </div>
 
         {/* Type Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
           {categoryDetails.map((type) => {
             let count = 0
             if (type.type === "Article") count = articleCount
@@ -207,10 +222,10 @@ const ManageData = () => {
         {/* Content Table */}
         <div className="bg-white rounded-xl shadow-lg mb-12 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
           <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 overflow-x-auto">
-            <div className="flex items-center space-x-3 w-full">
+            <div className="flex items-center space-x-2 w-full flex-wrap gap-y-2">
               <button
                 onClick={() => setActiveFilter("all")}
-                className={`px-5 py-2.5 rounded-lg transition-all duration-300 font-medium whitespace-nowrap ${
+                className={`px-3 py-2 rounded-lg transition-all duration-300 font-medium whitespace-nowrap text-xs ${
                   activeFilter === "all"
                     ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                     : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
@@ -230,7 +245,7 @@ const ManageData = () => {
                   <button
                     key={type.type}
                     onClick={() => setActiveFilter(type.type)}
-                    className={`px-5 py-2.5 rounded-lg transition-all duration-300 font-medium whitespace-nowrap ${
+                    className={`px-3 py-2 rounded-lg transition-all duration-300 font-medium whitespace-nowrap text-xs ${
                       activeFilter === type.type
                         ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
@@ -244,8 +259,8 @@ const ManageData = () => {
           </div>
 
           {/* Content table */}
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div className="overflow-x-auto max-w-full">
+            <table className="w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th
@@ -291,7 +306,7 @@ const ManageData = () => {
                         <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
                           {item.refId?.title}
                         </div>
-                        <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.refId?.description}</div>
+                        {/* <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.refId?.description}</div> */}
                       </td>
                       <td className="px-6 py-6 text-center">
                         <span
@@ -307,12 +322,13 @@ const ManageData = () => {
                         {new Date(item.date).toLocaleDateString()}
                       </td>
                       <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
-                        <button className="px-4 py-2 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                        {/* <Eye onClick={() => handleOpenModalofposts(item)} /> */}
+                        <button className="px-3 py-1.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
                           <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
                           <Edit className="h-3.5 w-3.5 inline mr-1.5" />
                           Edit
                         </button>
-                        <button className="px-4 py-2 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                        <button className="px-3 py-1.5 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
                           <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
                           <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
                           Delete
@@ -323,6 +339,7 @@ const ManageData = () => {
                 })}
               </tbody>
             </table>
+          </div>
 
           {filteredItems.length === 0 && (
             <div className="py-20 text-center text-gray-500">
@@ -342,90 +359,19 @@ const ManageData = () => {
               </button>
             </div>
           )}
-          </div>
         </div>
       </div>
-
-      {/* Edit Modal */}
-      {/* <Modal show={showModal} onHide={handleCloseModal}>
-  <Modal.Header>
-    <Modal.Title>Edit Content</Modal.Title>
-
-  </Modal.Header>
-
-  <Modal.Body>
-    <Form>
-    <Form.Group className="mb-3">
-  <Form.Label>Title</Form.Label>
-  <Form.Control
-    type="text"
-    value={editingItem?.refId?.title || ''}
-    onChange={(e) =>
-      setEditingItem((prevState) => ({
-        ...prevState,
-        refId: prevState.refId
-          ? { ...prevState.refId, title: e.target.value }
-          : { title: e.target.value },
-      }))
-    }
-  />
-</Form.Group>
-
-<Form.Group className="mb-3">
-  <Form.Label>Description</Form.Label>
-  <Form.Control
-    as="textarea"
-    rows={3}
-    value={editingItem?.refId?.description || ''}
-    onChange={(e) =>
-      setEditingItem((prevState) => ({
-        ...prevState,
-        refId: prevState.refId
-          ? { ...prevState.refId, description: e.target.value }
-          : { description: e.target.value },
-      }))
-    }
-  />
-</Form.Group>
-
-<Form.Group className="mb-3">
-  <Form.Label>Price</Form.Label>
-  <Form.Control
-    type="number"
-    value={editingItem?.price || 0} 
-    onChange={(e) =>
-      setEditingItem((prevState) => ({
-        ...prevState,
-        price: parseFloat(e.target.value) || 0, 
-      }))
-    }
-  />
-</Form.Group>
-
-    </Form>
-  </Modal.Body>
-
-  <Modal.Footer>
-    <Button
-      variant="secondary"
-      onClick={handleCloseModal}
-      className="text-gray-700 bg-gray-200 hover:bg-gray-300"
-    >
-      Close
-    </Button>
-    <Button
-      variant="primary"
-      onClick={handleSaveEdit}
-      className="text-white bg-blue-600 hover:bg-blue-700"
-    >
-      Save Changes
-    </Button>
-  </Modal.Footer>
-</Modal> */}
-
     </div>
+    {/* {selectedeyebutton && (
+        <Previewdata
+          post={selectedcontent}
+          onHide={handleCloseModalofposts}
+          show={true}
+        />
+      )} */}
+    </>
+
   )
 }
 
 export default ManageData
-

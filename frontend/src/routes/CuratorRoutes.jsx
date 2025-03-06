@@ -25,6 +25,7 @@ import WebinarForm from "../components/Posts/WebinarForm";
 import Pricing from "../components/Plans/Pricing";
 import CheckoutForm from "../components/Plans/CheckoutForm";
 import ManageData from "../components/Posts/Managedata";
+import PlanDetails from "../components/Plans/PlanDetails";
 
 const CuratorRoutes = () => {
     return (
@@ -37,8 +38,7 @@ const CuratorRoutes = () => {
             </AuthRoute>
           }
         >
-          <Route path="editor" element={<ContentEditor />} />
-          <Route path="contentdashBoard" element={<ContentDashBoard />} />
+          <Route index="contentdashBoard" element={<ContentDashBoard />} />
           <Route path="DashBoard" element={<ManageData />} />
           <Route path="Analytics" element={<Analytics />} />
           <Route path="AddCategory" element={<AddCategory />} />
@@ -56,7 +56,9 @@ const CuratorRoutes = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="checkout/:planId" element={<CheckoutForm />} />
-
+          <Route path="plan-details" element={<PlanDetails />} />
+          <Route path="post" element={<PlanDetails />} />
+          
         </Route>
         <Route
             path="/account-verification/:verifyToken"

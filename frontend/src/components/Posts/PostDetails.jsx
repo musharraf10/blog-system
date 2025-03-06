@@ -32,7 +32,15 @@ const PostDetails = () => {
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
   const [selectedPost, setSelectedPost] = useState(postId);
 
-  
+  useEffect(() => {
+    const userSubscriptionStatus = localStorage.getItem("userSubscriptionStatus");
+    setIsUserSubscribed(userSubscriptionStatus === "subscribed");
+  }, []);
+
+  useEffect(() => {
+    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedPosts")) || [];
+    setBookmarkedPosts(savedBookmarks);
+  }, []);
 
   const toggleBookmark = (postId, e) => {
     e.preventDefault();
@@ -257,71 +265,71 @@ const PostDetails = () => {
 
   {/* Right Column (List of Posts) */}
   <div className="col-md-4 col-12 mt-4 mt-md-0">
-    <div className="bg-white rounded-xl shadow-lg p-4">
-      <h2 className="h5 text-dark mb-4">List</h2>
+  <div className="bg-white rounded-xl shadow-lg p-4 h-screen overflow-y-auto scrollbar-hide">
+    <h2 className="h5 text-dark mb-4">List</h2>
 
-      {isError && <AlertMessage type="error" message="Something went wrong!" />}
+    {isError && <AlertMessage type="error" message="Something went wrong!" />}
 
-      {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
-          <div className="loading-spinner"></div>
-        </div>
-      ) : allPostsData?.posts?.length <= 0 ? (
-        <NoDataFound text="No Posts Available" />
-      ) : (
-        <div className="mb-4">
-          {allPostsData?.posts?.map((post) => {
-            const isPremium = isPremiumPost(post.price);
+    {isLoading ? (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+        <div className="loading-spinner"></div>
+      </div>
+    ) : allPostsData?.posts?.length <= 0 ? (
+      <NoDataFound text="No Posts Available" />
+    ) : (
+      <div className="mb-4">
+        {allPostsData?.posts?.map((post) => {
+          const isPremium = isPremiumPost(post.price);
 
-            return (
-              <div
-                key={post._id}
-                className="d-flex p-3 rounded-lg bg-white shadow-sm mb-3 border-bottom position-relative"
-                onClick={() => setSelectedPost(post._id)}
-              >
-                {/* Post Image (Left) */}
-                <div className="flex-shrink-0">
-                  <img
-                    className="w-20 h-20 object-cover rounded-lg border"
-                    src={post?.image}
-                    alt={post?.title || "Post image"}
-                  />
-                </div>
-
-                {/* Post Content (Right) */}
-                <div className="flex-grow ps-3 position-relative">
-                  {/* Title */}
-                  <h3 className="h6 text-dark text-truncate">{post?.refId.title || "Untitled Post"}</h3>
-
-                  {/* Description */}
-                  <p className="text-muted text-truncate">{truncateString(post?.description || "", 50)}</p>
-
-                  {/* Status & Date */}
-                  <div className="d-flex justify-content-between align-items-center mt-2">
-                    <span className="text-xs font-weight-bold text-primary">{post?.status}</span>
-                    <span className="text-xs text-muted">
-                      {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-
-                  {/* Premium Badge (Bottom-Right) */}
-                  {isPremium && (
-                    <div className="position-absolute bottom-0 end-0 bg-gradient-to-r from-primary to-blue text-primary text-xs font-weight-bold px-2 py-1 rounded-circle shadow-sm">
-                      <FaCrown className="text-lg" />
-                    </div>
-                  )}
-                </div>
+          return (
+            <div
+              key={post._id}
+              className="d-flex p-3 rounded-lg bg-white shadow-sm mb-3 border-bottom position-relative"
+              onClick={() => setSelectedPost(post._id)}
+            >
+              {/* Post Image (Left) */}
+              <div className="flex-shrink-0">
+                <img
+                  className="w-20 h-20 object-cover rounded-lg border"
+                  src={post?.image}
+                  alt={post?.title || "Post image"}
+                />
               </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+
+             
+              <div className="flex-grow ps-3 position-relative">
+                
+                <h3 className="h6 text-dark text-truncate">{post?.refId.title || "Untitled Post"}</h3>
+
+                
+                <p className="text-muted text-truncate">{truncateString(post?.description || "", 50)}</p>
+                
+                <div className="d-flex justify-content-between align-items-center mt-2">
+                  <span className="text-xs font-weight-bold text-primary">{post?.status}</span>
+                  <span className="text-xs text-muted">
+                    {new Date(post.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+
+                {/* Premium Badge (Bottom-Right) */}
+                {isPremium && (
+                  <div className="position-absolute bottom-0 end-0 bg-gradient-to-r from-primary to-blue text-primary text-xs font-weight-bold px-2 py-1 rounded-circle shadow-sm">
+                    <FaCrown className="text-lg" />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
   </div>
+</div>
+
 </div>
 
 </div>
