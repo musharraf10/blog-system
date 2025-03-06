@@ -32,6 +32,7 @@ const PostsList = () => {
     setBookmarkedPosts(savedBookmarks);
   }, []);
 
+  
   const toggleBookmark = (postId, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -115,7 +116,9 @@ const PostsList = () => {
         &lt;
       </button>
     );
-  
+    console.log(data)
+    console.log("Fetched Posts Data:", data?.posts);
+
     
     // Page buttons
     for (let i = 1; i <= totalPages; i++) {
@@ -228,13 +231,7 @@ const PostsList = () => {
                         />
                         
                         {/* Bookmark Button */}
-                        <button 
-                          className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
-                          onClick={(e) => toggleBookmark(post._id, e)}
-                          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                        >
-                          <FaBookmark />
-                        </button>
+                       
                       </div>
                       
                       {/* Premium Overlay for Locked Content */}

@@ -22,6 +22,8 @@ import DashBoard from "../components/Curator/contentEditor/DashBoard";
 import Analytics from "../components/Curator/contentEditor/Analytics";
 import ResetPassword from "../components/Subscribers/ResetPassword";
 import WebinarForm from "../components/Posts/WebinarForm";
+import Pricing from "../components/Plans/Pricing";
+import CheckoutForm from "../components/Plans/CheckoutForm";
 
 
 
@@ -53,13 +55,14 @@ const CuratorRoutes = () => {
           <Route path="my-followers" element={<MyFollowers />} />
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="pricing" element={<Pricing />} />
+          <Route path="checkout/:_id" element={<CheckoutForm />} />
 
-          <Route
-            path="account-verification/:verifyToken"
+        </Route>
+        <Route
+            path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
-          <Route path="add-category" element={<AddCategory />} />
-        </Route>
         <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
       </Routes>
     );
