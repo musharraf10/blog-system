@@ -40,7 +40,9 @@ const CuratorRoutes = () => {
           }
         >
           <Route path="editor" element={<ContentEditor />} />
-          <Route path="contentdashBoard" element={<ContentDashBoard />} />
+          <Route index 
+          // path="contentdashBoard" 
+          element={<ContentDashBoard />} />
           {/* <Route path="DashBoard" element={<DashBoard />} /> */}
           <Route path="DashBoard" element={<ManageData />} />
 

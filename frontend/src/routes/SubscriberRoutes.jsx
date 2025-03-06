@@ -36,8 +36,16 @@ import CheckoutForm from "../components/Plans/CheckoutForm";
 const SubscriberRoutes = () => {
   return (
     <Routes>
-      <Route path="/subscriber" element={ <AuthRoute allowedRoles={["subscriber"]}> <SubscriberDashboard /> </AuthRoute> } >
-        <Route index  element={<PostsList />} />
+      <Route
+        path="/subscriber"
+        element={
+          <AuthRoute allowedRoles={["subscriber"]}>
+            {" "}
+            <SubscriberDashboard />{" "}
+          </AuthRoute>
+        }
+      >
+        <Route index element={<PostsList />} />
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route path="profilesettings" element={<SettingsSubPage />} />
@@ -50,7 +58,7 @@ const SubscriberRoutes = () => {
 
         <Route path="bookmarks" element={<BookmarkPost />} />
         <Route path="profile" element={<AccountSummaryDashboard />} />
-        
+
         <Route path="my-followings" element={<MyFollowing />} />
         <Route path="my-followers" element={<MyFollowers />} />
         <Route path="add-email" element={<AddEmailComponent />} />
@@ -62,13 +70,11 @@ const SubscriberRoutes = () => {
         <Route path="stepbystepguide" element={<ViewGuide />} />
         <Route path="guide/:guideId" element={<GuideDetails />} />
         <Route path="checkout/:planId" element={<CheckoutForm />} />
-
-       
       </Route>
       <Route
-            path="/account-verification/:verifyToken"
-            element={<AccountVerifiedComponent />}
-          />
+        path="/account-verification/:verifyToken"
+        element={<AccountVerifiedComponent />}
+      />
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>

@@ -10,7 +10,7 @@ import PrivateNavbar from "../Navbar/PrivateNavbar";
 import AddCategory from "../Category/AddCategory";
 
 const navigation = [
-  { name: "Dashboard", href: "/curator/ContentDashBoard", icon: HomeIcon },
+  { name: "Dashboard", href: "/curator", icon: HomeIcon },
   // { name: "Content Editor", href: "/curator/editor", icon: MdContentPaste },
   { name: "Create Post", href: "/curator/create-post", icon: FaUserEdit },
   { name: "ContentDashBoard", href: "/curator/DashBoard", icon: MdContentPaste },
