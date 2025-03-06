@@ -61,14 +61,21 @@ exports.updateEvent = async (req, res) => {
 // Delete an event by ID
 exports.deleteEvent = async (req, res) => {
   try {
-    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    const eventId = req.params.id;
+    const today = new Date();
 
-    if (!deletedEvent) {
-      return res.status(404).json({ error: "Event not found" });
+    if (eventId) {
+      const deletedEvent = await Event.findByIdAndDelete(eventId);
+      if (!deletedEvent) {
+        return res.status(404).json({ error: "Event not found" });
+      }
+      return res.json({ message: "Event deleted successfully" });
+    } else {
+      const result = await Event.deleteMany({ date: { $lt: today } });
+      return res.json({ message: `${result.deletedCount} past events removed` });
     }
-
-    res.json({ message: "Event deleted successfully" });
   } catch (error) {
+    console.error(" Error deleting event:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
