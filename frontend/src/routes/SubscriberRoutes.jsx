@@ -31,6 +31,7 @@ import ResetPassword from "../components/Subscribers/ResetPassword";
 import ViewGuide from "../components/Posts/ViewGuide";
 import GuideDetails from "../components/Posts/GuideDetails";
 import CheckoutForm from "../components/Plans/CheckoutForm";
+import PostDetails from "../components/Posts/PostDetails";
 
 const SubscriberRoutes = () => {
   return (
@@ -56,6 +57,7 @@ const SubscriberRoutes = () => {
 
         <Route path="bookmarks" element={<BookmarkPost />} />
         <Route path="profile" element={<AccountSummaryDashboard />} />
+        
         <Route path="my-followings" element={<MyFollowing />} />
         <Route path="my-followers" element={<MyFollowers />} />
         <Route path="add-email" element={<AddEmailComponent />} />
@@ -74,6 +76,7 @@ const SubscriberRoutes = () => {
             path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
+      <Route path="/posts/:postId" element={<PostDetails/>}/>
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>

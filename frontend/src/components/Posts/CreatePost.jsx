@@ -10,6 +10,8 @@ import {
   Paper,
   Container,
   TextField,
+  Divider,
+  Stack,
 } from "@mui/material";
 
 const CreatePost = () => {
@@ -96,11 +98,12 @@ const CreatePost = () => {
       <Paper sx={{ padding: 4, borderRadius: 2, boxShadow: 3 }}>
         <Box sx={{ mb: 4, textAlign: "center" }}>
           <Typography variant="h4" gutterBottom>
-            Add your Article
+            <b>Add Your Article</b>
           </Typography>
           <Typography variant="body1" color="textSecondary">
             Write, format, and publish your content here.
           </Typography>
+          <Divider sx={{ mt: 2 }} />
         </Box>
 
         {/* Title Input */}
@@ -171,7 +174,7 @@ const CreatePost = () => {
         </Box>
 
         {/* Buttons */}
-        <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "end", gap: 2, mt: 4 }}>
           <Button
             variant="outlined"
             color="secondary"
@@ -184,7 +187,8 @@ const CreatePost = () => {
               gap: 1,
               borderColor: "secondary.main",
               boxShadow: 2,
-              "&:hover": { borderColor: "secondary.dark" },
+              "&:hover": { borderColor: " #1E3A8A" },
+              color: "black"
             }}
             onClick={() => savePost("draft")}
           >
@@ -194,6 +198,8 @@ const CreatePost = () => {
             variant="contained"
             color="primary"
             sx={{
+              background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
+              color: "white",
               padding: "12px 0",
               fontSize: "16px",
               width: "200px",
@@ -201,7 +207,10 @@ const CreatePost = () => {
               alignItems: "center",
               gap: 1,
               boxShadow: 2,
-              "&:hover": { backgroundColor: "primary.dark" },
+              "&:hover": {
+                background: "linear-gradient(to right, #1E40AF, #2563EB)",
+                color: "black"
+              },
             }}
             onClick={() => savePost("pending")}
           >
