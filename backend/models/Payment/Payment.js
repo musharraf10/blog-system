@@ -45,7 +45,7 @@ const paymentSchema = new mongoose.Schema(
     },
     transactionId: {
       type: String,
-      default: null, // External payment processor transaction ID
+      default: null,
     },
     refundStatus: {
       type: String,

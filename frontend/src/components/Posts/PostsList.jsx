@@ -44,10 +44,30 @@ const PostsList = () => {
     setIsUserSubscribed(planName !== "Free");
   }, [planName]);
 
-  const handleContent = async () =>{
-    const Stripe = await loadStripe('pk_test_51Qw85zFSLEamEKhDkKe5ZOLgaih2kgw3gUCTYooo2tAyP3NSEFPPt0jvOLgaf7SSYpEQDgQhqwHh5vTXoK7p3VBb00dhMvsm8f')
-    const price = postId
-  }
+  const handleContent = async (postId, price) => {
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  
+    try {
+      const response = await axios.post(
+        `${BackendServername}/payments/create-checkout-session`,
+        {
+          postId,
+          price,
+        },
+        { withCredentials: true }
+      );
+  
+      const { sessionId } = response.data;
+      const result = await stripe.redirectToCheckout({ sessionId });
+  
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+    }
+  };
+  
   
   const location = useLocation();
   const showHeaderFooter = location.pathname.includes("/posts");
@@ -213,22 +233,20 @@ const PostsList = () => {
                   
                   return (
                     <div key={post._id} className="post-card bg-white">
-                      {/* Premium Badge */}
+                     
                       {isPremium && (
                         <div className="premium-badge">
-                          <FaCrown /> Premium
+                          <FaCrown />
                         </div>
                       )}
                       
-                      {/* Post Image */}
+                     
                       <div className="post-image-container">
                         <img
                           className="post-image"
                           src={post?.image}
                           alt={post?.price || "Post image"}
                         />
-                        
-                        {/* Bookmark Button */}
                        
                       </div>
                       
@@ -236,14 +254,22 @@ const PostsList = () => {
                         <div className="premium-overlay">
                           <FaLock className="premium-lock-icon" />
                           <p className="premium-message">
-                            This is premium content. Subscribe to unlock.
+                            This is premium content. Subscribe or buy this post to unlock.
                           </p>
+
                           <button 
                             className="unlock-button"
-                            onClick={handleContent}
+                            onClick={() => handleContent(post._id, post.price)}
                           >
-                            Subscribe Now
+                            Buy Post for ${post.price}
                           </button>
+
+                          {/* <p className="text-sm mt-2 text-gray-600">
+                            {userPurchasedPosts.includes(post._id) 
+                              ? "You have already purchased this post." 
+                              : "Or subscribe for unlimited access."
+                            }
+                          </p> */}
                         </div>
                       )}
                       

@@ -1,50 +1,82 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const asyncHandler = require("express-async-handler");
-const mongoose = require("mongoose");
-const Plan = require("../../models/Plan/Plan");
-const User = require("../../models/User/User");
 const Payment = require("../../models/Payment/Payment");
+const Plan = require("../../models/Plan/Plan");
 const Post = require("../../models/Post/Post");
+const User = require("../../models/User/User");
 
 const stripePaymentController = {
-  payment: asyncHandler(async (req, res) => {
-    const { subscriptionPlanId, postId } = req.body;
-    let amount = 0, metadata = {};
-    
+  createCheckoutSession: asyncHandler(async (req, res) => {
+    const { subscriptionPlanId, billingCycle, postId } = req.body;
+    let sessionConfig = {
+      payment_method_types: ["card"],
+      mode: "",
+      success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+      customer_email: req.user.email,
+      metadata: { userId: req.user._id.toString() },
+    };
+
     if (subscriptionPlanId) {
       const plan = await Plan.findById(subscriptionPlanId);
-      if (!plan) throw new Error("Plan not found");
-      amount = plan.price * 100;
-      metadata = { userId: req.user._id.toString(), subscriptionPlanId };
+      if (!plan) return res.status(404).json({ message: "Plan not found" });
+
+      sessionConfig.mode = "subscription";
+      sessionConfig.line_items = [{ price: plan.stripePriceId, quantity: 1 }];
+      sessionConfig.metadata.subscriptionPlanId = subscriptionPlanId;
+
     } else if (postId) {
       const post = await Post.findById(postId);
-      if (!post) throw new Error("Post not found");
-      amount = post.price * 100;
-      metadata = { userId: req.user._id.toString(), postId };
+      if (!post) return res.status(404).json({ message: "Post not found" });
+
+      sessionConfig.mode = "payment";
+      sessionConfig.line_items = [{
+        price_data: {
+          currency: "usd",
+          product_data: { name: post.title },
+          unit_amount: post.price * 100,
+        },
+        quantity: 1,
+      }];
+      sessionConfig.metadata.postId = postId;
     } else {
-      throw new Error("Invalid payment request");
+      return res.status(400).json({ message: "Invalid payment request" });
     }
-    
-    const paymentIntent = await stripe.paymentIntents.create({ amount, currency: "usd", metadata });
-    res.json({ clientSecret: paymentIntent.client_secret });
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+    res.json({ sessionId: session.id });
   }),
 
-  verify: asyncHandler(async (req, res) => {
-    const { paymentId } = req.params;
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
-    if (paymentIntent.status !== "succeeded") throw new Error("Payment verification failed");
-    
-    const { userId, subscriptionPlanId, postId } = paymentIntent.metadata;
-    const amount = paymentIntent.amount / 100;
-    const currency = paymentIntent.currency;
-    
-    const newPayment = await Payment.create({ user: userId, subscriptionPlan: subscriptionPlanId || null, post: postId || null, status: "completed", amount, currency, reference: paymentId });
-    
-    if (subscriptionPlanId) {
-      await User.findByIdAndUpdate(userId, { hasSelectedPlan: true, plan: subscriptionPlanId });
+  verifyPayment: asyncHandler(async (req, res) => {
+    const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+    if (!session) return res.status(404).json({ message: "Session not found" });
+
+    const { userId, subscriptionPlanId, postId } = session.metadata;
+    const transactionId = session.payment_intent || session.id;
+    const amount = session.amount_total / 100;
+    const currency = session.currency;
+    const adminShare = amount * 0.10;
+
+    let paymentData = {
+      user: userId,
+      reference: transactionId,
+      currency,
+      amount,
+      transactionId,
+      adminShare,
+      status: session.payment_status === "paid" ? "completed" : "pending",
+    };
+
+    if (session.mode === "subscription") {
+      paymentData.subscriptionPlan = subscriptionPlanId;
+      await User.findByIdAndUpdate(userId, { plan: subscriptionPlanId, hasSelectedPlan: true });
+    } else if (session.mode === "payment" && postId) {
+      paymentData.content = postId;
+      await User.findByIdAndUpdate(userId, { $push: { purchasedPosts: postId } });
     }
-    
-    res.json({ status: true, message: "Payment verified, user updated", newPayment });
+
+    await Payment.create(paymentData);
+    res.json({ message: "Payment verified", paymentData });
   }),
 
   free: asyncHandler(async (req, res) => {
@@ -68,7 +100,6 @@ const stripePaymentController = {
     res.json({ status: true, message: "User updated to free plan" });
   }),
 
-
   CurrentUserPlan: asyncHandler(async (req, res) => {
     try {
       const user = await User.findById(req.user._id).populate("plan");
@@ -82,7 +113,12 @@ const stripePaymentController = {
       res.status(500).json({ message: "Server error", error: error.message });
     }
   }),
+
+
+  getUserPayments: asyncHandler(async (req, res) => {
+    const payments = await Payment.find({ user: req.user._id }).populate("subscriptionPlan content");
+    res.json({ payments });
+  }),
 };
-  
 
 module.exports = stripePaymentController;
