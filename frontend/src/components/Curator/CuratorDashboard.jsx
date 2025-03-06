@@ -7,9 +7,13 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
-  { name: "Dashboard", href: "/curator/ContentDashBoard", icon: HomeIcon },
-  { name: "Content Dashboard", href: "/curator/DashBoard", icon: MdContentPaste },
-  { name: "Manage Categories", href: "/curator/AddCategory", icon: FaTags },
+  { name: "Dashboard", href: "/curator", icon: HomeIcon },
+  // { name: "Content Editor", href: "/curator/editor", icon: MdContentPaste },
+  // { name: "Create Post", href: "/curator/create-post", icon: FaUserEdit },
+  { name: "ContentDashBoard", href: "/curator/DashBoard", icon: MdContentPaste },
+  // { name: "Analytics", href: "/curator/Analytics", icon: MdContentPaste },
+  // { name: "Schedule Post", href: "/curator/schedule-post", icon: FaCalendarPlus },
+  // { name: "Manage Categories", href: "/curator/AddCategory", icon: FaTags }
 ];
 
 export default function CuratorDashboard() {

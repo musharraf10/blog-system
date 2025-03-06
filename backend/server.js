@@ -7,6 +7,7 @@
 // const connectDB = require("./utils/connectDB");
 
 
+
 // const postRouter = require("./router/post/postsRouter");
 // const usersRouter = require("./router/user/usersRouter");
 // const categoriesRouter = require("./router/category/categoriesRouter");
@@ -89,6 +90,7 @@ const connectDB = require("./utils/connectDB");
 const calculateEarnings = require("./utils/calculateEarnings");
 
 
+
 // Import Routers
 const postRouter = require("./router/post/postsRouter");
 const usersRouter = require("./router/user/usersRouter");
@@ -132,6 +134,9 @@ cron.schedule(
     timezone: "America/New_York",
   }
 );
+
+
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;

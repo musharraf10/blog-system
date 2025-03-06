@@ -8,10 +8,10 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
-  { name: "Feed", href: "/subscriber/feed", icon: HomeIcon },
-  { name: "Trending", href: "/subscriber/trendingcontent", icon: MdContentPaste },
+  // { name: "Feed", href: "/subscriber/feed", icon: HomeIcon },
+  // { name: "Trending", href: "/subscriber/trendingcontent", icon: MdContentPaste },
   { name: "Webinars", href: "/subscriber/webinars", icon: FaUsersCog },
-  { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
+  // { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
   { name: "Video Tutorials", href: "/subscriber/stepbystepguide", icon: FaUserEdit },
   { name: "Bookmarks", href: "/subscriber/bookmarks", icon: FaCalendarPlus },
   { name: "Upcoming Events", href: "/subscriber/upcomingevents", icon: FaTags },
