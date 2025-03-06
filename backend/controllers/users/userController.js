@@ -466,12 +466,12 @@ const userController = {
   BecomeCreator: asyncHandler(async (req, res) => {
     const { phone, channelName, GovtIdType} = req.body;
     const govID = req.file ? req.file.path : null;
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user);
     user.phone = phone;
     user.channelName = channelName;
     user.GovtIdType = GovtIdType;
     user.GovtId = govID;
-    user.role = "creator";
+    user.role = "curator";
     await user.save();
     res.json({ message: "Application submitted successfully!" });
   }),

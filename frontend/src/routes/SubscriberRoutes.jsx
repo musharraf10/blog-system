@@ -66,7 +66,7 @@ const SubscriberRoutes = () => {
         <Route path="webinars" element={<Webinars />} />
         <Route path="stepbystepguide" element={<ViewGuide />} />
         <Route path="guide/:guideId" element={<GuideDetails />} />
-        <Route path="checkout/:_id" element={<CheckoutForm />} />
+        <Route path="checkout/:planId" element={<CheckoutForm />} />
 
        
       </Route>

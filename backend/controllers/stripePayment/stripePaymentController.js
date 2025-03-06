@@ -4,6 +4,7 @@ const Payment = require("../../models/Payment/Payment");
 const Plan = require("../../models/Plan/Plan");
 const Post = require("../../models/Post/Post");
 const User = require("../../models/User/User");
+const { response } = require("express");
 
 const stripePaymentController = {
   createCheckoutSession: asyncHandler(async (req, res) => {
@@ -119,6 +120,17 @@ const stripePaymentController = {
     const payments = await Payment.find({ user: req.user._id }).populate("subscriptionPlan content");
     res.json({ payments });
   }),
+
+  getPlanId: asyncHandler(async(req, res) =>{
+    const {planId} = req.params;
+    if(!planId){
+      return res.status(404).json({message : "Plan Not Found"})
+    }
+
+    const plan = await Plan.findById(planId);
+
+    res.status(200).json({response : plan})
+  })
 };
 
 module.exports = stripePaymentController;

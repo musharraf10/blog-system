@@ -15,6 +15,8 @@ stripePaymentRouter.get("/current-plan", isAuthenticated, checkUserPlan, stripeP
 
 stripePaymentRouter.get("/user-payments", isAuthenticated, stripePaymentController.getUserPayments);
 
+stripePaymentRouter.get("/:planId", isAuthenticated, stripePaymentController.getPlanId)
+
 // stripePaymentRouter.post(
 //   "/webhook",
 //   express.raw({ type: "application/json" }), 

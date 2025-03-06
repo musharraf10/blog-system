@@ -30,7 +30,7 @@ const PostsList = () => {
       });
 
       console.log("Fetched Plan:", response.data.plan);
-      setPlanName(response.data.plan?.planName || "free"); // Avoid errors if `plan` is missing
+      setPlanName(response.data.plan?.planName || "Free"); // Avoid errors if `plan` is missing
     } catch (error) {
       console.error("Error fetching plan:", error);
     }
