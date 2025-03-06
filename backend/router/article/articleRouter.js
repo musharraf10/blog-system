@@ -1,6 +1,6 @@
 const express = require("express");
 const isAuthenticated = require("../../middlewares/isAuthenticated.js");
-const { addarticleconroller, getAllArticles } = require("../../controllers/article/article.js");
+const { addarticleconroller, getAllArticles } = require("../../controllers/article/article");
 
 const articleRouter = express.Router();
 

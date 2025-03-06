@@ -41,13 +41,6 @@ postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontr
 postRouter.get("/managecontent/getpost",postController.getallpost);
 postRouter.get("/bookmarked", isAuthenticated, postController.getBookmarkedPosts);
 postRouter.get("/:postId", isAuthenticated, optionalAuth, postController.getPost);
-<<<<<<< HEAD
-
-postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPost);
-postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);
-
-
-=======
 
 postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPost);
 postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);
@@ -55,7 +48,6 @@ postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMar
 
 postRouter.patch("/likes/:postId", isAuthenticated, postController.like);
 postRouter.patch("/dislikes/:postId", isAuthenticated, postController.dislike);
->>>>>>> c9b06aa2af46bb232545b8e9c7a91f7707e54f3c
 
 
 

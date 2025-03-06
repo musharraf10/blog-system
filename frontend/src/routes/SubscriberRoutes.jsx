@@ -32,24 +32,13 @@ import PlanDetails from "../components/Plans/PlanDetails";
 import ViewGuide from "../components/Posts/ViewGuide";
 import GuideDetails from "../components/Posts/GuideDetails";
 import CheckoutForm from "../components/Plans/CheckoutForm";
+import UpcomingEvent from "../components/UpcomingEvent/UpcomingEvent";
 
 const SubscriberRoutes = () => {
   return (
     <Routes>
-<<<<<<< HEAD
-      <Route
-        path="/subscriber"
-        element={
-          <AuthRoute allowedRoles={["subscriber"]}>
-            <SubscriberDashboard />
-          </AuthRoute>
-        }
-      >
-        <Route path="feed" element={<PostsList/>} />
-=======
       <Route path="/subscriber" element={ <AuthRoute allowedRoles={["subscriber"]}> <SubscriberDashboard /> </AuthRoute> } >
         <Route index  element={<PostsList />} />
->>>>>>> c9b06aa2af46bb232545b8e9c7a91f7707e54f3c
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route path="profilesettings" element={<SettingsSubPage />} />
@@ -71,11 +60,11 @@ const SubscriberRoutes = () => {
         <Route path="pricing" element={<Pricing />} />
         <Route path="free-subscription" element={<PayingFreePlan />} />
         <Route path="webinars" element={<Webinars />} />
+        <Route path="upcomingevents"element={<UpcomingEvent/>}/>
         <Route path="stepbystepguide" element={<ViewGuide />} />
         <Route path="guide/:guideId" element={<GuideDetails />} />
         <Route path="checkout/:planId" element={<CheckoutForm />} />
 
-       
       </Route>
       <Route
             path="/account-verification/:verifyToken"

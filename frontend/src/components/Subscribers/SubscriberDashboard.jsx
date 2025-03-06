@@ -14,7 +14,7 @@ const navigation = [
   { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
   { name: "Video Tutorials", href: "/subscriber/stepbystepguide", icon: FaUserEdit },
   { name: "Bookmarks", href: "/subscriber/bookmarks", icon: FaCalendarPlus },
-  { name: "Upcoming Events", href: "/subscriber/upcomingevents", icon: FaTags },
+  { name: "Upcoming Events", href: "upcomingevents", icon: FaTags },
 ];
 
 export default function SubscriberDashboard() {
