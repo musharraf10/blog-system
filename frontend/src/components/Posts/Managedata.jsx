@@ -45,7 +45,7 @@ const ManageData = () => {
           `${BackendServername}/posts/managecontent/getpost`,
           {
             params: { userId },
-            withCredentials: true, // Allows sending cookies and authentication headers
+            withCredentials: true, 
           }
         );
         

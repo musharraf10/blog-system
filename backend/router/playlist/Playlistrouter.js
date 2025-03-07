@@ -5,29 +5,36 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const mongoose = require('mongoose');
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/auth');
+const Playlist = require('../../models/Playlist/Playlist');
+const Video = require('../../models/Playlist/Video');
+const User = require('../../models/User/User');
+const isAuthinticated = require("../../middlewares/isAuthenticated")
 
-// Models
-const Playlist = require('../models/Playlist');
-const Video = require('../models/Video');
-const User = require('../models/User');
-
-// Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "dspnqdbs1",
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 // Configure Multer for Cloudinary
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'videos',
-    resource_type: 'auto',
-    allowed_formats: ['jpg', 'png', 'mp4', 'mov', 'avi', 'wmv'],
-    public_id: (req, file) => `${Date.now()}-${file.originalname.split('.')[0]}`
-  }
+  cloudinary,
+  params: async (req, file) => {
+    console.log("File Received:", file);
+
+    const resourceType = file.mimetype.startsWith('video') ? 'video' : 'image';
+    const fileExtension = file.mimetype.split('/')[1] || 'jpg';
+
+    return {
+      folder: 'videos',
+      format: fileExtension,
+      public_id: `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`,
+      resource_type: resourceType,
+      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'mov', 'avi', 'wmv', 'webp'],
+
+    };
+  },
 });
 
 const upload = multer({ storage });
@@ -46,16 +53,15 @@ Playlistrouter.get('/', async (req, res) => {
   }
 });
 
-// Get creator's playlists
-Playlistrouter.get('/creator', auth, async (req, res) => {
+Playlistrouter.get('/creator', async (req, res) => {
   try {
-    const playlists = await Playlist.find({ creator: req.user.id })
+    const playlists = await Playlist.find({ creator: req.user })
       .select('title description thumbnailUrl isPublished videoCount createdAt');
     
     res.json(playlists);
   } catch (error) {
     console.error('Error fetching creator playlists:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -90,14 +96,14 @@ Playlistrouter.get('/:id', async (req, res) => {
 });
 
 // Create new playlist
-Playlistrouter.post('/', auth, async (req, res) => {
+Playlistrouter.post('/', isAuthinticated,async (req, res) => {
   try {
     const { title, description, isPublished } = req.body;
     
     const newPlaylist = new Playlist({
       title,
       description,
-      creator: req.user.id,
+      creator: req.user,
       isPublished: isPublished || false,
       videos: []
     });
@@ -111,7 +117,7 @@ Playlistrouter.post('/', auth, async (req, res) => {
 });
 
 // Update playlist
-Playlistrouter.put('/:id', auth, async (req, res) => {
+Playlistrouter.put('/:id',async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, isPublished } = req.body;
@@ -123,7 +129,7 @@ Playlistrouter.put('/:id', auth, async (req, res) => {
       return res.status(404).json({ message: 'Playlist not found' });
     }
     
-    if (playlist.creator.toString() !== req.user.id) {
+    if (playlist.creator.toString() !== req.user) {
       return res.status(403).json({ message: 'Not authorized to update this playlist' });
     }
     
@@ -141,7 +147,7 @@ Playlistrouter.put('/:id', auth, async (req, res) => {
 });
 
 // Toggle publish status
-Playlistrouter.put('/:id/publish', auth, async (req, res) => {
+Playlistrouter.put('/:id/publish', async (req, res) => {
   try {
     const { id } = req.params;
     const { isPublished } = req.body;
@@ -168,7 +174,7 @@ Playlistrouter.put('/:id/publish', auth, async (req, res) => {
 });
 
 // Reorder videos in playlist
-Playlistrouter.put('/:id/reorder', auth, async (req, res) => {
+Playlistrouter.put('/:id/reorder', async (req, res) => {
   try {
     const { id } = req.params;
     const { videoIds } = req.body;
@@ -208,8 +214,8 @@ Playlistrouter.put('/:id/reorder', auth, async (req, res) => {
 });
 
 // Add video to playlist
-Playlistrouter.post('/:id/videos', auth, upload.fields([
-  { name: 'video', maxCount: 1 },
+Playlistrouter.post('/:id/videos',isAuthinticated, upload.fields([
+  { name: 'video', maxCount:10 },
   { name: 'thumbnail', maxCount: 1 }
 ]), async (req, res) => {
   try {
@@ -237,7 +243,7 @@ Playlistrouter.post('/:id/videos', auth, upload.fields([
     let thumbnailUrl = null;
     
     if (req.files.thumbnail) {
-      thumbnailUrl = req.files.thumbnail[0].path;
+      thumbnailUrl = req.files.thumbnail.path;
     } else {
       // Generate thumbnail from video or use a default
       thumbnailUrl = '/default-thumbnail.jpg';
@@ -281,7 +287,7 @@ Playlistrouter.post('/:id/videos', auth, upload.fields([
 });
 
 // Remove video from playlist
-Playlistrouter.delete('/:playlistId/videos/:videoId', auth, async (req, res) => {
+Playlistrouter.delete('/:playlistId/videos/:videoId', async (req, res) => {
   try {
     const { playlistId, videoId } = req.params;
     
@@ -325,7 +331,7 @@ Playlistrouter.delete('/:playlistId/videos/:videoId', auth, async (req, res) => 
 });
 
 // Delete playlist
-Playlistrouter.delete('/:id', auth, async (req, res) => {
+Playlistrouter.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -376,7 +382,7 @@ Playlistrouter.get('/discover/trending', async (req, res) => {
 });
 
 // Get recommended playlists for user
-Playlistrouter.get('/discover/recommended', auth, async (req, res) => {
+Playlistrouter.get('/discover/recommended',  async (req, res) => {
   try {
     // Find user's playlists to get their interests
     const userPlaylists = await Playlist.find({ creator: req.user.id });
