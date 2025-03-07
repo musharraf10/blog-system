@@ -1,4 +1,4 @@
-import PlaylistVideo from "../../models/Play_List/Playlist.js";
+import PlaylistVideo from "../../models/Playlist/Playlist.js";
 import Tag from "../../models/Tags/Tags.js";
 
 // Create a new playlist video
