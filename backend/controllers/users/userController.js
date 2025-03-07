@@ -11,6 +11,18 @@ const { console } = require("inspector");
 
 //-----User Controller---
 
+const CreateToken = (user = null) => {
+  if (!user) return null;
+  const payload = {
+    userId: user._id,
+    role: user.role,
+    username: user.username,
+  };
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+};
+
 const userController = {
   // !Register
   register: asyncHandler(async (req, res) => {
@@ -61,7 +73,7 @@ const userController = {
         username: user?.username,
         email: user?.email,
         _id: user?._id,
-        role : user?.role
+        role: user?.role
       });
     })(req, res, next);
   }),
@@ -115,10 +127,10 @@ const userController = {
           _id: user?._id,
           username: user?.username,
           profilePicture: user?.profilePicture,
-          role : user?.role
+          role: user?.role
         });
       }
-    } catch (error) {}
+    } catch (error) { }
     return res.status(401).json({ isAuthenticated: false, error });
   }),
   // ! Logout
@@ -129,7 +141,7 @@ const userController = {
   //! Profile
   profile: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id)
-  
+
       .populate("followers")
       .populate("following")
       .populate("posts")
@@ -317,31 +329,31 @@ const userController = {
     //email
     const { email } = req.body;
     console.log(email)
-    const checkEmail = await User.find({email})
-    if(checkEmail){
-      return res.status(302).json({message : "Email Already Exists"})
+    const checkEmail = await User.find({ email })
+    if (checkEmail) {
+      return res.status(302).json({ message: "Email Already Exists" })
     }
     const user = await User.findById(req.user);
 
-    if(user.email == email){
-      return res.status(400).json({message : "Enter New Email"})
+    if (user.email == email) {
+      return res.status(400).json({ message: "Enter New Email" })
     }
 
-   
+
     user.email = email;
     user.isEmailVerified = false;
-    
+
     await user.save();
-    
+
     const token = await user.generateAccVerificationToken();
-  
+
     sendAccVerificationEmail(user?.email, token);
-    
+
     res.json({
       message: `Account verification email sent to ${user?.email} token expires in 10 minutes`,
     });
   }),
-  
+
   updateProfilePic: asyncHandler(async (req, res) => {
     console.log(req.file)
     await User.findByIdAndUpdate(
@@ -351,24 +363,24 @@ const userController = {
       },
       { new: true }
     );
-    
+
     res.json({
       message: "Profile picture updated successfully",
     });
   }),
-  deleteUser: asyncHandler(async (req, res) =>{
+  deleteUser: asyncHandler(async (req, res) => {
     const userId = req.params;
     await User.findByIdAndDelete(userId)
-    res.json({message : "User Deleted Successfully"});
+    res.json({ message: "User Deleted Successfully" });
   }),
 
   // update userstatus
-  updateUserStatus: asyncHandler(async (req, res) =>{
+  updateUserStatus: asyncHandler(async (req, res) => {
     const { isActive } = req.body;
     if (typeof isActive !== "boolean") {
       return res.status(400).json({ message: "isActive field must be a boolean" });
     }
-    
+
     const updatedUser = await User.findByIdAndUpdate(req.params.id, { isActive }, { new: true, runValidators: true });
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -377,7 +389,7 @@ const userController = {
   }),
 
   // !getallTheusers
-  
+
   deleteUser: asyncHandler(async (req, res) => {
     const { userId } = req.params;
     await User.findByIdAndDelete(userId)
@@ -428,7 +440,7 @@ const userController = {
       throw new Error("User not found");
     }
     //check if old password is correct
-    const isMatch = await bcrypt.compare(oldPassword, user.password); 
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
       throw new Error("Old password is incorrect");
     }
@@ -444,27 +456,27 @@ const userController = {
       if (!req.user) {
         return res.status(401).json({ message: "User not authenticated" });
       }
-  
+
       const userId = req.user._id;
       console.log("User ID:", userId);
-  
+
       const findPlan = await User.findById(userId).populate("plan");
       console.log("User Data:", findPlan);
-  
+
       if (!findPlan) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       res.status(200).json({ plan: findPlan.plan });
     } catch (error) {
       console.error("Error fetching plan:", error);
       res.status(500).json({ message: error.message });
     }
   }),
-  
+
 
   BecomeCreator: asyncHandler(async (req, res) => {
-    const { phone, channelName, GovtIdType} = req.body;
+    const { phone, channelName, GovtIdType } = req.body;
     const govID = req.file ? req.file.path : null;
     const user = await User.findById(req.user);
     user.phone = phone;
@@ -475,6 +487,56 @@ const userController = {
     await user.save();
     res.json({ message: "Application submitted successfully!" });
   }),
+
+  googleauth: async (req, res) => {
+    const { email, username } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required", success: false });
+
+    try {
+      let user = await User.findOne({ email });
+
+      if (user) {
+        const token = CreateToken(user);
+        return res.status(200).json({
+          message: "Login successful",
+          success: true,
+          user,
+          token
+        });
+      } else {
+        const generatePassword = () => Math.random().toString(36).slice(-8); // ✅ Generates a secure random password
+        const hashedPassword = await bcrypt.hash(generatePassword(), 10);
+
+        const newUser = new User({
+          username: username.split(" ").join("").toLowerCase() + Math.floor(Math.random() * 100000).toString(),
+          email,
+          password: hashedPassword,
+        });
+
+        user = await newUser.save();
+        const token = CreateToken(user);
+
+        return res
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+          })
+          .status(201)
+          .json({
+            message: "User created successfully",
+            success: true,
+            user,
+            token,
+          });
+      }
+    } catch (err) {
+      console.error("Google Auth Error:", err);
+      return res.status(500).json({ error: err.message, success: false });
+    }
+  }
+
 };
 
 

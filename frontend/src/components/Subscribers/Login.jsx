@@ -7,6 +7,7 @@ import { loginAPI } from "../../APIServices/users/usersAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "./Login.css";
+import Oauth from '../Authgoogle'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -103,12 +104,13 @@ const Login = () => {
             Login
           </button>
 
-          <a
-            href="http://localhost:5000/api/v1/users/auth/google"
+          <p
+            // href="http://localhost:5000/api/v1/users/auth/google"
             className="google-signin-btn"
           >
-            <span>Sign in with Google</span>
-          </a>
+            {/* <span>Sign in with Google</span> */}
+            <Oauth/>
+          </p>
 
           <Link className="forgot-password" to="/forgot-password">
             Forgot Password?

@@ -5,7 +5,8 @@ const {
   getAllPlaylists,
   getPlaylistById,
   deletePlaylist,
-} = require("../../controllers/playlistvideos/playlist").default;
+} = require("../../controllers/playlistvideos/playlist");
+
 
 const router = express.Router();
 

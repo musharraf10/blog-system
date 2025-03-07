@@ -1,30 +1,31 @@
-import React, { useEffect } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { loginAPI, registerAPI } from "../../APIServices/users/usersAPI";
-import AlertMessage from "../Alert/AlertMessage";
+import React, { useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { loginAPI, registerAPI } from '../../APIServices/users/usersAPI';
+import AlertMessage from '../Alert/AlertMessage';
+import Oauth from '../Authgoogle';
 
 const Login = () => {
   //navigate
   const navigate = useNavigate();
   // user mutation
   const userMutation = useMutation({
-    mutationKey: ["user-registration"],
+    mutationKey: ['user-registration'],
     mutationFn: loginAPI,
   });
   // formik config
   const formik = useFormik({
     // initial data
     initialValues: {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
     },
     // validation
     validationSchema: Yup.object({
-      username: Yup.string().required("Username is required"),
-      password: Yup.string().required("Password is required"),
+      username: Yup.string().required('Username is required'),
+      password: Yup.string().required('Password is required'),
     }),
     // submit
     onSubmit: (values) => {
@@ -33,7 +34,7 @@ const Login = () => {
         .mutateAsync(values)
         .then(() => {
           // redirect
-          navigate("/");
+          navigate('/');
         })
         .catch((err) => console.log(err));
     },
@@ -48,7 +49,7 @@ const Login = () => {
               to="/register"
               className="inline-block text-gray-500 hover: transition duration-200 mb-8"
             >
-              <span>Don't have an account?</span> {""}
+              <span>Don't have an account?</span> {''}
               <span />
               <span className="font-bold font-heading">Register</span>
             </Link>
@@ -77,7 +78,7 @@ const Login = () => {
               className="w-full rounded-full p-4 outline-none border border-gray-100 shadow placeholder-gray-500 focus:ring focus:ring-orange-200 transition duration-200 mb-4"
               type="text"
               placeholder="Enter username"
-              {...formik.getFieldProps("username")}
+              {...formik.getFieldProps('username')}
             />
             {/* error */}
             {formik.touched.username && formik.errors.username && (
@@ -95,7 +96,7 @@ const Login = () => {
                 id="textInput2"
                 type="password"
                 placeholder="Enter password"
-                {...formik.getFieldProps("password")}
+                {...formik.getFieldProps('password')}
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -128,8 +129,7 @@ const Login = () => {
             </button>
 
             {/* login with google */}
-            <a
-              href="http://localhost:5000/api/v1/users/auth/google"
+            <p
               className="h-14 inline-flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-white w-full text-center border border-gray-100 shadow hover:bg-gray-50 focus:ring focus:ring-orange-200 transition duration-200"
               type="submit"
             >
@@ -160,9 +160,9 @@ const Login = () => {
                 />
               </svg>
               <span className="font-bold font-heading">
-                Sign in with Google
+                <Oauth />
               </span>
-            </a>
+            </p>
             {/* forgot password link */}
             <Link className="mt-10 text-indigo-500" to="/forgot-password">
               Forgot Password?

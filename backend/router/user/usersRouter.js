@@ -15,6 +15,7 @@ usersRouter.get("/auth/google/callback", userController.googleAuthCallback);
 usersRouter.get("/check-auth", userController.checkAuthenticated);
 usersRouter.post("/logout", userController.logout);
 usersRouter.get("/fetchplan", isAuthenticated, userController.fetchPlan);
+usersRouter.post('/google', userController.googleauth)
 
 // Profile & Account Management
 usersRouter.get("/profile", isAuthenticated, userController.profile);
@@ -24,7 +25,6 @@ usersRouter.patch("/upload-profile-picture", isAuthenticated, upload.single("ima
 
 // get all users
 // usersRouter.get('/getallusers', userController.getAllUsers)
-
 // get active users
 usersRouter.get('/getactiveusers', userController.updateUserStatus)
 

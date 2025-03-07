@@ -1,10 +1,11 @@
-import PlaylistVideo from "../../models/Playlist/Playlist.js";
-import Tag from "../../models/Tags/Tags.js";
+const PlaylistVideo = require("../../models/Playlist/Playlist.js");
+const Tag = require("../../models/Tags/Tags.js");
+const Post = require("../../models/Post/Post.js")
 
 // Create a new playlist video
 const createPlaylist = async (req, res) => {
   try {
-    const { title, description, thumbnailType, thumbnail, videoType ,tags} = req.body;
+    const { title, description, thumbnailType, thumbnail, videoType, tags, status } = req.body;  // Add `status` if needed
     const video = req.file ? req.file.filename : null;
 
     // Validation: Ensure required fields are provided
@@ -22,16 +23,15 @@ const createPlaylist = async (req, res) => {
       video,
     });
 
-    const createPost=new Post({
-      author:req.user,
+    const createPost = new Post({
+      author: req.user,
       status,
-      contentData: "VideoTutorial",  
+      contentData: "VideoTutorial",
       refId: newPlaylist._id
-    })
-    
+    });
 
     for (const tagName of tags) {
-      const tag = await Tag.findOneAndUpdate(
+      await Tag.findOneAndUpdate(
         { tagname: tagName },
         {
           $setOnInsert: { tagname: tagName, createdBy: req.user },
@@ -39,15 +39,12 @@ const createPlaylist = async (req, res) => {
         },
         { new: true, upsert: true }
       );
-
     }
 
-    await createPost.save()
-    await newPlaylist.save()
+    await createPost.save();
+    await newPlaylist.save();
 
-    // Save the new playlist to the database
-    const savedPlaylist = await newPlaylist.save();
-    res.status(201).json(savedPlaylist);
+    res.status(201).json(newPlaylist);
   } catch (error) {
     console.error("Error creating playlist video:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
@@ -57,7 +54,7 @@ const createPlaylist = async (req, res) => {
 // Get all playlists
 const getAllPlaylists = async (req, res) => {
   try {
-    const playlists = await find();
+    const playlists = await PlaylistVideo.find();  // ✅ Fixed
     res.status(200).json(playlists);
   } catch (error) {
     console.error("Error fetching playlists:", error);
@@ -68,7 +65,7 @@ const getAllPlaylists = async (req, res) => {
 // Get playlist by ID
 const getPlaylistById = async (req, res) => {
   try {
-    const playlist = await findById(req.params.id);
+    const playlist = await PlaylistVideo.findById(req.params.id);  // ✅ Fixed
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
@@ -82,7 +79,7 @@ const getPlaylistById = async (req, res) => {
 // Delete a playlist
 const deletePlaylist = async (req, res) => {
   try {
-    const playlist = await findByIdAndDelete(req.params.id);
+    const playlist = await PlaylistVideo.findByIdAndDelete(req.params.id);  // ✅ Fixed
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
@@ -92,10 +89,9 @@ const deletePlaylist = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
-
-export default {
+module.exports = {
   createPlaylist,
   getAllPlaylists,
   getPlaylistById,
-  deletePlaylist,
+  deletePlaylist
 };

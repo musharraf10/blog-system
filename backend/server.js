@@ -100,7 +100,7 @@ const stripePaymentRouter = require("./router/stripePayment/stripePaymentRouter"
 const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
-const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
+const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes');
 
 const articleRouter = require("./router/article/article");
 const webinarRouter = require("./router/webinar/webinar");
