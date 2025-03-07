@@ -98,7 +98,7 @@ const stripePaymentRouter = require("./router/stripePayment/stripePaymentRouter"
 const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
-const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
+const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes');
 
 const articleRouter = require("./router/article/article");
 const webinarRouter = require("./router/webinar/webinar");
@@ -128,10 +128,10 @@ cron.schedule(
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json()); 
+app.use(express.json());
 express.urlencoded({ extended: true })
-app.use(cookieParser()); 
-app.use(passport.initialize()); 
+app.use(cookieParser());
+app.use(passport.initialize());
 
 const corsOptions = {
   origin: ["http://localhost:5173"],
