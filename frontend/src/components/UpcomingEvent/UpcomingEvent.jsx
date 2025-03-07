@@ -84,7 +84,16 @@ const UpcomingEvent = () => {
         if (minutes > 0) return `Within ${minutes} minute${minutes > 1 ? 's' : ''}`;
         return `Within ${seconds} second${seconds > 1 ? 's' : ''}`;
     };
-
+    const handleDelete=(id)=>{
+            axios.delete(`${SERVER}/events/upcomingEvent/${id}`)
+            .then(()=>{
+                alert("Deleted Successfully")
+                fetchEvents();
+            })
+            .catch((err)=>{
+                console.log("Error deleting event:", err);
+            })
+    }
     return (
         <div className="container-fluid py-5">
             <h1 className="display-4 text-center fw-bold mb-4" style={{ color: "#1E3A8A" }}>
@@ -150,7 +159,7 @@ const UpcomingEvent = () => {
                             <div className='card-footer'><button className="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleEditClick(item)}>
                                 Edit
                             </button>
-                            <button className='btn btn-danger btn-sm mt-2 mx-2'>Delete</button>
+                            <button className='btn btn-danger btn-sm mt-2 mx-2'onClick={()=>handleDelete(item._id)}>Delete</button>
                             </div>
                             
                         </div>

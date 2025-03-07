@@ -85,7 +85,7 @@ const Dashboard = () => {
         data: [1000, 2000, 1500, 3000, 3500, 4000],
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };
