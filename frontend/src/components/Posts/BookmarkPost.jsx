@@ -142,7 +142,7 @@ const BookmarkPost = () => {
             key={post._id}
             className="bg-white border border-gray-200 rounded-2xl shadow-lg transition-all duration-300 transform hover:shadow-2xl hover:-translate-y-2"
           >
-            <Link to={`/posts/${post._id}`} className="relative block">
+            <Link to={`/bookmarks/${post._id}`} className="relative block">
               <img
                 // src={post.image}
                 // alt={post.title}
@@ -167,7 +167,7 @@ const BookmarkPost = () => {
               </p>
               <div className="flex justify-end mt-4">
             <Link
-              to={`/posts/${post._id}`}
+              to={`/bookmarks/${post._id}`}
               className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               View More

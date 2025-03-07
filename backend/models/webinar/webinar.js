@@ -8,6 +8,10 @@ const WebinarSchema = new Schema({
     trim: true,
     maxlength: [100, "Title cannot be more than 100 characters"],
   },
+  thumbnail :{
+    type : String,
+    required : true
+  },
   link: {
     type: String,
     required: [true, "Webinar link is required"],

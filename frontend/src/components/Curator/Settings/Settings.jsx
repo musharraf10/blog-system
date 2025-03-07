@@ -125,3 +125,5 @@ export default function Settings({ props, setSelectedComponent }) {
   );
 
 }
+
+

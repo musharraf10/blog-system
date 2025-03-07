@@ -7,6 +7,7 @@
 // const connectDB = require("./utils/connectDB");
 
 
+
 // const postRouter = require("./router/post/postsRouter");
 // const usersRouter = require("./router/user/usersRouter");
 // const categoriesRouter = require("./router/category/categoriesRouter");
@@ -89,6 +90,7 @@ const connectDB = require("./utils/connectDB");
 const calculateEarnings = require("./utils/calculateEarnings");
 
 
+
 // Import Routers
 const postRouter = require("./router/post/postsRouter");
 const usersRouter = require("./router/user/usersRouter");
@@ -110,6 +112,7 @@ const trendingRouter = require("./router/TrendingSubscribe/trendingRoutes")
 const articleRouter = require("./router/article/article");
 const webinarRouter = require("./router/webinar/webinar");
 const VideoGuideRouter = require("./router/StepbyStepRouter/StepbyStepRouter");
+const playlistRouter = require("./router/playlist/playlist"); // Added playlist router import
 
 
 // Connect to Database
@@ -131,6 +134,9 @@ cron.schedule(
     timezone: "America/New_York",
   }
 );
+
+
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -159,6 +165,9 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
 app.use("/api/v1/article", articleRouter);
 app.use("/api/v1/webinar", webinarRouter);
+app.use("/api/v1/playlist", playlistRouter); // Add playlist routes here
+
+
 
 
 

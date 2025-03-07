@@ -11,6 +11,7 @@ const isAuthenticated = (req, res, next) => {
     //place the user in the req obj
     req.user = user?._id;
     req.user.role = user?.role;
+    req.user.email = user?.email;
     //call next
     return next();
   })(req, res, next);

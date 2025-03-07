@@ -173,6 +173,7 @@ const Analytics = () => {
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
+                    //outerRadius={80}
                     innerRadius={40}
                     dataKey="value"
                     animationBegin={0}
