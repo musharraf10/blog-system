@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:5000/api/v1/stripe";
 //!Create post api
 export const paymentIntentAPI = async (planId) => {
   const response = await axios.post(
-    `${BASE_URL}/checkout`,
+    `${BASE_URL}/create-payment`,
     {
       subscriptionPlanId: planId,
     },

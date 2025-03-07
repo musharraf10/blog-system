@@ -10,41 +10,88 @@ import { MdClear } from "react-icons/md";
 import truncateString from "../../utils/truncateString";
 import { useLocation } from "react-router-dom";
 import PublicNavbar from "../Navbar/PublicNavbar";
+import axios from "axios";
+
+import { loadStripe } from '@stripe/stripe-js';
+import { motion } from "framer-motion";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const PostsList = () => {
   const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
+  const [planName, setPlanName] = useState("");
+  const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
 
-  // Simulate checking if user is subscribed
-  // In a real app, this would come from your auth context or API
-  useEffect(() => {
-    // For demo purposes, we'll check localStorage
-    // In production, this would be a proper auth check
-    const userSubscriptionStatus = localStorage.getItem("userSubscriptionStatus");
-    setIsUserSubscribed(userSubscriptionStatus === "subscribed");
-  }, []);
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
-  useEffect(() => {
-    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedPosts")) || [];
-    setBookmarkedPosts(savedBookmarks);
-  }, []);
+  // Slick Carousel Settings
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3, // Show 3 posts at a time on large screens
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 }
+      },
+      {
+        breakpoint: 768,
+        settings: { slidesToShow: 1 }
+      }
+    ]
+  };
 
-  
-  const toggleBookmark = (postId, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    let updatedBookmarks;
-    if (bookmarkedPosts.includes(postId)) {
-      updatedBookmarks = bookmarkedPosts.filter(id => id !== postId);
-    } else {
-      updatedBookmarks = [...bookmarkedPosts, postId];
+  const getPlan = async () => {
+    try {
+      const response = await axios.get(`${BackendServername}/users/fetchplan`, {
+        withCredentials: true,
+      });
+
+      console.log("Fetched Plan:", response.data.plan);
+      setPlanName(response.data.plan?.planName || "Free");
+    } catch (error) {
+      console.error("Error fetching plan:", error);
     }
-    setBookmarkedPosts(updatedBookmarks);
-    localStorage.setItem("bookmarkedPosts", JSON.stringify(updatedBookmarks));
+  };
+
+  useEffect(() => {
+    getPlan();
+  }, []);
+
+  useEffect(() => {
+    setIsUserSubscribed(planName !== "Free");
+  }, [planName]);
+
+  const handleContent = async (postId, price) => {
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+    try {
+      const response = await axios.post(
+        `${BackendServername}/payments/create-checkout-session`,
+        {
+          postId,
+          price,
+        },
+        { withCredentials: true }
+      );
+
+      const { sessionId } = response.data;
+      const result = await stripe.redirectToCheckout({ sessionId });
+
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+    }
   };
 
   const location = useLocation();
@@ -84,29 +131,30 @@ const PostsList = () => {
     mutationFn: deletePostAPI,
   });
 
-  // Function to simulate subscription
-  const handleSubscribe = () => {
-    
-    localStorage.setItem("userSubscriptionStatus", "subscribed");
-    setIsUserSubscribed(true);
+  const toggleBookmark = (postId, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setBookmarkedPosts((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId]
+    );
   };
 
-  // Check if a post is premium (price > 0)
   const isPremiumPost = (post) => {
-    return post > 0;
+    return post.price > 0;
   };
 
-  // Generate pagination buttons
   const renderPagination = () => {
     if (!data || !data.totalPages) return null;
-    
+
     const totalPages = data.totalPages;
     const buttons = [];
-    
+
     // Previous button
     buttons.push(
-      <button 
-        key="prev" 
+      <button
+        key="prev"
         className="page-button"
         onClick={() => handlePageChange(Math.max(1, page - 1))}
         disabled={page === 1}
@@ -114,20 +162,17 @@ const PostsList = () => {
         &lt;
       </button>
     );
-    console.log(data)
-    console.log("Fetched Posts Data:", data?.posts);
 
-    
     // Page buttons
     for (let i = 1; i <= totalPages; i++) {
       if (
-        i === 1 || 
-        i === totalPages || 
+        i === 1 ||
+        i === totalPages ||
         (i >= page - 1 && i <= page + 1)
       ) {
         buttons.push(
-          <button 
-            key={i} 
+          <button
+            key={i}
             className={`page-button ${page === i ? 'active' : ''}`}
             onClick={() => handlePageChange(i)}
           >
@@ -135,17 +180,17 @@ const PostsList = () => {
           </button>
         );
       } else if (
-        (i === page - 2 && page > 3) || 
+        (i === page - 2 && page > 3) ||
         (i === page + 2 && page < totalPages - 2)
       ) {
         buttons.push(<span key={`ellipsis-${i}`}>...</span>);
       }
     }
-    
+
     // Next button
     buttons.push(
-      <button 
-        key="next" 
+      <button
+        key="next"
         className="page-button"
         onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
@@ -153,9 +198,12 @@ const PostsList = () => {
         &gt;
       </button>
     );
-    
+
     return <div className="pagination">{buttons}</div>;
   };
+
+  const premiumPosts = data?.posts?.filter(isPremiumPost);
+  const nonPremiumPosts = data?.posts?.filter(post => !isPremiumPost(post));
 
   return (
     <>
@@ -163,40 +211,52 @@ const PostsList = () => {
       <section className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
         <div className="container px-4 mx-auto max-w-6xl">
           <div className="pt-16 pb-8">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            <motion.h1
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4"
+            >
               Discover Our Latest Content
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+              className="text-lg text-gray-600 max-w-3xl mx-auto text-center"
+            >
               Explore our collection of articles, tutorials, and resources to help you stay informed and inspired.
-            </p>
+            </motion.p>
           </div>
-          
           {/* Search Bar */}
-          <div className="search-container">
-            <form onSubmit={handleSearchSubmit}>
-              <FaSearch className="search-icon" />
+          <div className="relative flex items-center justify-center mt-6">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative mb-5 flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-100 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
+            >
+              <FaSearch className="absolute left-4 text-blue-600 text-lg animate-pulse" />
               <input
                 type="text"
                 placeholder="Search for content..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="search-input"
+                className="w-full py-3 pl-12 pr-12  text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
               />
               {searchTerm && (
-                <button 
-                  type="button" 
-                  className="clear-button"
+                <button
+                  type="button"
+                  className="absolute right-3 text-gray-500 hover:text-red-500 transition-transform transform hover:scale-110"
                   onClick={clearFilters}
                 >
-                  <MdClear />
+                  <MdClear className="text-xl" />
                 </button>
               )}
             </form>
           </div>
-          
+
           {/* Error and Loading States */}
           {isError && <AlertMessage type="error" message="Something happened" />}
-          
+
           {isLoading ? (
             <div className="loading-container">
               <div className="loading-spinner"></div>
@@ -207,55 +267,46 @@ const PostsList = () => {
             <>
               {/* Posts Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {data?.posts?.map((post) => {
-                  const isPremium = isPremiumPost(post.price);
+                {nonPremiumPosts?.map((post) => {
+                  const isPremium = isPremiumPost(post);
                   const isBookmarked = bookmarkedPosts.includes(post._id);
-                  
+
                   return (
                     <div key={post._id} className="post-card bg-white">
-                      {/* Premium Badge */}
                       {isPremium && (
                         <div className="premium-badge">
-                          <FaCrown /> Premium
+                          <FaCrown />
                         </div>
                       )}
-                      
-                      {/* Post Image */}
                       <div className="post-image-container">
                         <img
                           className="post-image"
-                          src={post?.image}
+                          src={post?.refId.thumbnail}
                           alt={post?.price || "Post image"}
                         />
-                        
-                        {/* Bookmark Button */}
-                        <button 
+                        {/* <button
                           className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
                           onClick={(e) => toggleBookmark(post._id, e)}
                           aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
                         >
                           <FaBookmark />
-                        </button>
+                        </button> */}
                       </div>
-                      
-                      {/* Premium Overlay for Locked Content */}
                       {isPremium && !isUserSubscribed && (
                         <div className="premium-overlay">
                           <FaLock className="premium-lock-icon" />
                           <p className="premium-message">
-                            This is premium content. Subscribe to unlock.
+                            This is premium content. Subscribe or buy this post to unlock.
                           </p>
-                          <button 
+                          <button
                             className="unlock-button"
-                            onClick={handleSubscribe}
+                            onClick={() => handleContent(post._id, post.price)}
                           >
-                            Subscribe Now
+                            Buy Post for ${post.price}
                           </button>
                         </div>
                       )}
-                      
-                      {/* Post Content */}
-                      <Link 
+                      <Link
                         to={`/posts/${post._id}`}
                         className="block"
                       >
@@ -263,11 +314,9 @@ const PostsList = () => {
                           <h3 className="post-title">
                             {post?.refId.title || "Untitled Post"}
                           </h3>
-                          
                           <p className="post-excerpt">
                             {truncateString(post?.description || "", 120)}
                           </p>
-                          
                           <div className="post-meta">
                             <span className="post-date">
                               {new Date(post.createdAt).toLocaleDateString('en-US', {
@@ -276,7 +325,6 @@ const PostsList = () => {
                                 day: 'numeric'
                               })}
                             </span>
-                            
                             <span className={`post-status ${
                               post?.status === 'published' ? 'status-published' : 'status-draft'
                             }`}>
@@ -289,7 +337,71 @@ const PostsList = () => {
                   );
                 })}
               </div>
-              
+
+              {/* Premium Posts */}
+              {premiumPosts?.length > 0 && (
+                <div className="pt-8">
+                  <h2 className="text-3xl font-semibold text-gray-900 mt-3">Premium Content</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 mt-5">
+                    {premiumPosts?.map((post) => {
+                      const isBookmarked = bookmarkedPosts.includes(post._id);
+                      return (
+                        <div key={post._id} className="post-card bg-white">
+                          <div className="premium-badge">
+                            <FaCrown /> Premium
+                          </div>
+                          <div className="post-image-container">
+                            <img
+                              className="post-image"
+                              src={post?.image}
+                              alt={post?.price || "Post image"}
+                            />
+                            <button
+                              className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
+                              onClick={(e) => toggleBookmark(post._id, e)}
+                              aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                            >
+                              <FaBookmark />
+                            </button>
+                          </div>
+                          {isPremiumPost(post) && !isUserSubscribed && (
+                            <div className="premium-overlay">
+                              <FaLock className="premium-lock-icon" />
+                              <p className="premium-message">
+                                This is premium content. Subscribe to unlock.
+                              </p>
+                              <button
+                                className="unlock-button"
+                                onClick={() => handleContent(post._id, post.price)}
+                              >
+                                Subscribe Now
+                              </button>
+                            </div>
+                          )}
+                          <Link to={`/posts/${post._id}`} className="block">
+                            <div className="post-content">
+                              <h3 className="post-title">{post?.title || "Untitled post"}</h3>
+                              <p className="post-excerpt">
+                                {truncateString(post?.description || "", 120)}
+                              </p>
+                              <div className="post-meta">
+                                <span className="post-date">
+                                  {new Date(post.createdAt).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric'
+                                  })}
+                                </span>
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Pagination */}
               {renderPagination()}
             </>

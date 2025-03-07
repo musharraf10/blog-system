@@ -38,7 +38,7 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
-postRouter.get("/managecontent/getpost",postController.getallpost);
+postRouter.get("/managecontent/getpost",isAuthenticated,postController.getallpost);
 postRouter.delete("/managecontent/deletepost/:id",postController.deletepost);
 postRouter.put("/managecontent/updatepost/:id",postController.updatepost);
 postRouter.put("/managecontent/getpost/:id",postController.getonepost);
@@ -49,6 +49,8 @@ postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPos
 postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);
 
 
+postRouter.patch("/likes/:postId", isAuthenticated, postController.like);
+postRouter.patch("/dislikes/:postId", isAuthenticated, postController.dislike);
 
 
 
@@ -78,8 +80,6 @@ postRouter.delete(
 postRouter.get("/analytics", postController.fetchPostAnalytics);
 
 // Like & Dislike Post
-postRouter.patch("/likes/:postId", isAuthenticated, postController.like);
-postRouter.patch("/dislikes/:postId", isAuthenticated, postController.dislike);
 
 
 

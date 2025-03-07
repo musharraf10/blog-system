@@ -4,25 +4,29 @@ import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags } from "react-icons/fa";
 import { MdContentPaste, MdPayment } from "react-icons/md";
 import { FaUsersCog } from "react-icons/fa";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
-  { name: "Feed", href: "/subscriber/feed", icon: HomeIcon },
-  { name: "Trending", href: "/subscriber/trendingcontent", icon: MdContentPaste },
+  // { name: "Feed", href: "/subscriber/feed", icon: HomeIcon },
+  // { name: "Trending", href: "/subscriber/trendingcontent", icon: MdContentPaste },
   { name: "Webinars", href: "/subscriber/webinars", icon: FaUsersCog },
-  { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
-  { name: "Video Tutorials", href: "/subscriber/videoguides", icon: FaUserEdit },
+  // { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
+  { name: "Video Tutorials", href: "/subscriber/stepbystepguide", icon: FaUserEdit },
   { name: "Bookmarks", href: "/subscriber/bookmarks", icon: FaCalendarPlus },
   { name: "Upcoming Events", href: "/subscriber/upcomingevents", icon: FaTags },
 ];
 
-export default function AdminDashboard() {
+export default function SubscriberDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <>
-      <PrivateNavbar />
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <PrivateNavbar />
+      </div>
+
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
           <Transition.Child
@@ -46,55 +50,95 @@ export default function AdminDashboard() {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex w-64 flex-col bg-white p-4 shadow-lg h-full">
-                <button className="absolute top-4 right-4 text-gray-700" onClick={() => setSidebarOpen(false)}>
-                  <XMarkIcon className="h-6 w-6" />
+              <Dialog.Panel className="relative flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen shadow-xl">
+                <button
+                  className="absolute top-4 right-4 bg-white/80 rounded-full p-1.5 transition-all duration-300 hover:bg-white shadow-sm"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <XMarkIcon className="h-6 w-6 text-gray-700" />
                 </button>
-                <Link to="/" className="mb-6 flex items-center justify-center">
-                  <FaBlog className="h-8 w-auto text-orange-500" />
+                <Link to="/subscriber" className="mb-8 flex items-center justify-center">
+                  <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
+                    <FaBlog className="h-6 w-auto text-white" />
+                  </div>
+                  <span className="ml-3 text-xl font-semibold text-gray-800">Subscriber Panel</span>
                 </Link>
-                <nav className="space-y-2 flex-1">
-                  {navigation.map(({ name, href, icon: Icon }) => (
-                    <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-                      <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
-                    </Link>
-                  ))}
+                <nav className="space-y-1.5">
+                  {navigation.map(({ name, href, icon: Icon }) => {
+                    const isActive =
+                      href !== "/subscriber" && (location.pathname === href || location.pathname.startsWith(href + "/"));
+                    return (
+                      <Link
+                        key={name}
+                        to={href}
+                        className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                          isActive
+                            ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                            : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                        }`}
+                      >
+                        <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
+                        <span className="truncate">{name}</span>
+                      </Link>
+                    );
+                  })}
                 </nav>
-                <Link to="/subscriber/settings" className="mt-auto flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-                  <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
-                </Link>
+                <div className="mt-auto mb-6">
+                  <Link
+                    to="/subscriber/settings"
+                    className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                      location.pathname === "/subscriber/settings"
+                        ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                        : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                    }`}
+                  >
+                    <Cog6ToothIcon
+                      className={`h-5 w-5 mr-3 flex-shrink-0 ${
+                        location.pathname === "/subscriber/settings" ? "text-[#1565C0]" : "text-gray-500"
+                      }`}
+                    />
+                    <span className="truncate">Settings</span>
+                  </Link>
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
         </Dialog>
       </Transition.Root>
 
-      <div className="flex min-h-screen">
-        {/* Sidebar for desktop - Sticky and does not scroll */}
-        <aside className="hidden lg:flex w-72 flex-col bg-white p-4 border-r border-gray-200 shadow-md fixed top-15 left-0 h-[100vh]">
-          <Link to="/subscriber" className="mb-6 flex items-center justify-center">
-            <FaBlog className="h-8 w-auto text-orange-500" />
+      <div className="flex">
+        <aside className="hidden lg:flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen fixed top-16 shadow-md border-r border-blue-100">
+          <Link to="/subscriber" className="mb-8 flex items-center justify-center">
+            <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
+              <FaBlog className="h-6 w-auto text-white" />
+            </div>
+            <span className="ml-3 text-xl font-semibold text-gray-800">Subscriber Panel</span>
           </Link>
-          <nav className="space-y-2 flex-1">
-            {navigation.map(({ name, href, icon: Icon }) => (
-              <Link key={name} to={href} className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-                <Icon className="h-6 w-6 mr-3 text-gray-500" /> {name}
-              </Link>
-            ))}
+          <nav className="space-y-1.5">
+            {navigation.map(({ name, href, icon: Icon }) => {
+              const isActive =
+                href !== "/subscriber" && (location.pathname === href || location.pathname.startsWith(href + "/"));
+              return (
+                <Link
+                  key={name}
+                  to={href}
+                  className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                      : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                  }`}
+                >
+                  <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
+                  <span className="truncate">{name}</span>
+                </Link>
+              );
+            })}
           </nav>
-          <Link to="/subscriber/settings" className="mt-auto flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-            <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
-          </Link>
         </aside>
-
-        {/* Main content */}
-        <div className="flex-1 p-6 lg:ml-72">
-          <button className="lg:hidden mb-4 text-orange-500" onClick={() => setSidebarOpen(true)}>
-            ☰ Open Sidebar
-          </button>
+        <div className="flex-1 p-8 mt-16 lg:ml-80 bg-gray-50 min-h-screen">
           <Outlet />
         </div>
       </div>
     </>
-  );
+);
 }
