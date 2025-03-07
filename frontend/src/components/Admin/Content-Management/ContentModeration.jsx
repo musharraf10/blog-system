@@ -256,7 +256,7 @@ const ContentForm = () => {
               }}
             >
               <TableCell align="center">{page * rowsPerPage + index + 1}</TableCell>
-              <TableCell align="center">{item.title}</TableCell>
+              <TableCell align="center">{item?.author.username}</TableCell>
               <TableCell align="center">
                 <Button
                   variant="contained"

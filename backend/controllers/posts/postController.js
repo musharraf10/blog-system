@@ -210,7 +210,7 @@ const postController = {
 
   getallpostsinadmincontroller: asyncHandler(async (req, res) => {
     try {
-      const postsdata = await Post.find({});
+      const postsdata = await Post.find({}).populate("refId").populate("author");
       // .populate("author")
       // .populate({
       //   path: "comments",
@@ -233,7 +233,7 @@ const postController = {
 
   getallpublishedpostscontroller: asyncHandler(async (req, res) => {
     try {
-      const postsdata = await Post.find({ status: "approved" })
+      const postsdata = await Post.find({ status: "approved" }).populate("author")
         .populate("author")
         .populate({
           path: "comments",
