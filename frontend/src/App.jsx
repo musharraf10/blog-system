@@ -11,7 +11,7 @@ function App() {
       <>
        
         <PublicRoutes/>
-        <AdminRoutes />
+        <AdminRoutes/>
         <CuratorRoutes />
         <SubscriberRoutes />
 

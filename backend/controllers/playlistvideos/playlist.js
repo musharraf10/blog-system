@@ -1,6 +1,5 @@
-const PlaylistVideo = require("../../models/Play_List/Playlist.js");
-const Tag=require("../../models/Tags/Tags.js")
-// import Tag from "../../models/Tags/Tags.js";
+import PlaylistVideo from "../../models/Playlist/Playlist.js";
+import Tag from "../../models/Tags/Tags.js";
 
 // Create a new playlist video
 const createPlaylist = async (req, res) => {

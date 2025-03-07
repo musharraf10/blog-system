@@ -123,6 +123,46 @@ const postController = {
       message: "Post created successfully",
     });
   }),
+  deletepost:asyncHandler(async(req,res)=>{
+    try{
+      const post = await Post.findByIdAndDelete(req.params.id);
+      if(!post){
+        return res.status(404).json({status:"error",message:"Post not found"})
+      }
+      res.json({message:"Deleted Successfully"})
+    }
+    catch(err){
+      console.error("Error deleting post:", err);
+    }
+  }),
+  getonepost:asyncHandler(async(req,res)=>{
+    try{
+      const post = await Post.findById(req.params.id)
+      if(!post){
+        return res.status(404).json({status:"error",message:"Post not found"})
+        }
+        res.json(post)
+    }
+    catch(err){
+      console.log(err);
+    }
+  }),
+  updatepost: asyncHandler(async (req, res) => {
+    try {
+      const post = await Post.findByIdAndUpdate(
+        req.params.id, 
+        req.body
+      );
+      if (!post) {
+        return res.status(404).json({ status: "error", message: "Post not found" });
+      }
+      res.json({ message: "Updated Successfully", post });
+    } catch (err) {
+      console.error("Error Updating post:", err);
+      res.status(500).json({ status: "error", message: "Internal Server Error" });
+    }
+  }),
+  
   
   approvePost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
@@ -202,7 +242,7 @@ const postController = {
           populate: {
             path: "author",
           },
-        });
+        }).populate("refId");
 
       res.status(200).json({
         status: "success",
@@ -496,13 +536,23 @@ const postController = {
     });
   }),
   getallpost: asyncHandler(async (req, res) => {
-    const { userId } = req.query;
     try {
-      const posts = await Post.find({ author:userId })
-        .populate("author")
-        .populate("refId");
+      console.log(req.user.role);
+      if (req.user.role === "admin") {
+        const posts = await Post.find({}).populate("author").populate("refId");
+        res.json({ data: posts });
+      } else {
+        const { userId } = req.query;
 
-      res.json({ data: posts });
+        if (!userId) {
+          return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const posts = await Post.find({ author: userId })
+          .populate("author")
+          .populate("refId");
+        res.json({ data: posts });
+      }
     } catch (err) {
       console.error("Error fetching posts:", err);
     }

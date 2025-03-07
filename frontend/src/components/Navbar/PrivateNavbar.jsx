@@ -24,11 +24,11 @@ function classNames(...classes) {
 export default function PrivateNavbar() {
   const [showModal, setShowModal] = useState(false);
 
-  const [contentType, setContentType] = useState("selectyourcontent"); // Initialize with the default value
+  const [contentType, setContentType] = useState("selectyourcontent");
 
 
   const handleContentTypeChange = (event) => {
-    setContentType(event.target.value); // Update the state when selection changes
+    setContentType(event.target.value); 
   };
 
 

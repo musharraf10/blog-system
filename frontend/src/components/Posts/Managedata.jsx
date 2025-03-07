@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FileText, Video, BookOpen, Plus, Calendar, Eye } from "lucide-react";
+import { FileText, Video, BookOpen, Plus, Calendar, Eye, Search, Edit, Trash2 } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Previewdata from "./Previewdata";
+// import Previewdata from "./Previewdata";
 import { useQuery } from "@tanstack/react-query";
 import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
+
+"use client"
+
 
 const ManageData = () => {
   const { isLoading, data, refetch } = useQuery({
@@ -40,10 +43,15 @@ const ManageData = () => {
       try {
         const response = await axios.get(
           `${BackendServername}/posts/managecontent/getpost`,
-          { params: { userId } }
+          {
+            params: { userId },
+            withCredentials: true, // Allows sending cookies and authentication headers
+          }
         );
+        
         const data = response.data;
         console.log(data.data);
+        
         setContentItems(data.data);
       } catch (error) {
         alert(error);
@@ -117,15 +125,28 @@ const ManageData = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header Section */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <header className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white py-16 shadow-xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMCAwaDEyMHYyMEgweiIvPjxwYXRoIGQ9Ik0wIDBoMTIwdjIwSDB6IiBmaWxsPSIjRkZGIiBmaWxsLW9wYWNpdHk9Ii4yIi8+PC9nPjwvc3ZnPg==')] opacity-10"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <h1 className="text-5xl font-bold mb-4 text-center tracking-tight">Content Management Dashboard</h1>
+          <p className="text-xl text-center max-w-2xl mx-auto opacity-90 font-light">
+            Manage, update, and organize your content efficiently
+          </p>
+        </div>
+      </header>
 
-        <div className="bg-white shadow-sm rounded-lg overflow-hidden mb-8">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+      {/* Main Content */}
+      <div className="w-full px-4 py-12 max-w-full overflow-hidden">
+        {/* Content Types */}
+        <div className="bg-white shadow-lg rounded-2xl overflow-hidden mb-12 transform transition-all duration-300 hover:shadow-xl">
+          <div className="p-8 border-b border-gray-100">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <span className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] w-1.5 h-6 rounded mr-3 inline-block"></span>
               Content Types
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {categoryDetails.map((contentType) => (
                 <div
                   key={contentType.type}
@@ -159,197 +180,198 @@ const ManageData = () => {
           </div>
         </div>
 
-        <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12">
-          <div className="container mx-auto px-4">
-            <h1 className="text-4xl font-bold mb-2 text-center">
-              Content Management Dashboard
-            </h1>
-            <p className="text-xl text-center max-w-2xl mx-auto opacity-90">
-              Manage, update, and organize your content efficiently
-            </p>
-          </div>
-        </header>
+        {/* Type Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {categoryDetails.map((type) => {
+            let count = 0
+            if (type.type === "Article") count = articleCount
+            else if (type.type === "VideoTutorial") count = videoCount
+            else if (type.type === "StepbyStepGuide") count = guideCount
+            else if (type.type === "Webinar") count = webinarCount
 
-        {/* Main Content */}
-        <div className="container mx-auto px-4 py-8">
-          {/* Content Types Section */}
-
-          {/* Content Type Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {categoryDetails.map((type) => {
-              const count = contentItems.filter(
-                (item) => item.contentData === type.type
-              ).length;
-              return (
-                <div className="bg-white rounded-lg shadow overflow-hidden transition-all duration-300 hover:shadow-lg">
-                  <div
-                    style={{ backgroundColor: `${type.color}` }}
-                    className=" p-4 text-white flex items-center justify-between"
-                  >
-                    <h3 className="font-semibold">{type.label}</h3>
-                    <span className="text-2xl font-bold">
-                      {type.type === "Article" ? `  ${articleCount}` : null}
+            return (
+              <div
+                key={type.type}
+                className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 group"
+              >
+                <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-6 text-white flex items-center justify-between transition-all duration-300">
+                  <h3 className="font-semibold text-lg">{type.label}</h3>
+                  <span className="text-3xl font-bold">{count}</span>
+                </div>
+                <div className="p-5 bg-white">
+                  <div className="text-sm text-gray-600 flex items-center justify-between">
+                    <span>{count === 1 ? "item" : "items"} published</span>
+                    <span className="text-xs px-2 py-1 bg-gray-100 rounded-full transition-colors duration-300 group-hover:bg-gray-200">
+                      {contentItems.length > 0 ? Math.round((count / contentItems.length) * 100) : 0}% of total
                     </span>
-                    <span className="text-2xl font-bold">
-                      {type.type === "VideoTutorial" ? `  ${videoCount}` : null}
-                    </span>
-                    <span className="text-2xl font-bold">
-                      {type.type === "StepbyStepGuide"
-                        ? `  ${guideCount}`
-                        : null}
-                    </span>
-                    <span className="text-2xl font-bold">
-                      {type.type === "Webinar" ? `  ${webinarCount}` : null}
-                    </span>{" "}
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div
+                      className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] h-1.5 rounded-full transition-all duration-500 ease-out group-hover:from-[#0D47A1] group-hover:to-[#1976D2]"
+                      style={{
+                        width: `${contentItems.length > 0 ? Math.round((count / contentItems.length) * 100) : 0}%`,
+                      }}
+                    ></div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            )
+          })}
+        </div>
 
-          {/* Content Table Section */}
-          <div className="bg-white rounded-lg shadow mb-8">
-            <div className="px-4 py-5 bg-gray-50 border-b border-gray-200 flex flex-wrap">
+        {/* Content Table */}
+        <div className="bg-white rounded-xl shadow-lg mb-12 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+          <div className="px-8 py-6 bg-gray-50 border-b border-gray-200 overflow-x-auto">
+            <div className="flex items-center space-x-2 w-full flex-wrap gap-y-2">
               <button
                 onClick={() => setActiveFilter("all")}
-                className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
+                className={`px-3 py-2 rounded-lg transition-all duration-300 font-medium whitespace-nowrap text-xs ${
                   activeFilter === "all"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                 }`}
               >
                 All Content ({contentItems.length})
               </button>
+
               {categoryDetails.map((type) => {
-                const count = contentItems.filter(
-                  (item) => item.contentData === type.type
-                ).length;
+                let count = 0
+                if (type.type === "Article") count = articleCount
+                else if (type.type === "VideoTutorial") count = videoCount
+                else if (type.type === "StepbyStepGuide") count = guideCount
+                else if (type.type === "Webinar") count = webinarCount
+
                 return (
                   <button
                     key={type.type}
                     onClick={() => setActiveFilter(type.type)}
-                    className={`mr-2 mb-2 px-4 py-2 rounded-md transition-colors ${
+                    className={`px-3 py-2 rounded-lg transition-all duration-300 font-medium whitespace-nowrap text-xs ${
                       activeFilter === type.type
-                        ? "bg-indigo-600 text-white"
-                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        ? "bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                     }`}
                   >
-                    {type.type} ({count})
+                    {type.label} ({count})
                   </button>
-                );
+                )
               })}
             </div>
-
-            {/* Content table */}
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr className="text-center">
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
-                    >
-                      Title
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
-                    >
-                      Type
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
-                    >
-                      Author
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
-                    >
-                      Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-xs font-medium uppercase tracking-wider"
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredItems.map((item) => {
-                    // Find matching category based on contentData
-                    const category = categoryDetails.find(
-                      (cat) => cat.type === item.contentData
-                    );
-
-                    return (
-                      <tr
-                        key={item.id}
-                        className="text-center hover:bg-gray-50"
-                      >
-                        <td className="px-6 py-4 text-start">
-                          <div className="text-sm text-capitalize font-medium text-gray-900">
-                            {item.refId?.title}
-                          </div>
-                          {/*                         
-                        <div className="text-sm text-gray-500 truncate max-w-xs">
-                          
-                          {item.refId?.description}
-                        </div> */}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            style={{
-                              backgroundColor: category
-                                ? category.color
-                                : "#ccc", // Use category color or default gray
-                            }}
-                            className="px-2 py-1 text-xs font-semibold rounded-full text-white"
-                          >
-                            {category ? category.label : item.contentData}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
-                          {item.author.username}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
-                          {new Date(item.date).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 text-sm font-medium space-x-2">
-                          <Eye onClick={() => handleOpenModalofposts(item)} />
-                          <button className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-                            Edit
-                          </button>
-                          <button className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {filteredItems.length === 0 && (
-              <div className="py-12 text-center text-gray-500">
-                No content found for the selected filter.
-              </div>
-            )}
           </div>
+
+          {/* Content table */}
+          <div className="overflow-x-auto max-w-full">
+            <table className="w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-8 py-5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Title
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Author
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Date
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-8 py-5 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredItems.map((item) => {
+                  // Find matching category based on contentData
+                  const category = categoryDetails.find((cat) => cat.type === item.contentData)
+
+                  return (
+                    <tr key={item.id} className="hover:bg-blue-50 transition-all duration-300">
+                      <td className="px-8 py-6">
+                        <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
+                          {item.refId?.title}
+                        </div>
+                        {/* <div className="text-sm text-gray-500 truncate max-w-xs mt-1">{item.refId?.description}</div> */}
+                      </td>
+                      <td className="px-6 py-6 text-center">
+                        <span
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-full inline-block transition-all duration-300 ${
+                            category ? category.badge : "bg-gray-100 text-gray-800"
+                          } hover:shadow-sm`}
+                        >
+                          {category ? category.label : item.contentData}
+                        </span>
+                      </td>
+                      <td className="px-6 py-6 text-sm text-gray-600 text-center">{item.author?.username}</td>
+                      <td className="px-6 py-6 text-sm text-gray-600 text-center">
+                        {new Date(item.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
+                        {/* <Eye onClick={() => handleOpenModalofposts(item)} /> */}
+                        <button className="px-3 py-1.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                          <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                          <Edit className="h-3.5 w-3.5 inline mr-1.5" />
+                          Edit
+                        </button>
+                        <button className="px-3 py-1.5 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                          <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                          <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {filteredItems.length === 0 && (
+            <div className="py-20 text-center text-gray-500">
+              <div className="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <Search className="h-10 w-10 text-[#1565C0]" />
+              </div>
+              <p className="text-lg font-medium text-gray-700">No content found for the selected filter.</p>
+              <p className="text-sm mt-2 text-gray-500 max-w-md mx-auto">
+                Try selecting a different category or create new content to get started.
+              </p>
+              <button
+                className="mt-6 px-6 py-2.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 font-medium relative overflow-hidden group"
+                onClick={() => setActiveFilter("all")}
+              >
+                <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                View All Content
+              </button>
+            </div>
+          )}
         </div>
       </div>
-      {selectedeyebutton && (
+    </div>
+    {/* {selectedeyebutton && (
         <Previewdata
           post={selectedcontent}
           onHide={handleCloseModalofposts}
           show={true}
         />
-      )}
+      )} */}
     </>
-  );
-};
 
-export default ManageData;
+  )
+}
+
+export default ManageData
