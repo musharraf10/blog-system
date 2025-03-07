@@ -9,14 +9,14 @@ const storage = new CloudinaryStorage({
     console.log("File Received:", file);
 
     const resourceType = file.mimetype.startsWith('video') ? 'video' : 'image';
-    const fileExtension = file.mimetype.split('/')[1]; // Get file extension
+    const fileExtension = file.mimetype.split('/')[1]; 
 
     return {
       folder: 'step_guides',
-      format: fileExtension || 'jpg', // Default to jpg if format missing
+      format: fileExtension || 'jpg', 
       public_id: `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`,
       resource_type: resourceType,
-      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'webp'], // Explicit allowed formats
+      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'webp'],
     };
   },
 });

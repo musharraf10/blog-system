@@ -14,6 +14,8 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { useQuery } from "@tanstack/react-query";
 import VideocamIcon from '@mui/icons-material/Videocam';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'; 
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./checkposttypemodal.css";
 import { Link } from "react-router-dom";
@@ -34,6 +36,10 @@ export default function Checkposttypemodal({
         return <ArticleIcon className="content-icon" style={{ color: '#3B82F6' }} />;
       case 'webinar':
         return <VideocamIcon className="content-icon" style={{ color: '#EF4444' }} />;
+      case 'stepbystepguide':
+        return <LibraryBooksIcon className="content-icon" style={{ color: '#10B981' }} />;
+      case 'videotutorial':
+        return <PlayCircleIcon className="content-icon" style={{ color: '#F59E0B' }} />;
       default:
         return <HelpOutlineIcon className="content-icon" style={{ color: '#9CA3AF' }} />;
     }
@@ -105,6 +111,14 @@ export default function Checkposttypemodal({
                 {getContentIcon('webinar')}
                 Webinar
               </MenuItem>
+              <MenuItem value="stepbystepguide">
+                {getContentIcon('stepbystepguide')}
+                Step By Step guide
+              </MenuItem>
+              <MenuItem value="videotutorial">
+                {getContentIcon('videotutorial')}
+                Video Tutorial
+              </MenuItem>
             </Select>
           </FormControl>
           
@@ -126,8 +140,13 @@ export default function Checkposttypemodal({
                 ? 'Articles allow you to share in-depth written content with images and formatting options.'
                 : contentType === 'webinar' 
                 ? 'Webinars let you create and schedule video presentations with registration options.'
+                : contentType === 'stepbystepguide'
+                ? 'Step-by-step guides help users follow a structured approach with detailed instructions and visuals.'
+                : contentType === 'videotutorial'
+                ? 'Video tutorials provide hands-on learning through recorded demonstrations and explanations.'
                 : ''}
             </Typography>
+
           </Box>
         </Box>
       </Modal.Body>
