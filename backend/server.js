@@ -7,6 +7,7 @@
 // const connectDB = require("./utils/connectDB");
 
 
+
 // const postRouter = require("./router/post/postsRouter");
 // const usersRouter = require("./router/user/usersRouter");
 // const categoriesRouter = require("./router/category/categoriesRouter");
@@ -89,6 +90,7 @@ const connectDB = require("./utils/connectDB");
 const calculateEarnings = require("./utils/calculateEarnings");
 
 
+
 // Import Routers
 const postRouter = require("./router/post/postsRouter");
 const usersRouter = require("./router/user/usersRouter");
@@ -98,11 +100,20 @@ const stripePaymentRouter = require("./router/stripePayment/stripePaymentRouter"
 const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
-const trendingRouter = require('./router/TrendingSubscribe/trendingRoutes'); 
 
-const articleRouter = require("./router/article/article");
+const trendingRouter = require("./router/TrendingSubscribe/trendingRoutes")
+
+
+// const webinarRouter = require("./router/webinar/webinar");
+
+
+
+
+const articleRouter = require("./router/article/articleRouter");
 const webinarRouter = require("./router/webinar/webinar");
 const VideoGuideRouter = require("./router/StepbyStepRouter/StepbyStepRouter");
+const playlistRouter = require("./router/playlist/playlist"); // Added playlist router import
+const UpcomingEventRouter = require("./router/UpcomingEvents/UpcomingEvent");
 
 
 // Connect to Database
@@ -125,13 +136,16 @@ cron.schedule(
   }
 );
 
+
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json()); 
+app.use(express.json());
 express.urlencoded({ extended: true })
-app.use(cookieParser()); 
-app.use(passport.initialize()); 
+app.use(cookieParser());
+app.use(passport.initialize());
 
 const corsOptions = {
   origin: ["http://localhost:5173"],
@@ -152,6 +166,9 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
 app.use("/api/v1/article", articleRouter);
 app.use("/api/v1/webinar", webinarRouter);
+app.use("/api/v1/playlist", playlistRouter); // Add playlist routes here
+app.use("/api/v1/events",UpcomingEventRouter);
+
 
 
 

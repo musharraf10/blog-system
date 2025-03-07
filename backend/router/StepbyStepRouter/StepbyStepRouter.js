@@ -1,6 +1,8 @@
 const express = require('express');
 const upload = require('../../utils/fileupload'); // Ensure correct path
-const  addStepbyStepGuide = require('../../controllers/StepbyStepGuide/StepbyStepController');
+const  {addStepbyStepGuide} = require('../../controllers/StepbyStepGuide/StepbyStepController');
+const {getVideoGuide} = require('../../controllers/StepbyStepGuide/StepbyStepController');
+const {VideoGuideSingle} = require('../../controllers/StepbyStepGuide/StepbyStepController');
 const multer = require('multer');
 const isAuthenticated = require('../../middlewares/isAuthenticated');
 
@@ -11,6 +13,9 @@ const uploadFields = upload.fields([
     { name: "thumbnailImage", maxCount: 1 },
     { name: "stepMedia", maxCount: 10 } 
 ]);
+
+VideoGuideRouter.get("/", isAuthenticated, getVideoGuide)
+VideoGuideRouter.get("/:guideId", isAuthenticated, VideoGuideSingle)
 
 VideoGuideRouter.post("/addguide", (req, res, next) => {
     uploadFields(req, res, (err) => {

@@ -96,7 +96,7 @@ const userSchema = new mongoose.Schema(
 
     purchasedContent: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Content",
+      ref: "Post",
       purchaseDate: { type: Date, default: Date.now }
     }],
 

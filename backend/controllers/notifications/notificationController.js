@@ -5,15 +5,16 @@ const mongoose = require("mongoose");
 const notificationController = {
   fetchNotifications: asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, type } = req.query;
-    let filter = { userId: '67b9f39047e3555b950554a2' };
+    let filter = {};
     if (type) filter.type = type;
     
     const notifications = await Notification.find()
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
-    
+    // console.log(notifications)
     const totalNotifications = await Notification.countDocuments();
+    // console.log("T", totalNotifications)
     res.json({
       notifications,
       currentPage: page,
