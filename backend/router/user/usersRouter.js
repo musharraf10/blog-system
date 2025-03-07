@@ -19,6 +19,8 @@ usersRouter.post("/logout", userController.logout);
 // Profile & Account Management
 usersRouter.get("/profile", isAuthenticated, userController.profile);
 usersRouter.patch("/update-email", isAuthenticated, userController.updateEmail);
+usersRouter.patch("/update-mobile", isAuthenticated, userController.updateMobile);
+usersRouter.patch("/update-name", isAuthenticated, userController.updateName);
 usersRouter.patch("/upload-profile-picture", isAuthenticated, upload.single("image"), userController.updateProfilePic);
 
 
