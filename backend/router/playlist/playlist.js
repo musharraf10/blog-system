@@ -1,11 +1,7 @@
 const express = require("express");
 const { uploadSingle, uploadMultiple } = require("../../controllers/playlistvideos/multer");
-const {
-  createPlaylist,
-  getAllPlaylists,
-  getPlaylistById,
-  deletePlaylist,
-} = require("../../controllers/playlistvideos/playlist").default;
+const { createPlaylist, getAllPlaylists, getPlaylistById, deletePlaylist } = require("../../controllers/playlistvideos/playlist");
+
 
 const router = express.Router();
 

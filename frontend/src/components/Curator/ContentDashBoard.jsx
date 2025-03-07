@@ -57,12 +57,12 @@ const Dashboard = () => {
         <Container>
           <Box display="flex" justifyContent="center" gap={2} my={2}>
             {timeFilters.map((time) => (
-              <Button key={time} variant={selectedTime === time ? "contained" : "outlined"} onClick={() => { setSelectedTime(time); setSelectedSubCategory("All"); }}>
+              <Button key={time} variant={selectedTime === time ? "contained" : "outlined"} onClick={() => { setSelectedTime(time); setSelectedSubCategory("All"); }} className="hover:text-white">
                 {time === "monthYear" ? "Month/Year" : time.charAt(0).toUpperCase() + time.slice(1)}
               </Button>
             ))}
           </Box>
-  
+
           {selectedTime === "monthYear" && (
             <Box display="flex" justifyContent="center" gap={2} my={2}>
               <DatePicker
@@ -81,13 +81,27 @@ const Dashboard = () => {
               />
             </Box>
           )}
-  
-          <Tabs value={selectedSubCategory} onChange={(e, newValue) => setSelectedSubCategory(newValue)} centered>
+
+          <Tabs
+            value={selectedSubCategory}
+            onChange={(e, newValue) => setSelectedSubCategory(newValue)}
+            centered
+          >
             {subCategories.map((sub, index) => (
-              <Tab key={index} label={sub} value={sub} />
+              <Tab
+                key={index}
+                label={sub}
+                value={sub}
+                sx={{
+                  color: selectedSubCategory === sub ? 'white' : 'inherit', 
+                  transition: 'color 0.3s ease',
+                  '&:hover': { color: 'white' }, 
+                }}
+                className="rounded-3"
+              />
             ))}
           </Tabs>
-  
+
           <Grid container spacing={2} justifyContent="center" mt={2}>
             {getFilteredData().map((category, index) => (
               <Grid item key={index} xs={12} sm={6} md={4} lg={2}>
@@ -104,13 +118,13 @@ const Dashboard = () => {
           </Grid>
         </Container>
       </LocalizationProvider>
-            <br></br>
+      <br></br>
       {/* Wrapped Analytics inside the fragment */}
       <div>
-      <Analytics />
+        <Analytics />
       </div>
     </>
   );
-}  
+}
 
 export default Dashboard;

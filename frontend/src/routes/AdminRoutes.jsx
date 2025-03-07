@@ -17,7 +17,7 @@ import MyFollowers from "../components/Admin/MyFollowers"
 import MyEarnings from "../components/Admin/MyEarnings"
 import Notifications from "../components/Notification/NotificationLists"
 import AccountVerifiedComponent from "../components/Admin/AccountVerification"
-import CreatePlan from "../components/Plans/CreatePlan"
+
 import AddCategory from "../components/Category/AddCategory"
 import PostsList from "../components/Posts/PostsList";
 import Dashboard from "../components/Admin/Dashboard/Dashboard";
@@ -26,8 +26,14 @@ import PaymentsDashboard from "../components/Admin/Payments/PaymentsDashboard";
 import UserManagement from "../components/Admin/UserManagement/Usersmanagement";
 import ManageData from "../components/Posts/Managedata";
 import WebinarForm from "../components/Posts/WebinarForm";
+
+import UpdateNewPost from "../components/Posts/UpdateNewPost";
+import UpdateWebinar from "../components/Posts/UpdateWebinar";
+
 import ResetPassword from "../components/Subscribers/ResetPassword";
+import PlanDetails from "../components/Plans/PlanDetails";
 import StepByStepGuide from "../components/Posts/StepByStepGuide";
+
 
 
 
@@ -49,9 +55,11 @@ const AdminRoutes = () => {
           <Route path="payment-management" element={<PaymentsDashboard/>} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post/article" element={<CreatePost />} />
+          <Route path="update-post/article/:id"element={<UpdateNewPost/>}/>
           <Route path="create-post/webinar" element={<WebinarForm />} />
           <Route path="create-post/StepbyStepGuide" element={<StepByStepGuide />} />
           <Route path="create-post/webinar" element={<WebinarForm />} />
+          <Route path="update-post/webinar/:id"element={<UpdateWebinar/>}/>
           <Route path="manage-content" element={<ManageData />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
@@ -64,11 +72,16 @@ const AdminRoutes = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="latestposts" element={<PostsList />} />
          
-          <Route path="create-plan" element={<CreatePlan />} />
+          <Route path="plan-details" element={<PlanDetails />} />
           <Route path="add-category" element={<AddCategory />} />
          
         </Route>
         <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
+        <Route
+            path="account-verification/:verifyToken"
+            element={<AccountVerifiedComponent />}
+          />
+           <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         <Route
             path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}

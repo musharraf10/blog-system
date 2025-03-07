@@ -5,6 +5,7 @@ import { FaThumbsUp, FaThumbsDown, FaEye, FaComment, FaBookmark, FaCrown, FaLock
 import { RiUserUnfollowFill, RiUserFollowLine } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Accordion, Card } from "react-bootstrap";
 import {
   dislikePostAPI,
   fetchPost,
@@ -146,145 +147,157 @@ const PostDetails = () => {
   };
 
   return (
-    <div className="container-fluid d-flex justify-content-center align-items-center py-4">
-    <div className="row w-100">
-      {/* Left Column (Post Details) with Scroll */}
-      <div className="col-md-8 col-12">
-        <div className="bg-white rounded-lg shadow-lg p-6" style={{ height: "110vh", overflowY: "auto" }}>
-          <img
-            src={postData?.postFound?.image}
-            alt={postData?.postFound?.description}
-            className="w-full h-72 object-cover rounded-lg mb-4"
-          />
-          <p className="text-gray-800 text-lg">{postData?.postFound?.description}</p>
-  
-          {/* Follow Button (Added Back) */}
-          <div className="flex justify-between items-center my-4 flex-wrap">
-            <div className="flex gap-4 items-center flex-wrap">
-              <span className="flex items-center gap-2 text-gray-700 hover:text-blue-600 cursor-pointer border rounded-full p-2 transition-all duration-300 hover:bg-gray-200" onClick={likePostHandler}>
-                <FaThumbsUp className="text-xl" /> {postData?.postFound?.likes?.length || 0}
-              </span>
-              <span className="flex items-center gap-2 text-gray-700 hover:text-red-600 cursor-pointer border rounded-full p-2 transition-all duration-300 hover:bg-gray-200" onClick={dislikesPostHandler}>
-                <FaThumbsDown className="text-xl" /> {postData?.postFound?.dislikes?.length || 0}
-              </span>
-              <span className="flex items-center gap-2 text-gray-700 border rounded-full p-2 transition-all duration-300 hover:bg-gray-200">
-                <FaEye className="text-xl" /> {postData?.postFound?.viewers?.length || 0}
-              </span>
-              <span className={`flex items-center gap-2 cursor-pointer text-xl border rounded-full p-2 transition-all duration-300 hover:bg-gray-200 ${isBookmarked ? "text-blue-600" : "text-gray-600"} hover:text-blue-500`} onClick={isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler}>
-                <FaBookmark />
-              </span>
-            </div>
-  
-            {/* Follow Button */}
-            <button
-              className={`px-4 py-2 text-white text-sm font-bold rounded-md transition-all duration-300 ${
-                isFollowing ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
-              }`}
-              onClick={isFollowing ? unfollowUserHandler : followUserHandler}
-            >
-              {isFollowing ? "Unfollow" : "Follow"}
-            </button>
+<div className="container-fluid d-flex justify-content-center align-items-center py-4">
+  <div className="row w-100">
+    {/* Left Column (Post Details) with Scroll */}
+    <div className="col-md-8 col-12">
+      <div className="bg-white rounded-lg shadow-lg p-6" style={{ height: "110vh", overflowY: "auto" }}>
+        <img
+          src={postData?.postFound?.image}
+          alt={postData?.postFound?.description}
+          className="w-full h-72 object-cover rounded-lg mb-4"
+        />
+        <p className="text-gray-800 text-lg">{postData?.postFound?.description}</p>
+
+        {/* Follow Button (Added Back) */}
+        <div className="flex justify-between items-center my-4 flex-wrap">
+          <div className="flex gap-4 items-center flex-wrap">
+            <span className="flex items-center gap-2 text-gray-700 hover:text-blue-600 cursor-pointer border rounded-full p-2 transition-all duration-300 hover:bg-gray-200" onClick={likePostHandler}>
+              <FaThumbsUp className="text-xl" /> {postData?.postFound?.likes?.length || 0}
+            </span>
+            <span className="flex items-center gap-2 text-gray-700 hover:text-red-600 cursor-pointer border rounded-full p-2 transition-all duration-300 hover:bg-gray-200" onClick={dislikesPostHandler}>
+              <FaThumbsDown className="text-xl" /> {postData?.postFound?.dislikes?.length || 0}
+            </span>
+            <span className="flex items-center gap-2 text-gray-700 border rounded-full p-2 transition-all duration-300 hover:bg-gray-200">
+              <FaEye className="text-xl" /> {postData?.postFound?.viewers?.length || 0}
+            </span>
+            <span className={`flex items-center gap-2 cursor-pointer text-xl border rounded-full p-2 transition-all duration-300 hover:bg-gray-200 ${isBookmarked ? "text-blue-600" : "text-gray-600"} hover:text-blue-500`} onClick={isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler}>
+              <FaBookmark />
+            </span>
           </div>
-  
-          {/* Comments Section (Fully Functional & Scrollable) */}
-          <div className="mt-6">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Comments</h2>
-            <form onSubmit={formik.handleSubmit} className="mb-6 bg-gray-50 p-4 rounded-lg shadow-sm">
-              <textarea
-                className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
-                rows="4"
-                placeholder="Write a comment..."
-                {...formik.getFieldProps("content")}
-              ></textarea>
-              <button type="submit" className="w-full mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2">
-                <FaComment className="text-lg" /> Add Comment
-              </button>
-            </form>
-  
-            {/* Comments List (Show More Working) */}
-            <div className="space-y-4">
-              {(showAllComments ? postData?.postFound?.comments : postData?.postFound?.comments?.slice(0, 5))?.map(
-                (comment, index) => (
-                  <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md flex items-start gap-4 transition-all duration-300 hover:shadow-lg">
-                    <img
-                      src={comment.author?.profileImage || "/default-avatar.png"}
-                      alt={comment.author?.username}
-                      className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
-                    />
-                    <div className="flex-1 text-left">
-                      <div className="flex items-center gap-2 text-gray-900 font-semibold">
-                        <span>{comment.author?.username}</span>
-                        <span className="text-gray-500 text-xs">• {new Date(comment.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <p className="text-gray-700 mt-1 text-sm leading-relaxed">{comment.content}</p>
+
+          {/* Follow Button */}
+          <button
+            className={`px-4 py-2 text-white text-sm font-bold rounded-md transition-all duration-300 ${
+              isFollowing ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+            }`}
+            onClick={isFollowing ? unfollowUserHandler : followUserHandler}
+          >
+            {isFollowing ? "Unfollow" : "Follow"}
+          </button>
+        </div>
+
+        {/* Comments Section (Fully Functional & Scrollable) */}
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Comments</h2>
+          <form onSubmit={formik.handleSubmit} className="mb-6 bg-gray-50 p-4 rounded-lg shadow-sm">
+            <textarea
+              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+              rows="4"
+              placeholder="Write a comment..."
+              {...formik.getFieldProps("content")}
+            ></textarea>
+            <button type="submit" className="w-full mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2">
+              <FaComment className="text-lg" /> Add Comment
+            </button>
+          </form>
+
+          {/* Comments List (Show More Working) */}
+          <div className="space-y-4">
+            {(showAllComments ? postData?.postFound?.comments : postData?.postFound?.comments?.slice(0, 5))?.map(
+              (comment, index) => (
+                <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md flex items-start gap-4 transition-all duration-300 hover:shadow-lg">
+                  <img
+                    src={comment.author?.profileImage || "/default-avatar.png"}
+                    alt={comment.author?.username}
+                    className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
+                  />
+                  <div className="flex-1 text-left">
+                    <div className="flex items-center gap-2 text-gray-900 font-semibold">
+                      <span>{comment.author?.username}</span>
+                      <span className="text-gray-500 text-xs">• {new Date(comment.createdAt).toLocaleDateString()}</span>
                     </div>
+                    <p className="text-gray-700 mt-1 text-sm leading-relaxed">{comment.content}</p>
                   </div>
-                )
-              )}
-            </div>
-  
-            {postData?.postFound?.comments?.length > 5 && (
-              <button className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 transition-all duration-300 block mx-auto" onClick={() => setShowAllComments(!showAllComments)}>
-                {showAllComments ? "Show Less" : "Show All Comments"}
-              </button>
+                </div>
+              )
             )}
           </div>
-        </div>
-      </div>
-  
-      {/* Right Column (Scrollable List) */}
-      <div className="col-md-4 col-12 mt-4 mt-md-0">
-        <div className="bg-white rounded-xl shadow-lg p-4" style={{ height: "110vh", overflowY: "auto" }}>
-          <h2 className="h5 text-dark mb-4">List</h2>
-  
-          {isError && <AlertMessage type="error" message="Something went wrong!" />}
-          {isLoading ? (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
-              <div className="loading-spinner"></div>
-            </div>
-          ) : allPostsData?.posts?.length <= 0 ? (
-            <NoDataFound text="No Posts Available" />
-          ) : (
-            <div className="mb-4">
-              {allPostsData?.posts?.map((post) => {
-                const isPremium = isPremiumPost(post.price);
-                return (
-                  <div key={post._id} className="d-flex p-3 rounded-lg bg-white shadow-sm mb-3 border-bottom position-relative flex-wrap" onClick={() => setSelectedPost(post._id)}>
-                    {/* Post Image */}
-                    <div className="flex-shrink-0">
-                      <img className="w-20 h-20 object-cover rounded-lg border" src={post?.refId.thumbnail} alt={post?.title || "Post image"} />
-                    </div>
-  
-                    {/* Post Content */}
-                    <div className="flex-grow ps-3 position-relative w-100">
-                      {/* Title */}
-                      <h3 className="h6 text-dark text-truncate">{post?.refId.title || "Untitled Post"}</h3>
-  
-                      {/* Status, Date & Premium */}
-                      <div className="d-flex justify-content-between align-items-center mt-2 flex-wrap">
-                        <div className="d-flex align-items-center gap-2">
-                          <span className="text-xs font-weight-bold text-primary">{post?.status}</span>
-                          {isPremium && (
-                            <div className="text-primary text-xs font-weight-bold">
-                              <FaCrown className="text-lg" />
-                            </div>
-                          )}
-                        </div>
-                        <span className="text-xs text-muted">{new Date(post.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+
+          {postData?.postFound?.comments?.length > 5 && (
+            <button className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 transition-all duration-300 block mx-auto" onClick={() => setShowAllComments(!showAllComments)}>
+              {showAllComments ? "Show Less" : "Show All Comments"}
+            </button>
           )}
         </div>
       </div>
     </div>
+
+    
+    <div className="col-md-4 col-12 mt-4 mt-md-0">
+  <div className="bg-white rounded-xl shadow-lg p-4" style={{ height: "110vh", overflowY: "auto" }}>
+    <h2 className="h5 text-dark mb-4">Posts</h2>
+
+    {isError && <AlertMessage type="error" message="Something went wrong!" />}
+    {isLoading ? (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+        <div className="loading-spinner"></div>
+      </div>
+    ) : allPostsData?.posts?.length <= 0 ? (
+      <NoDataFound text="No Posts Available" />
+    ) : (
+      <Accordion defaultActiveKey="0">
+        {/* Trending (Premium) */}
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>Trending</Accordion.Header>
+          <Accordion.Body style={{ maxHeight: allPostsData?.posts?.filter(post => isPremiumPost(post.price)).length > 4 ? "300px" : "auto", overflowY: "auto" }}>
+            {allPostsData?.posts?.map(post => (
+              <Card key={post._id} className="mb-3 shadow-sm p-3" onClick={() => setSelectedPost(post._id)}>
+                <div className="d-flex align-items-center">
+                  <img className="w-16 h-16 object-cover rounded-lg border" src={post?.refId?.thumbnail} alt={post?.title || "Post image"} />
+                  <h3 className="h6 text-dark text-truncate ms-3 mb-0">{post?.refId?.title || "Untitled Post"}</h3>
+                </div>
+              </Card>
+            ))}
+          </Accordion.Body>
+        </Accordion.Item>
+
+        {/* Latest (Non-Premium) */}
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>Latest</Accordion.Header>
+          <Accordion.Body style={{ maxHeight: allPostsData?.posts?.filter(post => !isPremiumPost(post.price)).length > 4 ? "300px" : "auto", overflowY: "auto" }}>
+            {allPostsData?.posts?.map(post => (
+              <Card key={post._id} className="mb-3 shadow-sm p-3" onClick={() => setSelectedPost(post._id)}>
+                <div className="d-flex align-items-center">
+                  <img className="w-16 h-16 object-cover rounded-lg border" src={post?.refId?.thumbnail} alt={post?.title || "Post image"} />
+                  <h3 className="h6 text-dark text-truncate ms-3 mb-0">{post?.refId?.title || "Untitled Post"}</h3>
+                </div>
+              </Card>
+            ))}
+          </Accordion.Body>
+        </Accordion.Item>
+
+        {/* More (All Posts) */}
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>More</Accordion.Header>
+          <Accordion.Body style={{ maxHeight: allPostsData?.posts?.length > 4 ? "300px" : "auto", overflowY: "auto" }}>
+            {allPostsData?.posts?.map(post => (
+              <Card key={post._id} className="mb-3 shadow-sm p-3" onClick={() => setSelectedPost(post._id)}>
+                <div className="d-flex align-items-center">
+                  <img className="w-16 h-16 object-cover rounded-lg border" src={post?.refId?.thumbnail} alt={post?.title || "Post image"} />
+                  <h3 className="h6 text-dark text-truncate ms-3 mb-0">{post?.refId?.title || "Untitled Post"}</h3>
+                </div>
+              </Card>
+            ))}
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+    )}
   </div>
-  
+</div>
 
-  );
-};
 
+  </div>
+</div>
+  )}
 export default PostDetails;

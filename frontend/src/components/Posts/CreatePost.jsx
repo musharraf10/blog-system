@@ -98,7 +98,7 @@ const CreatePost = () => {
       <Paper sx={{ padding: 4, borderRadius: 2, boxShadow: 3 }}>
         <Box sx={{ mb: 4, textAlign: "center" }}>
           <Typography variant="h4" gutterBottom>
-            Add Your Article
+            <b>Add Your Article</b>
           </Typography>
           <Typography variant="body1" color="textSecondary">
             Write, format, and publish your content here.
