@@ -10,11 +10,10 @@ const usersRouter = express.Router();
 // Authentication Routes
 usersRouter.post("/register", userController.register);
 usersRouter.post("/login", userController.login);
-usersRouter.get("/auth/google", userController.googleAuth);
+usersRouter.get("/google", userController.googleauth);
 usersRouter.get("/auth/google/callback", userController.googleAuthCallback);
 usersRouter.get("/check-auth", userController.checkAuthenticated);
 usersRouter.post("/logout", userController.logout);
-usersRouter.get("/fetchplan", isAuthenticated, userController.fetchPlan);
 
 // Profile & Account Management
 usersRouter.get("/profile", isAuthenticated, userController.profile);
@@ -24,9 +23,12 @@ usersRouter.patch("/upload-profile-picture", isAuthenticated, upload.single("ima
 
 // get all users
 // usersRouter.get('/getallusers', userController.getAllUsers)
-
 // get active users
 usersRouter.get('/getactiveusers', userController.updateUserStatus)
+
+usersRouter.get('/paidusers/count', isAuthenticated, userController.PaidSub);
+
+usersRouter.get('/unpaidusers/count', isAuthenticated, userController.UnPaidSub);
 
 
 

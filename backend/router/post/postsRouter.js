@@ -45,6 +45,13 @@ postRouter.put("/managecontent/getpost/:id",postController.getonepost);
 postRouter.get("/bookmarked", isAuthenticated, postController.getBookmarkedPosts);
 postRouter.get("/:postId", isAuthenticated, optionalAuth, postController.getPost);
 
+postRouter.get('/articles/count', isAuthenticated, postController.getArticleCount)
+postRouter.get('/webinars/count', isAuthenticated, postController.getWebinarCount    )
+postRouter.get('/guides/count', isAuthenticated, postController.getStepbyStepGuideCount)
+
+postRouter.put("/approveall", isAuthenticated, postController.approveAll)
+postRouter.put("/rejectall", isAuthenticated,  postController.rejectedAll)
+
 postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPost);
 postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);
 

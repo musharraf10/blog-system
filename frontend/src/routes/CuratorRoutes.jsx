@@ -26,6 +26,7 @@ import Pricing from "../components/Plans/Pricing";
 import CheckoutForm from "../components/Plans/CheckoutForm";
 import ManageData from "../components/Posts/Managedata";
 import PlanDetails from "../components/Plans/PlanDetails";
+import SettingsCurator from "../components/Curator/SettingsPage";
 
 const CuratorRoutes = () => {
     return (
@@ -48,7 +49,7 @@ const CuratorRoutes = () => {
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<SettingsCurator />} />
           <Route path="add-email" element={<AddEmailComponent />} />
           <Route path="my-followings" element={<MyFollowing />} />
           <Route path="my-followers" element={<MyFollowers />} />

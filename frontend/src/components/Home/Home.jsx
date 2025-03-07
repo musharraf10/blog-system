@@ -15,12 +15,21 @@ import {
   Menu,
   X,
 } from "lucide-react"
+import { useQuery } from "@tanstack/react-query";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All")
   const [isVisible, setIsVisible] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+  });
+
+  let user = data?.role;
 
   useEffect(() => {
     setIsVisible(true)
@@ -394,8 +403,28 @@ export default function HomePage() {
                 }}
               />
             </div>
-            <a
-              href="#"
+           {user ?<a
+              href={`${user}`}
+              style={{
+                color: primaryColor,
+                background: "white",
+                padding: "0.5rem 1rem",
+                borderRadius: "4px",
+                textDecoration: "none",
+                fontWeight: "600",
+                border: `1px solid ${primaryColor}`,
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f0f4f8"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "white"
+              }}
+            >
+              DashBoard
+            </a> : <a
+              href="/login"
               style={{
                 color: primaryColor,
                 background: "white",
@@ -414,7 +443,7 @@ export default function HomePage() {
               }}
             >
               Sign In
-            </a>
+            </a>}
             <a
               href="#"
               style={{

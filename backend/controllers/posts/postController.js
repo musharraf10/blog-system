@@ -252,6 +252,39 @@ const postController = {
       res.status(500).json({ status: "error", message: error.message });
     }
   }),
+//Updated 3/7/25
+    getArticleCount: asyncHandler(async (req, res) => {
+      const articleCount = await Post.countDocuments({ contentData: "Article" });
+      res.status(200).json({ count: articleCount });
+    }),
+
+    getWebinarCount: asyncHandler(async (req, res) => {
+      const webinarCount = await Post.countDocuments({ contentData: "Webinar" });
+      res.status(200).json({ count: webinarCount });
+    }),
+
+    getStepbyStepGuideCount: asyncHandler(async (req, res) => {
+      const guideCount = await Post.countDocuments({ contentData: "StepbyStepGuide" });
+      res.status(200).json({ count: guideCount });
+    }),
+
+
+    approveAll : asyncHandler(async(req,res) =>{
+
+        await Post.updateMany({}, { status: "approved" });
+
+        res.status(200).json({ message: "All posts approved successfully!" });
+    }),
+    
+    rejectedAll : asyncHandler(async(req,res) =>{
+
+        await Post.updateMany({}, { status: "rejected" });
+
+        res.status(200).json({ message: "All posts rejected successfully!" });
+    }),
+
+
+  
 
   updatePostStatus: asyncHandler(async (req, res) => {
     try {

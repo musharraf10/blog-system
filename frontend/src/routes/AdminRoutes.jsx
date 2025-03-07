@@ -33,6 +33,7 @@ import UpdateWebinar from "../components/Posts/UpdateWebinar";
 import ResetPassword from "../components/Subscribers/ResetPassword";
 import PlanDetails from "../components/Plans/PlanDetails";
 import StepByStepGuide from "../components/Posts/StepByStepGuide";
+import SettingsAdmin from "../components/Admin/SettingsPage";
 
 
 
@@ -64,7 +65,7 @@ const AdminRoutes = () => {
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<SettingsAdmin />} />
           <Route path="add-email" element={<AddEmailComponent />} />
           <Route path="my-followings" element={<MyFollowing />} />
           <Route path="my-followers" element={<MyFollowers />} />
@@ -76,11 +77,6 @@ const AdminRoutes = () => {
           <Route path="add-category" element={<AddCategory />} />
          
         </Route>
-        <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
-        <Route
-            path="account-verification/:verifyToken"
-            element={<AccountVerifiedComponent />}
-          />
            <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         <Route
             path="/account-verification/:verifyToken"

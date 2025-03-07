@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-
+import {getArticles, getWebinars, getStepbyStepGuides,  approveAll, rejectAll  } from "../../../APIServices/posts/postsAPI"
 import {
   Table,
   TableContainer,
@@ -60,8 +59,70 @@ const ContentPart = () => {
       rejected: 0,
     });
 
+    const [articles, setArticles] = useState('')
+    const [webiners, setWebiners] = useState('')
+    const [stepBystepGuide, setStepBystepGuide] = useState('')
 
-   
+
+    const handleApprove = async () => {
+      try {
+        await approveAll();
+        
+        // Update the UI dynamically without refresh
+        setfilteredposts((prevPosts) =>
+          prevPosts.map((post) => ({ ...post, status: "approved" }))
+        );
+    
+        setCounts((prevCounts) => ({
+          ...prevCounts,
+          approved: prevCounts.approved + prevCounts.pending,
+          pending: 0,
+        }));
+      } catch (error) {
+        console.error("Error approving all posts:", error);
+      }
+    };
+    
+    const handleReject = async () => {
+      try {
+        await rejectAll();
+    
+        // Update the UI dynamically without refresh
+        setfilteredposts((prevPosts) =>
+          prevPosts.map((post) => ({ ...post, status: "rejected" }))
+        );
+    
+        setCounts((prevCounts) => ({
+          ...prevCounts,
+          rejected: prevCounts.rejected + prevCounts.pending,
+          pending: 0,
+        }));
+      } catch (error) {
+        console.error("Error rejecting all posts:", error);
+      }
+    };
+    
+
+   const getAllArticles = async() => {
+      const res = await getArticles();
+      setArticles(res.count)
+    }
+  const getAllWebiners = async() => {
+      const res = await getWebinars();
+      setWebiners(res.count)
+    }
+  const getAllGuides = async() => {
+      const res = await getStepbyStepGuides();
+      setStepBystepGuide(res.count)
+    }
+
+    useEffect(() => {
+     
+      getAllArticles();
+      getAllWebiners();
+      getAllGuides();
+
+    }, []);
   
 
   const handleOpenModalofposts = (post) => {
@@ -571,15 +632,15 @@ const ContentPart = () => {
                 >
                   <Box
                     sx={{
-                      width: { xs: "90%", md: "40%" }, // Same as Bar Chart
-                      height: 250, // Reduced height for a smaller Pie Chart
-                      backgroundColor: "white", // White background
+                      width: { xs: "90%", md: "40%" }, 
+                      height: 250, 
+                      backgroundColor: "white", 
                       padding: 3,
                       borderRadius: 2,
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Black glow effect
-                      transition: "transform 0.3s ease-in-out", // Smooth transition
+                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", 
+                      transition: "transform 0.3s ease-in-out",
                       "&:hover": {
-                        transform: "scale(1.05)", // Hover effect
+                        transform: "scale(1.05)", 
                       },
                     }}
                   >
@@ -619,7 +680,7 @@ const ContentPart = () => {
     labels: ["Videos", "Webinars", "Articles", "Guides"],
     datasets: [
       {
-        data: [40, 20, 30, 10], // Matching proportions
+        data: [40, webiners, articles, stepBystepGuide], // Matching proportions
         backgroundColor: [
           "#1E3A8A",
           "#0d6efa",
@@ -720,7 +781,7 @@ const ContentPart = () => {
     datasets: [
       {
         label: "Content Count",
-        data: [40, 20, 30, 10],
+        data: [40, webiners, articles, stepBystepGuide],
         backgroundColor: [
           "rgba(255, 99, 132, 0.8)", // Soft red
           "rgba(54, 162, 235, 0.8)", // Soft blue
@@ -809,8 +870,8 @@ const ContentPart = () => {
           <MenuItem value="approved">✅ Approved</MenuItem>
           <MenuItem value="rejected">❌ Rejected</MenuItem>
         </Select>
-        <button className="btn btn-success px-3">All Approved</button>
-        <button className="btn btn-danger px-3">All Rejected</button>
+        <button className="btn btn-success px-3" onClick={handleApprove}>All Approved</button>
+        <button className="btn btn-danger px-3" onClick={handleReject}>All Rejected</button>
         {/* Search Bar */}
         <Box
           sx={{

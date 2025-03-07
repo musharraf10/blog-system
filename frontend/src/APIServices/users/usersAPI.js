@@ -1,5 +1,6 @@
 import { BASE_URL } from "../../utils/baseEndpoint";
 import axios from "axios";
+const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
 // ! Register user
 export const registerAPI = async (userData) => {
@@ -183,6 +184,29 @@ export const changePasswordAPI = async (data) => {
   return response.data;
 };
 
+export const paidSub = async () =>{
+  try {
+    const response= await axios.get(`${BackendServername}/users/paidusers/count`,{
+      withCredentials:true
+    })
+
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const UnpaidSub = async () =>{
+  try {
+    const response= await axios.get(`${BackendServername}/users/unpaidusers/count`,{
+      withCredentials:true
+    })
+
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 
 

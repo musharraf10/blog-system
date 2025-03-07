@@ -9,6 +9,8 @@ import { FaUsersCog } from "react-icons/fa"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import PrivateNavbar from "../Navbar/PrivateNavbar"
 
+
+
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: HomeIcon },
   { name: "Content Management", href: "/admin/content-management", icon: MdContentPaste },
@@ -20,8 +22,9 @@ const navigation = [
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+ 
   const location = useLocation()
-
+ 
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50">

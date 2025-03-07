@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Card, Button, Container, Row, Col } from "react-bootstrap"
+import axios from "axios"
 import {
   FaUsers,
   FaMoneyBillWave,
@@ -16,23 +17,111 @@ import {
 } from "react-icons/fa"
 import MyChart from "./CanvasHandiler"
 import SubscriptionStats from "./SubscriptionStats"
+const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+import { fetchAllPosts, getArticles, getWebinars, getStepbyStepGuides } from "../../../APIServices/posts/postsAPI"
+import { paidSub, UnpaidSub, checkAuthStatusAPI } from "../../../APIServices/users/usersAPI"
+import { useQuery } from "@tanstack/react-query"
 
 const Dashboard = () => {
   const [stats, setStats] = useState([])
   const [startIndex, setStartIndex] = useState(0)
   const [visibleCards, setVisibleCards] = useState(3)
 
+   const [ users , setUsers] = useState(0)
+   const [Allposts, setAllPosts] = useState(0)
+   const [Published, setPublished] = useState(0)
+   const [articles, setArticles] = useState(0)
+   const [webiners, setWebiners] = useState(0)
+   const [stepBystepGuide, setStepBystepGuide] = useState(0)
+   const [paidUsers, setPaidUsers] = useState(0)
+   const [unpaidUsers, setUnPaidUsers] = useState(0)
+
+   const { isLoading, data } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+  });
+
+  
+  
+    useEffect(() => {
+      console.log("Hello")
+      fetchUsers();
+      AllPosts();
+      getPublishedPosts();
+      getAllArticles();
+      getAllWebiners();
+      getAllGuides();
+      getPaidusers();
+      getUnPaidusers()
+    },[]);
+  
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`${BackendServername}/users/getallusers`);
+        if (response.data && response.data.users) {
+          setUsers(response.data.users.length);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    const AllPosts = async()=>{
+      try {
+
+        const response = await axios.get(`${BackendServername}/posts/getallposts`)
+
+        if(response.data && response.data.posts){
+          setAllPosts(response.data.posts.length)
+        }
+        
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+
+    const getPublishedPosts = async ()=>{
+      const res = await fetchAllPosts()
+      setPublished(res.posts.length)
+    }
+
+    const getAllArticles = async() => {
+      const res = await getArticles();
+      setArticles(res.count)
+    }
+    const getAllWebiners = async() => {
+      const res = await getWebinars();
+      setWebiners(res.count)
+    }
+    const getAllGuides = async() => {
+      const res = await getStepbyStepGuides();
+      setStepBystepGuide(res.count)
+    }
+
+    const getPaidusers = async() =>{
+      const res = await paidSub();
+      setPaidUsers(res.count)
+    }
+    const getUnPaidusers = async() =>{
+      const res = await UnpaidSub();
+      console.log(res.count)
+      setUnPaidUsers(res.count)
+    }
+
+
+    
+
   useEffect(() => {
     const generateStats = [
-      { title: "Total Users", value: Math.floor(Math.random() * 5000) + 1000, icon: <FaUsers /> },
+      { title: "Total Users", value: users, icon: <FaUsers /> },
+      { title: "All Posts", value: Allposts , icon: <FaCheckCircle /> },
+      { title: "Published Content", value: Published , icon: <FaVideo /> },
+      { title: "Total Articles", value: articles, icon: <FaFileAlt /> },
+      { title: "Total Webiners", value: webiners , icon: <FaTimesCircle /> },
+      { title: "Total Guides", value: stepBystepGuide, icon: <FaClipboardList /> },
+      { title: "Paid Subscribers", value: paidUsers, icon: <FaDollarSign /> },
+      { title: "Unpaid Subscribers", value: unpaidUsers, icon: <FaClipboardList /> },
       { title: "Total Revenue", value: `$${(Math.random() * 50000 + 5000).toFixed(2)}`, icon: <FaMoneyBillWave /> },
-      { title: "New Subscriptions", value: Math.floor(Math.random() * 500) + 50, icon: <FaClipboardList /> },
-      { title: "Active Users", value: Math.floor(Math.random() * 3000) + 500, icon: <FaCheckCircle /> },
-      { title: "Inactive Users", value: Math.floor(Math.random() * 1000) + 200, icon: <FaTimesCircle /> },
-      { title: "Paid Subscribers", value: Math.floor(Math.random() * 4000) + 500, icon: <FaDollarSign /> },
-      { title: "Unpaid Subscribers", value: Math.floor(Math.random() * 1000) + 100, icon: <FaClipboardList /> },
-      { title: "Published Articles", value: Math.floor(Math.random() * 1000) + 100, icon: <FaFileAlt /> },
-      { title: "Published Videos", value: Math.floor(Math.random() * 500) + 50, icon: <FaVideo /> },
     ]
     setStats(generateStats)
 
@@ -79,11 +168,11 @@ const Dashboard = () => {
   }
 
   const chartData = {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: ["January", "February", "March", "April", "May", "June","July"],
     datasets: [
       {
         label: "User Growth",
-        data: [1000, 2000, 1500, 3000, 3500, 4000],
+        data: [1000, 5000, 2000, 2000, 5000, 100, 5000],
         backgroundColor: "rgba(66, 165, 245, 0.4)",
         borderColor: "#1565C0",
         borderWidth: 2,
