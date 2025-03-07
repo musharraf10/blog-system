@@ -879,26 +879,24 @@ export default function HomePage() {
               >
                 {categories.map((category) => (
                   <button
-                    key={category}
-                    onClick={() => setActiveCategory(category)}
-                    style={{
-                      background:
-                        activeCategory === category ? primaryColor : "#e9ecef",
-                      color: activeCategory === category ? "white" : "#333",
-                      border: "none",
-                      padding: "0.5rem 2rem",
-                      margin:"10px 10px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                      transition: "all 0.3s ease",
-                      width:"100%"
-                      
-
-                    }}
-                  >
-                    {category}
-                  </button>
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  style={{
+                    background: activeCategory === category ? primaryColor : "#e9ecef",
+                    color: activeCategory === category ? "white" : "#333",
+                    border: "none",
+                    padding: "0.5rem 2rem",
+                    margin: "10px 10px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    transition: "all 0.3s ease",
+                    width: window.innerWidth <= 600 ? "100%" : "auto", // Apply width 100% on small screens
+                  }}
+                >
+                  {category}
+                </button>
+                
                 ))}
               </div>
             </div>
