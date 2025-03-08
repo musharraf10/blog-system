@@ -5,7 +5,7 @@ const Comment = require("../../models/Comment/Comment");
 const commentsController = {
   create: asyncHandler(async (req, res) => {
     const { postId, content, parentCommentId } = req.body;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("author");
     if (!post) throw new Error("Post not found");
     
     const commentCreated = await Comment.create({

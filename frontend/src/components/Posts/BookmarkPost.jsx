@@ -141,13 +141,13 @@ const BookmarkPost = () => {
           <div
             key={post._id}
             className="bg-white border border-gray-200 rounded-2xl shadow-lg transition-all duration-300 transform hover:shadow-2xl hover:-translate-y-2"
-          >
+          > {console.log("Post", post)}
             <Link to={`/posts/${post._id}`} className="relative block">
               <img
-                // src={post.image}
-                // alt={post.title}
+                src={post.refId.thumbnail}
+                alt={post.refId.title}
                 // className="w-full h-48 object-cover"
-                // loading="lazy"
+                loading="lazy"
                 // src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                 // alt={post.title}
                 className="w-full h-48 object-cover rounded-t-2xl"

@@ -43,18 +43,7 @@ const Dashboard = () => {
 
   
   
-    useEffect(() => {
-      console.log("Hello")
-      fetchUsers();
-      AllPosts();
-      getPublishedPosts();
-      getAllArticles();
-      getAllWebiners();
-      getAllGuides();
-      getPaidusers();
-      getUnPaidusers()
-    },[]);
-  
+    
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${BackendServername}/users/getallusers`);
@@ -109,7 +98,18 @@ const Dashboard = () => {
     }
 
 
-    
+    useEffect(() => {
+      console.log("Hello")
+      fetchUsers();
+      AllPosts();
+      getPublishedPosts();
+      getAllArticles();
+      getAllWebiners();
+      getAllGuides();
+      getPaidusers();
+      getUnPaidusers()
+    });
+  
 
   useEffect(() => {
     const generateStats = [

@@ -60,6 +60,7 @@ const ContentForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getallpostsdata();
+      console.log()
       setPublishedContent(data);
     };
     fetchData();
@@ -254,9 +255,9 @@ const ContentForm = () => {
               sx={{ 
                 "&:hover": { backgroundColor: "#f0f7ff", transition: "0.3s" } // Smooth hover effect
               }}
-            >
+            >{console.log("REF",item.refId)}
               <TableCell align="center">{page * rowsPerPage + index + 1}</TableCell>
-              <TableCell align="center">{item.title}</TableCell>
+              <TableCell align="center">{item.refId.title || "Unknown"}</TableCell>
               <TableCell align="center">
                 <Button
                   variant="contained"
@@ -270,7 +271,7 @@ const ContentForm = () => {
                   {item.status.toUpperCase()}
                 </Button>
               </TableCell>
-              <TableCell align="center" style={{fontSize:16}}>{new Date(item.publisheddate).toLocaleDateString("en-GB")}</TableCell>
+              <TableCell align="center" style={{fontSize:16}}>{new Date(item.updatedAt).toLocaleDateString("en-GB")}</TableCell>
               <TableCell align="center">
                 <Button
                   className="contentSubbutton"
@@ -319,7 +320,7 @@ const ContentForm = () => {
             {selectedPostinadminpanelcmd.title}
           </Typography>
           <Typography>Status: <b>{selectedPostinadminpanelcmd.status.toUpperCase()}</b></Typography>
-          <Typography>Publish Date: {new Date(selectedPostinadminpanelcmd.publisheddate).toLocaleDateString("en-GB")}</Typography>
+          <Typography>Publish Date: {new Date(selectedPostinadminpanelcmd.updatedAt).toLocaleDateString("en-GB")}</Typography>
           <Button
             onClick={handleCloseModalofpostsincdm}
             sx={{ mt: 2, backgroundColor: "#d32f2f", color: "#fff", "&:hover": { backgroundColor: "#b71c1c" } }}

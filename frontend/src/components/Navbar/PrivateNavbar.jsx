@@ -201,9 +201,7 @@ export default function PrivateNavbar() {
                   <span>New Content</span>
                 </Button>
                 )}
-              
-
-                {/* Modal Component */}
+             
                 <Checkposttypemodal
                   onHide={checkmodalopenclose}
                   show={showModal}

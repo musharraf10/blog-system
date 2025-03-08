@@ -195,8 +195,7 @@ const postController = {
 
   getallpostsinadmincontroller: asyncHandler(async (req, res) => {
     try {
-      const postsdata = await Post.find({});
-      // .populate("author")
+      const postsdata = await Post.find({}).populate("author");
       // .populate({
       //   path: "comments",
       //   populate: {
@@ -219,13 +218,7 @@ const postController = {
   getallpublishedpostscontroller: asyncHandler(async (req, res) => {
     try {
       const postsdata = await Post.find({ status: "approved" })
-        .populate("author")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "author",
-          },
-        }).populate("refId");
+        .populate("author").populate("refId");
 
       res.status(200).json({
         status: "success",
@@ -520,7 +513,7 @@ const postController = {
       const { postId } = req.params;
       const userId = req.user;
 
-      const post = await Post.findById(postId);
+      const post = await Post.findById(postId).populate("refId");
       if (post?.bookmarkedBy?.includes(userId)) {
         return res.status(400).json({ message: "Post already bookmarked" });
       }
@@ -576,7 +569,7 @@ const postController = {
   getBookmarkedPosts: asyncHandler(async (req, res) => {
     try {
       const userId = req.user;
-      const posts = await Post.find({ bookmarkedBy: userId });
+      const posts = await Post.find({ bookmarkedBy: userId }).populate("refId")
       // console.log(posts);
 
       res.status(200).json({

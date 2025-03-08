@@ -451,30 +451,28 @@ const userController = {
     res.json({ message: "Password successfully changed" });
   }),
 
-  fetchPlan: asyncHandler(async (req, res) => {
+  fetchUserPlan: asyncHandler(async (req, res) => {
     try {
-      if (!req.user) {
-        return res.status(401).json({ message: "User not authenticated" });
-      }
-  
-      const userId = req.user._id;
+      const userId = req.user; // Ensure `req.user` is populated correctly
       console.log("User ID:", userId);
   
-      const findPlan = await User.findById(userId).populate("plan");
-      console.log("User Data:", findPlan);
-  
-      if (!findPlan) {
-        return res.status(404).json({ message: "User not found" });
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
       }
   
-      res.status(200).json({ plan: findPlan.plan });
+      const userPlanDetails = await Plan.findOne({ activeSubscribers: userId });
+  
+      if (!userPlanDetails) {
+        return res.status(404).json({ message: "No plan found for this user" });
+      }
+  
+      res.status(200).json({ message: userPlanDetails });
     } catch (error) {
-      console.error("Error fetching plan:", error);
-      res.status(500).json({ message: error.message });
+      console.error("Error fetching user plan:", error);
+      res.status(500).json({ message: "Server error" });
     }
   }),
   
-
   BecomeCreator: asyncHandler(async (req, res) => {
     const { phone, channelName, GovtIdType } = req.body;
     const govID = req.file ? req.file.path : null;

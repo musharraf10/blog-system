@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Plan = require("../../models/Plan/Plan");
+const User = require("../../models/User/User")
 
 const planController = {
   createPlan: asyncHandler(async (req, res) => {
@@ -55,6 +56,14 @@ const planController = {
     if (!planUpdated) throw new Error("Plan not found");
     res.json({ message: "Plan updated successfully", planUpdated });
   }),
+
+  // fetchUserPlan : asyncHandler(async(req, res)=>{
+  //   const userId = req.user;
+  //   console.log("User",userId)
+  //   const userPlanDetails = Plan.findOne({activeSubscribers : userId});
+  //   console.log(userPlanDetails)
+  //   res.status(200).json({message: userPlanDetails})
+  // })
 };
 
 module.exports = planController;

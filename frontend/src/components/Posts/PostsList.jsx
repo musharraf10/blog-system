@@ -51,7 +51,7 @@ const PostsList = () => {
 
   const getPlan = async () => {
     try {
-      const response = await axios.get(`${BackendServername}/users/fetchplan`, {
+      const response = await axios.get(`${BackendServername}/users/currentplan`, {
         withCredentials: true,
       });
 
@@ -100,12 +100,14 @@ const PostsList = () => {
   const { isError, isLoading, data, error, isSuccess, refetch } = useQuery({
     queryKey: ["lists-posts", { ...filters, page }],
     queryFn: () =>
-      fetchAllPosts({ ...filters, title: searchTerm, page, limit: 9 }),
+      fetchAllPosts(),
   });
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
+
+  console.log("Data", data)
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -279,11 +281,11 @@ const PostsList = () => {
                         </div>
                       )}
                       <div className="post-image-container">
-                        <img
-                          className="post-image"
-                          src={post?.refId.thumbnail}
-                          alt={post?.price || "Post image"}
-                        />
+                          <img
+                              className="post-image"
+                              src={post.refId.thumbnail || "/default-image.jpg"}
+                              alt={post?.price || "Post image"}
+                          />
                         {/* <button
                           className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
                           onClick={(e) => toggleBookmark(post._id, e)}
@@ -311,9 +313,9 @@ const PostsList = () => {
                         className="block"
                       >
                         <div className="post-content">
-                          <h3 className="post-title">
-                            {post?.refId.title || "Untitled Post"}
-                          </h3>
+                        <h3 className="post-title">
+                           {post?.refId?.title || "Untitled Post"}
+                        </h3>
                           <p className="post-excerpt">
                             {truncateString(post?.description || "", 120)}
                           </p>
@@ -348,12 +350,12 @@ const PostsList = () => {
                       return (
                         <div key={post._id} className="post-card bg-white">
                           <div className="premium-badge">
-                            <FaCrown /> Premium
+                            <FaCrown />
                           </div>
                           <div className="post-image-container">
                             <img
                               className="post-image"
-                              src={post?.image}
+                              src={post?.refId?.thumbnail}
                               alt={post?.price || "Post image"}
                             />
                             <button
