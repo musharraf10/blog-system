@@ -1,16 +1,5 @@
 // import React, { useState } from "react";
-// import {
-//   Container,
-//   Button,
-//   Tabs,
-//   Tab,
-//   Box,
-//   Typography,
-//   Card,
-//   CardContent,
-//   Grid,
-//   TextField,
-// } from "@mui/material";
+// import { Container, Button, Tabs, Tab, Box, Typography, Card, CardContent, Grid, TextField } from "@mui/material";
 // import { motion } from "framer-motion";
 // import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 // import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -28,122 +17,36 @@
 
 //   const categoryData = {
 //     today: {
-//       Articles: [
-//         { name: "Total", count: 10 },
-//         { name: "Posted", count: 5 },
-//         { name: "Pending", count: 3 },
-//         { name: "Verified", count: 1 },
-//         { name: "Rejected", count: 1 },
-//         { name: "Scheduled", count: 0 },
-//       ],
-//       Videos: [
-//         { name: "Total", count: 20 },
-//         { name: "Posted", count: 10 },
-//         { name: "Pending", count: 5 },
-//         { name: "Verified", count: 3 },
-//         { name: "Rejected", count: 1 },
-//         { name: "Scheduled", count: 1 },
-//       ],
-//       Tutorials: [
-//         { name: "Total", count: 15 },
-//         { name: "Posted", count: 7 },
-//         { name: "Pending", count: 4 },
-//         { name: "Verified", count: 2 },
-//         { name: "Rejected", count: 1 },
-//         { name: "Scheduled", count: 1 },
-//       ],
-//       Webinars: [
-//         { name: "Total", count: 5 },
-//         { name: "Posted", count: 2 },
-//         { name: "Pending", count: 1 },
-//         { name: "Verified", count: 1 },
-//         { name: "Rejected", count: 0 },
-//         { name: "Scheduled", count: 1 },
-//       ],
+//       Articles: [{ name: "Total", count: 10 }, { name: "Posted", count: 5 }, { name: "Pending", count: 3 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 0 }],
+//       Videos: [{ name: "Total", count: 20 }, { name: "Posted", count: 10 }, { name: "Pending", count: 5 }, { name: "Verified", count: 3 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 1 }],
+//       Tutorials: [{ name: "Total", count: 15 }, { name: "Posted", count: 7 }, { name: "Pending", count: 4 }, { name: "Verified", count: 2 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 1 }],
+//       Webinars: [{ name: "Total", count: 5 }, { name: "Posted", count: 2 }, { name: "Pending", count: 1 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 1 }],
 //     },
 //     yesterday: {
-//       Articles: [
-//         { name: "Total", count: 8 },
-//         { name: "Posted", count: 4 },
-//         { name: "Pending", count: 2 },
-//         { name: "Verified", count: 1 },
-//         { name: "Rejected", count: 1 },
-//         { name: "Scheduled", count: 0 },
-//       ],
-//       Videos: [
-//         { name: "Total", count: 18 },
-//         { name: "Posted", count: 9 },
-//         { name: "Pending", count: 4 },
-//         { name: "Verified", count: 3 },
-//         { name: "Rejected", count: 1 },
-//         { name: "Scheduled", count: 1 },
-//       ],
-//       Tutorials: [
-//         { name: "Total", count: 12 },
-//         { name: "Posted", count: 6 },
-//         { name: "Pending", count: 3 },
-//         { name: "Verified", count: 2 },
-//         { name: "Rejected", count: 0 },
-//         { name: "Scheduled", count: 1 },
-//       ],
-//       Webinars: [
-//         { name: "Total", count: 4 },
-//         { name: "Posted", count: 2 },
-//         { name: "Pending", count: 1 },
-//         { name: "Verified", count: 1 },
-//         { name: "Rejected", count: 0 },
-//         { name: "Scheduled", count: 0 },
-//       ],
+//       Articles: [{ name: "Total", count: 8 }, { name: "Posted", count: 4 }, { name: "Pending", count: 2 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 0 }],
+//       Videos: [{ name: "Total", count: 18 }, { name: "Posted", count: 9 }, { name: "Pending", count: 4 }, { name: "Verified", count: 3 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 1 }],
+//       Tutorials: [{ name: "Total", count: 12 }, { name: "Posted", count: 6 }, { name: "Pending", count: 3 }, { name: "Verified", count: 2 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 1 }],
+//       Webinars: [{ name: "Total", count: 4 }, { name: "Posted", count: 2 }, { name: "Pending", count: 1 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 0 }],
 //     },
 //     monthYear: {
-//       Articles: [
-//         { name: "Total", count: 30 },
-//         { name: "Posted", count: 15 },
-//         { name: "Pending", count: 8 },
-//         { name: "Verified", count: 4 },
-//         { name: "Rejected", count: 2 },
-//         { name: "Scheduled", count: 1 },
-//       ],
-//       Videos: [
-//         { name: "Total", count: 40 },
-//         { name: "Posted", count: 20 },
-//         { name: "Pending", count: 10 },
-//         { name: "Verified", count: 6 },
-//         { name: "Rejected", count: 2 },
-//         { name: "Scheduled", count: 2 },
-//       ],
-//       Tutorials: [
-//         { name: "Total", count: 25 },
-//         { name: "Posted", count: 12 },
-//         { name: "Pending", count: 6 },
-//         { name: "Verified", count: 4 },
-//         { name: "Rejected", count: 1 },
-//         { name: "Scheduled", count: 2 },
-//       ],
-//       Webinars: [
-//         { name: "Total", count: 10 },
-//         { name: "Posted", count: 5 },
-//         { name: "Pending", count: 2 },
-//         { name: "Verified", count: 2 },
-//         { name: "Rejected", count: 0 },
-//         { name: "Scheduled", count: 1 },
-//       ],
+//       Articles: [{ name: "Total", count: 30 }, { name: "Posted", count: 15 }, { name: "Pending", count: 8 }, { name: "Verified", count: 4 }, { name: "Rejected", count: 2 }, { name: "Scheduled", count: 1 }],
+//       Videos: [{ name: "Total", count: 40 }, { name: "Posted", count: 20 }, { name: "Pending", count: 10 }, { name: "Verified", count: 6 }, { name: "Rejected", count: 2 }, { name: "Scheduled", count: 2 }],
+//       Tutorials: [{ name: "Total", count: 25 }, { name: "Posted", count: 12 }, { name: "Pending", count: 6 }, { name: "Verified", count: 4 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 2 }],
+//       Webinars: [{ name: "Total", count: 10 }, { name: "Posted", count: 5 }, { name: "Pending", count: 2 }, { name: "Verified", count: 2 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 1 }],
 //     },
 //   };
 
 //   const getFilteredData = () => {
 //     if (selectedSubCategory === "All") {
-//       return Object.values(categoryData[selectedTime])
-//         .flat()
-//         .reduce((acc, item) => {
-//           let existing = acc.find((el) => el.name === item.name);
-//           if (existing) {
-//             existing.count += item.count;
-//           } else {
-//             acc.push({ ...item });
-//           }
-//           return acc;
-//         }, []);
+//       return Object.values(categoryData[selectedTime]).flat().reduce((acc, item) => {
+//         let existing = acc.find((el) => el.name === item.name);
+//         if (existing) {
+//           existing.count += item.count;
+//         } else {
+//           acc.push({ ...item });
+//         }
+//         return acc;
+//       }, []);
 //     }
 //     return categoryData[selectedTime][selectedSubCategory] || [];
 //   };
@@ -154,23 +57,8 @@
 //         <Container>
 //           <Box display="flex" justifyContent="center" gap={2} my={2}>
 //             {timeFilters.map((time) => (
-//               <Button
-//                 key={time}
-//                 variant={selectedTime === time ? "contained" : "outlined"}
-//                 onClick={() => {
-//                   setSelectedTime(time);
-//                   setSelectedSubCategory("All");
-//                 }}
-//                 sx={{
-//                   borderRadius: "10px",
-//                   "&:hover": {
-//                     color: "white", // Change text color to white on hover
-//                   },
-//                 }}
-//               >
-//                 {time === "monthYear"
-//                   ? "Month/Year"
-//                   : time.charAt(0).toUpperCase() + time.slice(1)}
+//               <Button key={time} variant={selectedTime === time ? "contained" : "outlined"} onClick={() => { setSelectedTime(time); setSelectedSubCategory("All"); }} className="hover:text-white">
+//                 {time === "monthYear" ? "Month/Year" : time.charAt(0).toUpperCase() + time.slice(1)}
 //               </Button>
 //             ))}
 //           </Box>
@@ -205,46 +93,23 @@
 //                 label={sub}
 //                 value={sub}
 //                 sx={{
-//                   borderRadius: "10px",
-//                   "&.Mui-selected": {
-//                     color: "black", // Ensure selected tab text color is black
-//                   },
-//                   "&:hover": {
-//                     color: "white", // Change text color to white on hover
-//                   },
+//                   color: selectedSubCategory === sub ? 'white' : 'inherit',
+//                   transition: 'color 0.3s ease',
+//                   '&:hover': { color: 'white' },
 //                 }}
+//                 className="rounded-3"
 //               />
 //             ))}
 //           </Tabs>
 
 //           <Grid container spacing={2} justifyContent="center" mt={2}>
 //             {getFilteredData().map((category, index) => (
-//               <Grid item key={index} xs={12} sm={6} md={4}>
-//                 <motion.div whileHover={{ scale: 1.05 }}>
-//                   <Card
-//                     sx={{
-//                       textAlign: "center",
-//                       p: 2,
-//                       borderRadius: "15px",
-//                       background: "white", // Default background
-//                       color: "black", // Default text color
-//                       boxShadow: "5px 5px 15px rgba(74, 74, 74, 0.5)", // Light blue shadow
-//                       position: "relative",
-//                       overflow: "hidden",
-//                       transition: "all 2s ease-in-out",
-//                       "&:hover": {
-//                         boxShadow: "8px 8px 20px rgba(173, 216, 230, 0.7)", // Stronger shadow on hover
-//                         background:
-//                           "linear-gradient(90deg, #1976D2 0%, #1976D2 100%)", // Smooth blue gradient
-//                         color: "white", // Change text color to white on hover
-//                       },
-//                     }}
-//                   >
+//               <Grid item key={index} xs={12} sm={6} md={4} lg={2}>
+//                 <motion.div whileHover={{ scale: 1.1 }}>
+//                   <Card sx={{ textAlign: "center", p: 1, backgroundColor: "#f5f5f5", boxShadow: 3 }}>
 //                     <CardContent>
-//                       <Typography variant="subtitle1" fontWeight="bold">
-//                         {category.name}
-//                       </Typography>
-//                       <Typography variant="h5">{category.count}</Typography>
+//                       <Typography variant="subtitle1" color="primary" fontWeight="bold">{category.name}</Typography>
+//                       <Typography variant="h6" color="green">{category.count}</Typography>
 //                     </CardContent>
 //                   </Card>
 //                 </motion.div>
@@ -253,17 +118,16 @@
 //           </Grid>
 //         </Container>
 //       </LocalizationProvider>
-
-//       <br />
-//       <div style={{ marginTop: "40px" }}>
-//         <Analytics />
-//       </div>
+//       <br></br>
+//       {/* Wrapped Analytics inside the fragment */}
+// <div>
+//   <Analytics />
+// </div>
 //     </>
 //   );
-// };
+// }
 
 // export default Dashboard;
-
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -468,6 +332,18 @@ const Dashboard = () => {
     return categoryData[selectedTime][selectedSubCategory] || [];
   };
 
+  // Helper function to determine which category type a card belongs to
+  const getCategoryTypeForCard = (data, categoryName) => {
+    if (selectedSubCategory !== "All") {
+      return selectedSubCategory;
+    }
+
+    // For "All" subcategory, we need to find which type this belongs to
+    // This is a simplified approach - in real app, you'd track this in the data structure
+    const categoryTypes = ["Articles", "Videos", "Tutorials", "Webinars"];
+    return "All Categories";
+  };
+
   const handleRefresh = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -521,13 +397,13 @@ const Dashboard = () => {
               <Typography variant="h5" fontWeight="bold" color="primary">
                 Content Dashboard
               </Typography>
-              {/* <Box>
+              <Box>
                 <Tooltip title="Refresh Data">
                   <IconButton onClick={handleRefresh} color="primary">
                     <RefreshIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Filter Options">
+                {/* <Tooltip title="Filter Options">
                   <IconButton color="primary">
                     <FilterListIcon />
                   </IconButton>
@@ -536,13 +412,13 @@ const Dashboard = () => {
                   <IconButton color="primary">
                     <DownloadIcon />
                   </IconButton>
-                </Tooltip>
-              </Box> */}
+                </Tooltip> */}
+              </Box>
             </Box>
 
             <Divider sx={{ mb: 3 }} />
 
-            {/* <Box
+            <Box
               display="flex"
               justifyContent="center"
               gap={2}
@@ -573,7 +449,9 @@ const Dashboard = () => {
               </Button>
               <Button
                 startIcon={<HistoryIcon />}
-                variant={selectedTime === "yesterday" ? "contained" : "outlined"}
+                variant={
+                  selectedTime === "yesterday" ? "contained" : "outlined"
+                }
                 onClick={() => {
                   setSelectedTime("yesterday");
                   setSelectedSubCategory("All");
@@ -595,7 +473,9 @@ const Dashboard = () => {
               </Button>
               <Button
                 startIcon={<DateRangeIcon />}
-                variant={selectedTime === "monthYear" ? "contained" : "outlined"}
+                variant={
+                  selectedTime === "monthYear" ? "contained" : "outlined"
+                }
                 onClick={() => {
                   setSelectedTime("monthYear");
                   setSelectedSubCategory("All");
@@ -615,7 +495,7 @@ const Dashboard = () => {
               >
                 Month/Year
               </Button>
-            </Box> */}
+            </Box>
 
             {/* {selectedTime === "monthYear" && (
               <Box
@@ -700,13 +580,11 @@ const Dashboard = () => {
                         {sub !== "All" && (
                           <Chip
                             size="small"
-                            label={
-                              categoryData[selectedTime][sub].reduce(
-                                (sum, item) =>
-                                  item.name === "Total" ? sum + item.count : sum,
-                                0
-                              )
-                            }
+                            label={categoryData[selectedTime][sub].reduce(
+                              (sum, item) =>
+                                item.name === "Total" ? sum + item.count : sum,
+                              0
+                            )}
                             sx={{
                               height: 20,
                               fontSize: "0.7rem",
@@ -767,13 +645,39 @@ const Dashboard = () => {
                       }}
                     >
                       <CardContent sx={{ p: 3 }}>
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight="bold"
-                          sx={{ mb: 1, opacity: 0.9 }}
+                        <div
+                          className="d-inline flex-row"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
                         >
-                          {category.name}
-                        </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            sx={{ mb: 1, opacity: 0.9 }}
+                          >
+                            {category.name}
+                          </Typography>
+
+                          <Chip
+                            size="small"
+                            label={
+                              selectedSubCategory !== "All"
+                                ? selectedSubCategory
+                                : "All"
+                            }
+                            sx={{
+                              height: 20,
+                              fontSize: "0.6rem",
+                              background: "rgba(255, 255, 255, 0.2)",
+                              color: "white",
+                              ml: 1,
+                            }}
+                          />
+                        </div>
+
                         <Typography variant="h3" fontWeight="bold">
                           {isLoading ? (
                             <Box
@@ -794,23 +698,22 @@ const Dashboard = () => {
                             category.count
                           )}
                         </Typography>
-                        {category.name === "Total" && (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 0.5,
-                              mt: 1,
-                            }}
-                          >
-                            <TimelineIcon fontSize="small" />
-                            <Typography variant="caption">
-                              {selectedSubCategory !== "All"
-                                ? selectedSubCategory
-                                : "All Categories"}
-                            </Typography>
-                          </Box>
-                        )}
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                            mt: 1,
+                          }}
+                        >
+                          <TimelineIcon fontSize="small" />
+                          <Typography variant="caption">
+                            {selectedSubCategory !== "All"
+                              ? selectedSubCategory
+                              : "All Categories"}
+                          </Typography>
+                        </Box>
                       </CardContent>
                       {/* Decorative elements */}
                       <Box
