@@ -42,4 +42,51 @@ const addWebinarController = async (req, res) => {
     }
 };
 
-module.exports = addWebinarController;
+const updateWebinarController = async (req, res) => {
+    try {
+        const { title, link, date, time, description, price } = req.body;
+        const { id } = req.params;
+        const thumbnail = req.file ? req.file.path : null;
+
+        
+        const webinar = await Webinar.findById(id);
+        if (!webinar) {
+            return res.status(404).json({
+                status: "error",
+                message: "Webinar not found.",
+            });
+        }
+
+        webinar.title = title || webinar.title;
+        webinar.link = link || webinar.link;
+        webinar.date = date || webinar.date;
+        webinar.time = time || webinar.time;
+        webinar.description = description || webinar.description;
+        if (thumbnail) webinar.thumbnail = thumbnail;
+
+        const post = await Post.findOne({ refId: id, contentData: "Webinar" });
+        if (post) {
+            post.price = price || post.price;
+            if (thumbnail) post.thumbnail = thumbnail;
+            await post.save();
+        }
+
+        await webinar.save();
+
+        return res.status(200).json({
+            status: "success",
+            message: "Webinar updated successfully!",
+            webinar,
+            post,
+        });
+    } catch (error) {
+        console.error("Error updating webinar:", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Failed to update webinar. Please try again.",
+        });
+    }
+};
+
+
+module.exports = {addWebinarController, updateWebinarController};

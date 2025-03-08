@@ -145,21 +145,6 @@ const postController = {
       console.log(err);
     }
   }),
-  updatepost: asyncHandler(async (req, res) => {
-    try {
-      const post = await Post.findByIdAndUpdate(
-        req.params.id, 
-        req.body
-      );
-      if (!post) {
-        return res.status(404).json({ status: "error", message: "Post not found" });
-      }
-      res.json({ message: "Updated Successfully", post });
-    } catch (err) {
-      console.error("Error Updating post:", err);
-      res.status(500).json({ status: "error", message: "Internal Server Error" });
-    }
-  }),
   
   
   approvePost: asyncHandler(async (req, res) => {

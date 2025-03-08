@@ -40,7 +40,6 @@ postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
 postRouter.get("/managecontent/getpost",isAuthenticated,postController.getallpost);
 postRouter.delete("/managecontent/deletepost/:id",postController.deletepost);
-postRouter.put("/managecontent/updatepost/:id",postController.updatepost);
 postRouter.put("/managecontent/getpost/:id",postController.getonepost);
 postRouter.get("/bookmarked", isAuthenticated, postController.getBookmarkedPosts);
 postRouter.get("/:postId", isAuthenticated, optionalAuth, postController.getPost);

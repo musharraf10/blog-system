@@ -148,6 +148,88 @@ const addStepbyStepGuide = async (req, res) => {
     }
 };
 
+const updateStepbyStepGuide = async (req, res) => {
+    try {
+        console.log("Request Body:", req.body);
+        console.log("Uploaded Files:", req.files);
+
+        const { title, description, tags, status, steps } = req.body;
+        const { id } = req.params;
+
+        const guide = await StepbyStepGuide.findById(id);
+        if (!guide) {
+            return res.status(404).json({ message: "Guide not found" });
+        }
+
+        guide.title = title || guide.title;
+        guide.description = description || guide.description;
+        guide.tags = tags || guide.tags;
+
+        let parsedSteps = guide.steps;
+        if (steps) {
+            try {
+                parsedSteps = JSON.parse(steps);
+            } catch (error) {
+                return res.status(400).json({ message: "Invalid JSON format in steps field" });
+            }
+        }
+
+        if (req.files['thumbnailImage']) {
+            const uploadResult = await cloudinary.uploader.upload(req.files['thumbnailImage'][0].path, {
+                folder: 'step_guides',
+                resource_type: 'image'
+            });
+            guide.thumbnailImage = uploadResult.secure_url;
+        }
+
+        let stepMediaUrls = [];
+        if (req.files['stepMedia']) {
+            for (let file of req.files['stepMedia']) {
+                const uploadResult = await cloudinary.uploader.upload(file.path, {
+                    folder: 'step_guides',
+                    resource_type: file.mimetype.startsWith('video') ? 'video' : 'image',
+                });
+                stepMediaUrls.push(uploadResult.secure_url);
+            }
+        }
+
+        parsedSteps.forEach((step, index) => {
+            step.stepMedia = stepMediaUrls[index] || step.stepMedia;
+        });
+
+        guide.steps = parsedSteps;
+
+        
+        const post = await Post.findOne({ refId: id, contentData: "StepbyStepGuide" });
+        if (post) {
+            post.status = status || post.status;
+            await post.save();
+        }
+
+        
+        await guide.save();
+
+        
+        const tagArray = Array.isArray(tags) ? tags : JSON.parse(tags);
+        for (const tagName of tagArray) {
+            await Tag.findOneAndUpdate(
+                { tagname: tagName },
+                {
+                    $setOnInsert: { tagname: tagName, createdBy: req.user },
+                    $push: { allposts: guide._id },
+                },
+                { new: true, upsert: true }
+            );
+        }
+
+        res.status(200).json({ message: "Guide updated successfully", guide, post, tags: tagArray });
+    } catch (error) {
+        console.error("Error updating guide:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
 const getVideoGuide = async (req,res) =>{
     try {
         const video = await Post.find({contentData : "StepbyStepGuide"}).populate('refId');
@@ -172,4 +254,4 @@ const VideoGuideSingle = async(req, res) =>{
     }
 }
 
-module.exports =  {addStepbyStepGuide, getVideoGuide,VideoGuideSingle } ;
+module.exports =  {addStepbyStepGuide, getVideoGuide,VideoGuideSingle , updateStepbyStepGuide} ;
