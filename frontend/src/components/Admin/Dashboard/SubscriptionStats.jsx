@@ -5,10 +5,14 @@ import { useState } from "react"
 const SubscriptionStats = () => {
   // Sample data
   const usersData = [
-    { id: 1, name: "John Doe", status: "active", role: "Admin" },
-    { id: 2, name: "Jane Smith", status: "expired", role: "Creator" },
-    { id: 3, name: "Alice Brown", status: "active", role: "Subscriber" },
-    { id: 4, name: "Bob Johnson", status: "upcoming", role: "Moderator" },
+    { id: 1, name: "Musharaf Shaik", status: "active", role: "Admin" },
+    { id: 2, name: "Abhishek", status: "expired", role: "Creator" },
+    { id: 3, name: "Satish garu", status: "active", role: "Subscriber" },
+    { id: 4, name: "Loke", status: "upcoming", role: "Moderator" },
+    { id: 5, name: "Shilpa", status: "active", role: "Admin" },
+    { id: 6, name: "udaya Shri", status: "expired", role: "Creator" },
+    { id: 7, name: "GK", status: "active", role: "Subscriber" },
+    { id: 8, name: "Rakesh", status: "upcoming", role: "Moderator" },
   ]
 
   const transactionsData = [

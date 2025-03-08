@@ -51,6 +51,52 @@ const addarticleconroller = async (req, res) => {
   }
 };
 
+const updateArticleController = async (req, res) => {
+  try {
+    const { title, content, status, tags, price } = req.body;
+    const { id } = req.params;
+    const thumbnail = req.file ? req.file.path : null;
+
+    // Find the article
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({
+        status: "error",
+        message: "Article not found.",
+      });
+    }
+
+    article.title = title || article.title;
+    article.description = content || article.description;
+    article.tags = tags || article.tags;
+    if (thumbnail) article.thumbnail = thumbnail;
+
+    const post = await Post.findOne({ refId: id, contentData: "Article" });
+    if (post) {
+      post.status = status || post.status;
+      post.price = price || post.price;
+      if (thumbnail) post.thumbnail = thumbnail;
+      await post.save();
+    }
+
+    await article.save();
+
+    return res.status(200).json({
+      status: "success",
+      message: "Article updated successfully!",
+      article,
+      post,
+    });
+  } catch (error) {
+    console.error("Error updating article:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to update article. Please try again.",
+    });
+  }
+};
+
+
 
 
 
@@ -74,4 +120,4 @@ const addarticleconroller = async (req, res) => {
 };
 
 
-module.exports={addarticleconroller,getAllArticles}
+module.exports={addarticleconroller,getAllArticles,updateArticleController}

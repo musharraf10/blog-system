@@ -84,6 +84,7 @@
 // };
 
 // export {BookmarkPost};
+
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FaBookmark } from "react-icons/fa";
@@ -146,8 +147,8 @@ const BookmarkPost = () => {
               <img
                 // src={post.image}
                 // alt={post.title}
-                // className="w-full h-48 object-cover"
-                // loading="lazy"
+                //className="w-full h-48 object-cover"
+                //loading="lazy"
                 // src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                 // alt={post.title}
                 className="w-full h-48 object-cover rounded-t-2xl"

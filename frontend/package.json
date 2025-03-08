@@ -30,6 +30,7 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.8",
     "dayjs": "^1.11.13",
+    "firebase": "^11.4.0",
     "formik": "^2.4.5",
     "fortawesome": "^0.0.1-security",
     "framer-motion": "^12.4.7",

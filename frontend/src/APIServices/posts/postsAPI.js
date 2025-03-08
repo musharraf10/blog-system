@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 const BASE_URL = "http://localhost:5000/api/v1/posts";
+const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
 //!Create post api
 export const createPostAPI = async (postData) => {
@@ -153,7 +154,7 @@ export const fetchBookmarkedPostsAPI = async () => {
   return response.data;
 };
 
-const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+
 
 
   export const getallpostsdata = async () => {
@@ -168,3 +169,59 @@ const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
     }
   };
 
+
+  export const getArticles = async() =>{
+    try {
+      const response = await axios.get(`${BackendServername}/posts/articles/count`,{
+        withCredentials:true
+      })
+
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  export const getWebinars = async() =>{
+    try {
+      const response = await axios.get(`${BackendServername}/posts/webinars/count`,{
+        withCredentials:true
+      })
+
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  export const getStepbyStepGuides = async() =>{
+    try {
+      const response = await axios.get(`${BackendServername}/posts/guides/count`,{
+        withCredentials:true
+      })
+
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  export const approveAll = async() =>{
+    try {
+      await axios.put(`${BackendServername}/posts/approveall`,{},{
+        withCredentials: true
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  export const rejectAll = async() =>{
+    try {
+      await axios.put(`${BackendServername}/posts/rejectall`,{},{
+        withCredentials:true
+      })
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
