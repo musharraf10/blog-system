@@ -34,6 +34,7 @@ import ResetPassword from "../components/Subscribers/ResetPassword";
 import PlanDetails from "../components/Plans/PlanDetails";
 import StepByStepGuide from "../components/Posts/StepByStepGuide";
 import SettingsAdmin from "../components/Admin/SettingsPage";
+import FetchHtmlData from "../components/Posts/FetchHtmlData";
 
 
 
@@ -52,6 +53,7 @@ const AdminRoutes = () => {
         >
           <Route index element={<Dashboard />} />
           <Route path="content-management" element={<ContentPart/>} />
+          <Route path="article" element={<FetchHtmlData /> }/>
           <Route path="user-management" element={<UserManagement/>} />
           <Route path="payment-management" element={<PaymentsDashboard/>} />
           <Route path="profile" element={<AccountSummaryDashboard />} />

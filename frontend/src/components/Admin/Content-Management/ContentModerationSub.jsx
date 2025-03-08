@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
-
-=======
-import {getArticles, getWebinars, getStepbyStepGuides,  approveAll, rejectAll  } from "../../../APIServices/posts/postsAPI"
->>>>>>> 6cda1be5c2e7bc4a4c12ea8a2f6888e191508f0e
 import {
   Table,
   TableContainer,
@@ -57,85 +52,11 @@ const ContentPart = () => {
   const [selectedPostinadminpanel, setselectedPostinadminpanel] =
     useState(null);
 
-<<<<<<< HEAD
   const [counts, setCounts] = useState({
     approved: 0,
     pending: 0,
     rejected: 0,
   });
-=======
-    const [counts, setCounts] = useState({
-      approved: 0,
-      pending: 0,
-      rejected: 0,
-    });
-
-    const [articles, setArticles] = useState('')
-    const [webiners, setWebiners] = useState('')
-    const [stepBystepGuide, setStepBystepGuide] = useState('')
-
-
-    const handleApprove = async () => {
-      try {
-        await approveAll();
-        
-        // Update the UI dynamically without refresh
-        setfilteredposts((prevPosts) =>
-          prevPosts.map((post) => ({ ...post, status: "approved" }))
-        );
-    
-        setCounts((prevCounts) => ({
-          ...prevCounts,
-          approved: prevCounts.approved + prevCounts.pending,
-          pending: 0,
-        }));
-      } catch (error) {
-        console.error("Error approving all posts:", error);
-      }
-    };
-    
-    const handleReject = async () => {
-      try {
-        await rejectAll();
-    
-        // Update the UI dynamically without refresh
-        setfilteredposts((prevPosts) =>
-          prevPosts.map((post) => ({ ...post, status: "rejected" }))
-        );
-    
-        setCounts((prevCounts) => ({
-          ...prevCounts,
-          rejected: prevCounts.rejected + prevCounts.pending,
-          pending: 0,
-        }));
-      } catch (error) {
-        console.error("Error rejecting all posts:", error);
-      }
-    };
-    
-
-   const getAllArticles = async() => {
-      const res = await getArticles();
-      setArticles(res.count)
-    }
-  const getAllWebiners = async() => {
-      const res = await getWebinars();
-      setWebiners(res.count)
-    }
-  const getAllGuides = async() => {
-      const res = await getStepbyStepGuides();
-      setStepBystepGuide(res.count)
-    }
-
-    useEffect(() => {
-     
-      getAllArticles();
-      getAllWebiners();
-      getAllGuides();
-
-    }, []);
-  
->>>>>>> 6cda1be5c2e7bc4a4c12ea8a2f6888e191508f0e
 
   const handleOpenModalofposts = (post) => {
     setselectedPostinadminpanel(post);
@@ -151,6 +72,7 @@ const ContentPart = () => {
 
   const [filteredposts, setfilteredposts] = useState([]);
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -599,118 +521,10 @@ const ContentPart = () => {
           </Box>
         </div>
       </div>
-<<<<<<< HEAD
       <Box
         sx={{
           marginBottom: 4,
           background: "whitesmoke",
-=======
-       <Box
-                sx={{
-                  marginBottom: 4,
-                  background: "whitesmoke",
-                  color: "black",
-                  padding:3 ,
-                  borderRadius: 2,
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  sx={{
-                    marginBottom: 2,
-                    color: "blue",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    textTransform: "uppercase",
-                    letterSpacing: 1.2,
-                  }}
-                >
-                  Content Analytics
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    // alignItems: "center",
-                    // justifyContent: "center",
-                    justifyContent:"space-evenly",
-                    gap: 4,
-                    width: "100%",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: { xs: "90%", md: "40%" }, 
-                      height: 250, 
-                      backgroundColor: "white", 
-                      padding: 3,
-                      borderRadius: 2,
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", 
-                      transition: "transform 0.3s ease-in-out",
-                      "&:hover": {
-                        transform: "scale(1.05)", 
-                      },
-                    }}
-                  >
-                    {/* <Pie
-                      data={{
-                        labels: ["Videos", "Webinars", "Articles", "Guides"],
-                        datasets: [
-                          {
-                            data: [40, 20, 30, 10], // Matching proportions
-                            backgroundColor: [
-                              "#000000",
-                              "#333333",
-                              "#777777",
-                              "#aaaaaa",
-                            ],
-                            borderColor: "#ffffff",
-                            borderWidth: 2,
-                          },
-                        ],
-                      }}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            position: "bottom",
-                            labels: {
-                              color: "black",
-                              font: { size: 14 },
-                            },
-                          },
-                        },
-                      }}
-                    /> */}
-                    <Doughnut
-  data={{
-    labels: ["Videos", "Webinars", "Articles", "Guides"],
-    datasets: [
-      {
-        data: [40, webiners, articles, stepBystepGuide], // Matching proportions
-        backgroundColor: [
-          "#1E3A8A",
-          "#0d6efa",
-          
-          "#6610F2",
-          "#0dcaf0",
-        ],
-        borderColor: "#ffffff",
-        borderWidth: 2,
-      },
-    ],
-  }}
-  options={{
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: "60%", // Creates the empty center
-    plugins: {
-      legend: {
-        position: "right", // Moves details to the side
-        labels: {
->>>>>>> 6cda1be5c2e7bc4a4c12ea8a2f6888e191508f0e
           color: "black",
           padding: 3,
           borderRadius: 2,
@@ -764,7 +578,6 @@ const ContentPart = () => {
                     backgroundColor: [
                       "#1E3A8A",
                       "#0d6efa",
-
                       "#6610F2",
                       "#0dcaf0",
                     ],
@@ -805,7 +618,6 @@ const ContentPart = () => {
             }}
           >
 
-<<<<<<< HEAD
             <Bar
               data={{
                 labels: ["Videos", "Webinars", "Articles", "Guides"],
@@ -861,112 +673,6 @@ const ContentPart = () => {
           </Box>
         </Box>
       </Box>
-=======
-
-{/* <Bar
-  data={{
-    labels: ["Videos", "Webinars", "Articles", "Guides"],
-    datasets: [
-      {
-        label: "Content Count",
-        data: [40, 20, 30, 10],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.8)", // Soft red
-          "rgba(54, 162, 235, 0.8)", // Soft blue
-          "rgba(255, 206, 86, 0.8)", // Soft yellow
-          "rgba(75, 192, 192, 0.8)", // Soft teal
-        ],
-        borderRadius: 8, // Rounded edges
-        borderWidth: 0, // No border for a cleaner look
-        barThickness: 40, // Controlled bar width
-        hoverBackgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ], // Slightly darker on hover
-      },
-    ],
-  }}
-  options={{
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        ticks: { color: "#333", font: { size: 14 } },
-        grid: { display: false }, // Hide X-axis grid for a cleaner look
-      },
-      y: {
-        ticks: { color: "#333", font: { size: 14 } },
-        grid: { color: "rgba(0, 0, 0, 0.1)" }, // Light gray grid
-      },
-    },
-    plugins: {
-      legend: {
-        display: false, // Hide legend for simplicity
-      },
-    },
-  }}
-/> */}
-
-<Bar
-  data={{
-    labels: ["Videos", "Webinars", "Articles", "Guides"],
-    datasets: [
-      {
-        label: "Content Count",
-        data: [40, webiners, articles, stepBystepGuide],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.8)", // Soft red
-          "rgba(54, 162, 235, 0.8)", // Soft blue
-          "rgba(255, 206, 86, 0.8)", // Soft yellow
-          "rgba(75, 192, 192, 0.8)", // Soft teal
-        ],
-        borderRadius: 8, // Rounded edges
-        borderWidth: 0, // No border for a cleaner look
-        barThickness: 40, // Controlled bar width
-        hoverBackgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ], // Slightly darker on hover
-      },
-    ],
-  }}
-  options={{
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        ticks: { color: "#333", font: { size: 14 } },
-        grid: { display: false }, // Hide X-axis grid for a cleaner look
-      },
-      y: {
-        ticks: { color: "#333", font: { size: 14 } },
-        grid: { color: "rgba(0, 0, 0, 0.1)" }, // Light gray grid
-      },
-    },
-    plugins: {
-      legend: {
-        display: false, // Hide legend for simplicity
-      },
-    },
-    animation: {
-      duration: 1000, // Animation duration (1 second)
-      easing: "easeInOutQuart", // Smooth easing effect
-    },
-    hover: {
-      animationDuration: 500, // Smooth hover effect
-    },
-  }}
-/>
-
-
-                  </Box>
-                </Box>
-              </Box>
->>>>>>> 6cda1be5c2e7bc4a4c12ea8a2f6888e191508f0e
       <Typography
         variant="h6"
         sx={{

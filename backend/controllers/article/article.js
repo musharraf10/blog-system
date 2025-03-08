@@ -119,5 +119,26 @@ const updateArticleController = async (req, res) => {
   }
 };
 
+const getoneArticles = async (req, res) => {
+  const {id}=req.params
+  console.log(id)
+  try {
+    const articles = await Post.findById(id).populate("refId")
+      console.log(articles)
 
-module.exports={addarticleconroller,getAllArticles,updateArticleController}
+    return res.status(200).json({
+      status: "success",
+      //count: articles.length,
+      articles,
+    });
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to fetch articles. Please try again.",
+    });
+  }
+};
+
+
+module.exports={addarticleconroller,getAllArticles,updateArticleController,getoneArticles}
