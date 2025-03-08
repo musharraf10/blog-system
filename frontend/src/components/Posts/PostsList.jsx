@@ -5,10 +5,10 @@ import { deletePostAPI, fetchAllPosts } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
 import NoDataFound from "../Alert/NoDataFound";
 import AlertMessage from "../Alert/AlertMessage";
-import { FaSearch, FaBookmark, FaLock, FaCrown } from "react-icons/fa";
+import { FaSearch, FaBookmark, FaLock, FaCrown,FaEllipsisV, FaEdit, FaTrash } from "react-icons/fa";
 import { MdClear } from "react-icons/md";
 import truncateString from "../../utils/truncateString";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import PublicNavbar from "../Navbar/PublicNavbar";
 import axios from "axios";
 
@@ -25,7 +25,8 @@ const PostsList = () => {
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
   const [planName, setPlanName] = useState("");
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
-
+  const [openMenuId, setOpenMenuId] = useState(null)
+  const navigate = useNavigate()
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
   // Slick Carousel Settings
@@ -56,7 +57,7 @@ const PostsList = () => {
       });
 
       console.log("Fetched Plan:", response.data.plan);
-      setPlanName(response.data.plan?.planName || "Free");
+      setPlanName(response.data.plan?.planName || "basic");
     } catch (error) {
       console.error("Error fetching plan:", error);
     }
@@ -67,8 +68,22 @@ const PostsList = () => {
   }, []);
 
   useEffect(() => {
-    setIsUserSubscribed(planName !== "Free");
+    setIsUserSubscribed(planName !== "basic");
   }, [planName]);
+
+
+  useEffect(() => {
+      function handleClickOutside(event) {
+        if (openMenuId && !event.target.closest(".menu-dots")) {
+          setOpenMenuId(null)
+        }
+      }
+  
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside)
+      }
+    }, [openMenuId])
 
   const handleContent = async (postId, price) => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -129,10 +144,27 @@ const PostsList = () => {
   };
 
   const postMutation = useMutation({
-    mutationKey: ["delete-post"],
-    mutationFn: deletePostAPI,
-  });
+      mutationKey: ["delete-post"],
+      mutationFn: deletePostAPI,
+      onSuccess: () => {
+        refetch()
+      },
+    })
+  
+  const handleDeletePost = (postId, e) => {
+      e.stopPropagation()
+      if (window.confirm("Are you sure you want to delete this post?")) {
+        postMutation.mutate(postId)
+      }
+      setOpenMenuId(null)
+    }
 
+    const toggleMenu = (postId, e) => {
+      e.stopPropagation()
+      e.preventDefault()
+      console.log("Toggle menu for post:", postId)
+      setOpenMenuId(openMenuId === postId ? null : postId)
+    }
   const toggleBookmark = (postId, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -274,18 +306,111 @@ const PostsList = () => {
                   const isBookmarked = bookmarkedPosts.includes(post._id);
 
                   return (
-                    <div key={post._id} className="post-card bg-white">
+                    <div key={post._id} className="post-card bg-white"
+                    style={{
+                      position: "relative",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      border: "1px solid #e5e7eb",
+                    }}>
                       {isPremium && (
-                        <div className="premium-badge">
+                        <div className="premium-badge"
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          left: "10px",
+                          background: "#2563EB",
+                          color: "white",
+                          padding: "4px 8px",
+                          borderRadius: "20px",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                          zIndex: 5,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "5px",
+                        }}>
                           <FaCrown />
                         </div>
                       )}
-                      <div className="post-image-container">
+                      <div className="post-image-container" style={{ position: "relative" }}>
                           <img
                               className="post-image"
                               src={post.refId.thumbnail || "/default-image.jpg"}
                               alt={post?.price || "Post image"}
+                              style={{ width: "100%", height: "200px", objectFit: "cover" }}
                           />
+                          {/* three dots */}
+                        <div
+                          className="menu-dots"
+                          style={{ position: "absolute", top: "10px", right: "10px", zIndex: 10 }}
+                        >
+                          <button
+                            onClick={(e) => toggleMenu(post._id, e)}
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                              backgroundColor: "rgba(255, 255, 255, 0.9)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              border: "none",
+                              cursor: "pointer",
+                              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            }}
+                          >
+                            <FaEllipsisV style={{ color: "#2563EB" }} />
+                          </button>
+
+                          {openMenuId === post._id && (
+                            <div
+                              style={{
+                                position: "absolute",
+                                right: "0",
+                                top: "40px",
+                                width: "150px",
+                                backgroundColor: "white",
+                                borderRadius: "8px",
+                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                                zIndex: 999,
+                                border: "1px solid #e5e7eb",
+                              }}
+                            >
+                              <div
+                                onClick={(e) => handleEditPost(post._id, e)}
+                                style={{
+                                  padding: "10px 15px",
+                                  borderBottom: "1px solid #e5e7eb",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "8px",
+                                }}
+                              >
+                                <FaEdit style={{ color: "#2563EB" }} />
+                                <span>Edit</span>
+                              </div>
+                              <div
+                                onClick={(e) => handleDeletePost(post._id, e)}
+                                style={{
+                                  padding: "10px 15px",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "8px",
+                                }}
+                              >
+                                <FaTrash style={{ color: "#EF4444" }} />
+                                <span>Delete</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+
+
                         {/* <button
                           className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
                           onClick={(e) => toggleBookmark(post._id, e)}
@@ -294,6 +419,7 @@ const PostsList = () => {
                           <FaBookmark />
                         </button> */}
                       </div>
+
                       {isPremium && !isUserSubscribed && (
                         <div className="premium-overlay">
                           <FaLock className="premium-lock-icon" />
@@ -330,7 +456,7 @@ const PostsList = () => {
                             <span className={`post-status ${
                               post?.status === 'published' ? 'status-published' : 'status-draft'
                             }`}>
-                              {post?.status}
+                              {post?.contentData}
                             </span>
                           </div>
                         </div>
@@ -348,23 +474,86 @@ const PostsList = () => {
                     {premiumPosts?.map((post) => {
                       const isBookmarked = bookmarkedPosts.includes(post._id);
                       return (
-                        <div key={post._id} className="post-card bg-white">
-                          <div className="premium-badge">
+                        <div key={post._id} className="post-card bg-white" style={{position: "relative"}}
+                        >
+                          <div className="absolute top-2 left-2 p-1 text-yellow-500 z-10">
                             <FaCrown />
                           </div>
-                          <div className="post-image-container">
+                          <div className="post-image-container" style={{ position: "relative" }}>
                             <img
                               className="post-image"
                               src={post?.refId?.thumbnail}
                               alt={post?.price || "Post image"}
+                              style={{ width: "100%", height: "200px", objectFit: "cover" }}
                             />
-                            <button
-                              className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
-                              onClick={(e) => toggleBookmark(post._id, e)}
-                              aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                            {/* 3 Dots */}
+                            <div
+                              className="menu-dots"
+                              style={{ position: "absolute", top: "10px", right: "10px", zIndex: 10 }}
                             >
-                              <FaBookmark />
-                            </button>
+                              <button
+                                onClick={(e) => toggleMenu(post._id, e)}
+                                style={{
+                                  width: "32px",
+                                  height: "32px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                }}
+                              >
+                                <FaEllipsisV style={{ color: "#2563EB" }} />
+                              </button>
+
+                              {openMenuId === post._id && (
+                                <div
+                                  style={{
+                                    position: "absolute",
+                                    right: "0",
+                                    top: "40px",
+                                    width: "150px",
+                                    backgroundColor: "white",
+                                    borderRadius: "8px",
+                                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                                    zIndex: 999,
+                                    border: "1px solid #e5e7eb",
+                                  }}
+                                >
+                                  <div
+                                    onClick={(e) => handleEditPost(post._id, e)}
+                                    style={{
+                                      padding: "10px 15px",
+                                      borderBottom: "1px solid #e5e7eb",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "8px",
+                                    }}
+                                  >
+                                    <FaEdit style={{ color: "#2563EB" }} />
+                                    <span>Edit</span>
+                                  </div>
+                                  <div
+                                    onClick={(e) => handleDeletePost(post._id, e)}
+                                    style={{
+                                      padding: "10px 15px",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "8px",
+                                    }}
+                                  >
+                                    <FaTrash style={{ color: "#EF4444" }} />
+                                    <span>Delete</span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            
                           </div>
                           {isPremiumPost(post) && !isUserSubscribed && (
                             <div className="premium-overlay">
@@ -382,7 +571,7 @@ const PostsList = () => {
                           )}
                           <Link to={`/posts/${post._id}`} className="block">
                             <div className="post-content">
-                              <h3 className="post-title">{post?.title || "Untitled post"}</h3>
+                              <h3 className="post-title">{post?.refId?.title || "Untitled post"}</h3>
                               <p className="post-excerpt">
                                 {truncateString(post?.description || "", 120)}
                               </p>
@@ -394,6 +583,11 @@ const PostsList = () => {
                                     day: 'numeric'
                                   })}
                                 </span>
+                                <span className={`post-status ${
+                                    post?.status === 'published' ? 'status-published' : 'status-draft'
+                                  }`}>
+                                    {post?.contentData}
+                               </span>
                               </div>
                             </div>
                           </Link>

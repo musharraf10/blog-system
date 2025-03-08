@@ -27,6 +27,11 @@ import CheckoutForm from "../components/Plans/CheckoutForm";
 import ManageData from "../components/Posts/Managedata";
 import PlanDetails from "../components/Plans/PlanDetails";
 import SettingsCurator from "../components/Curator/SettingsPage";
+import { BookmarkPost } from "../components/Posts/BookmarkPost";
+import PostsList from "../components/Posts/PostsList";
+import GuideDetails from "../components/Posts/GuideDetails";
+import { Webinars } from "../components/Webinar/Webinars";
+import ViewGuide from "../components/Posts/ViewGuide"
 
 const CuratorRoutes = () => {
     return (
@@ -59,6 +64,11 @@ const CuratorRoutes = () => {
           <Route path="checkout/:planId" element={<CheckoutForm />} />
           <Route path="plan-details" element={<PlanDetails />} />
           <Route path="post" element={<PlanDetails />} />
+          <Route path="webinars" element={<Webinars />} />
+          <Route path="stepbystepguide" element={<ViewGuide />} />
+          <Route path="guide/:guideId" element={<GuideDetails />} />
+          <Route path="articles" element={<PostsList />} />
+          <Route path="bookmarks" element={<BookmarkPost />} />
           
         </Route>
         <Route

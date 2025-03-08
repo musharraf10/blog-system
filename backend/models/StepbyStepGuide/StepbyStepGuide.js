@@ -11,7 +11,7 @@ const StepbyStepGuideSchema = new Schema({
     type: String,
     required: true,
   },
-  thumbnailImage: {
+  thumbnail: {
     type: String,
     required: true,
   },

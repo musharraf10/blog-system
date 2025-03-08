@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { checkAuthStatusAPI } from '../../APIServices/users/usersAPI';
 
 export default function Home() {
   const [guides, setGuides] = useState([]); // State to store the list of guides
@@ -35,6 +37,13 @@ export default function Home() {
     }
   };
 
+  const { isLoading, data } = useQuery({
+      queryKey: ["user-auth"],
+      queryFn: checkAuthStatusAPI,
+    });
+
+  let userRole = data?.role;
+
   useEffect(() => {
     getdata();
   }, []);
@@ -62,10 +71,10 @@ export default function Home() {
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               {/* Thumbnail Image */}
-              {guide.refId.thumbnailImage && (
+              {guide.refId.thumbnail && (
                 <div className="aspect-w-16 aspect-h-9">
                   <img
-                    src={guide.refId.thumbnailImage}
+                    src={guide.refId.thumbnail}
                     alt={guide.refId.title}
                     className="w-full h-48 object-cover"
                   />
@@ -81,7 +90,7 @@ export default function Home() {
 
                 {/* View Details Button */}
                 <Link
-                  to={`/subscriber/guide/${guide._id}`} // Navigate to the details page
+                  to={`/${userRole}/guide/${guide._id}`} // Navigate to the details page
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   View Details

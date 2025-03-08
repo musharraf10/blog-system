@@ -34,6 +34,10 @@ import ResetPassword from "../components/Subscribers/ResetPassword";
 import PlanDetails from "../components/Plans/PlanDetails";
 import StepByStepGuide from "../components/Posts/StepByStepGuide";
 import SettingsAdmin from "../components/Admin/SettingsPage";
+import GuideDetails from "../components/Posts/GuideDetails";
+import { Webinars } from "../components/Webinar/Webinars";
+import { BookmarkPost } from "../components/Posts/BookmarkPost";
+import ViewGuide from "../components/Posts/ViewGuide"
 
 
 
@@ -71,7 +75,12 @@ const AdminRoutes = () => {
           <Route path="my-followers" element={<MyFollowers />} />
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="latestposts" element={<PostsList />} />
+          <Route path="feed/webinars" element={<Webinars />} />
+          <Route path="stepbystepguide" element={<ViewGuide />} />
+          <Route path="guide/:guideId" element={<GuideDetails />} />
+          <Route path="feed/articles" element={<PostsList />} />
+          <Route path="bookmarks" element={<BookmarkPost />} />
+
          
           <Route path="plan-details" element={<PlanDetails />} />
           <Route path="add-category" element={<AddCategory />} />

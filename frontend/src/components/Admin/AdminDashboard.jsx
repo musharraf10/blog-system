@@ -2,28 +2,44 @@
 
 import { useState, Fragment } from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags } from "react-icons/fa"
+import { Cog6ToothIcon, HomeIcon, XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/outline"
+import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags, FaRss,FaBookmark } from "react-icons/fa"
 import { MdContentPaste, MdPayment } from "react-icons/md"
 import { FaUsersCog } from "react-icons/fa"
+import { BsFileEarmarkText, BsCardList, BsCollection  } from "react-icons/bs"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import PrivateNavbar from "../Navbar/PrivateNavbar"
-
-
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: HomeIcon },
   { name: "Content Management", href: "/admin/content-management", icon: MdContentPaste },
   { name: "User Management", href: "/admin/user-management", icon: FaUsersCog },
   { name: "Payment Management", href: "/admin/payment-management", icon: MdPayment },
+  { 
+    name: "Feed", 
+    icon: FaRss,
+    subItems: [
+      { name: "Webinars", href: "/admin/feed/webinars", icon: BsCollection },
+      { name: "Step-by-Step Guides", href: "/admin/stepbystepguide", icon: BsCardList },
+      { name: "Articles", href: "/admin/feed/articles", icon: BsFileEarmarkText },
+    ]
+  },
+  { name: "Bookmarks", href: "/admin/bookmarks", icon: FaBookmark},
   { name: "Manage Content", href: "/admin/manage-content", icon: FaUserEdit },
   { name: "Plan Details", href: "/admin/plan-details", icon: FaCalendarPlus },
 ]
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
- 
+  const [expandedItems, setExpandedItems] = useState({})
   const location = useLocation()
+  
+  const toggleSubItems = (itemName) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [itemName]: !prev[itemName]
+    }))
+  }
  
   return (
     <>
@@ -68,26 +84,82 @@ export default function AdminDashboard() {
                   <span className="ml-3 text-xl font-semibold text-gray-800">AdminPanel</span>
                 </Link>
                 <nav className="space-y-1.5">
-                  {navigation.map(({ name, href, icon: Icon }) => {
-                    // Only apply active styling if it's not the Dashboard and the path matches
-                    const isActive =
-                      href !== "/admin" && (location.pathname === href || location.pathname.startsWith(href + "/"))
+                  {navigation.map((item) => {
+                    // For regular menu items
+                    if (!item.subItems) {
+                      // Only apply active styling if it's not the Dashboard and the path matches
+                      const isActive =
+                        item.href !== "/admin" && (location.pathname === item.href || location.pathname.startsWith(item.href + "/"))
 
+                      return (
+                        <Link
+                          key={item.name}
+                          to={item.href}
+                          className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                            isActive
+                              ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                              : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                          }`}
+                        >
+                          <item.icon
+                            className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`}
+                          />
+                          <span className="truncate">{item.name}</span>
+                        </Link>
+                      )
+                    }
+                    
+                    // For dropdown items
+                    const hasActiveSubItem = item.subItems && item.subItems.some(
+                      subItem => location.pathname === subItem.href || location.pathname.startsWith(subItem.href + "/")
+                    )
+                    
                     return (
-                      <Link
-                        key={name}
-                        to={href}
-                        className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
-                          isActive
-                            ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
-                            : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
-                        }`}
-                      >
-                        <Icon
-                          className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`}
-                        />
-                        <span className="truncate">{name}</span>
-                      </Link>
+                      <div key={item.name} className="space-y-1">
+                        <button
+                          onClick={() => toggleSubItems(item.name)}
+                          className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                            hasActiveSubItem
+                              ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                              : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                          }`}
+                        >
+                          <div className="flex items-center">
+                            <item.icon
+                              className={`h-5 w-5 mr-3 flex-shrink-0 ${hasActiveSubItem ? "text-[#1565C0]" : "text-gray-500"}`}
+                            />
+                            <span className="truncate">{item.name}</span>
+                          </div>
+                          <ChevronDownIcon 
+                            className={`h-4 w-4 transition-transform duration-200 ${expandedItems[item.name] ? 'rotate-180' : ''}`} 
+                          />
+                        </button>
+                        
+                        {expandedItems[item.name] && (
+                          <div className="pl-10 space-y-1">
+                            {item.subItems.map(subItem => {
+                              const isSubItemActive = location.pathname === subItem.href || location.pathname.startsWith(subItem.href + "/")
+                              
+                              return (
+                                <Link
+                                  key={subItem.name}
+                                  to={subItem.href}
+                                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 ${
+                                    isSubItemActive
+                                      ? "bg-white text-[#1565C0] font-medium shadow-sm"
+                                      : "text-gray-600 hover:bg-white/70"
+                                  }`}
+                                >
+                                  <subItem.icon
+                                    className={`h-4 w-4 mr-3 flex-shrink-0 ${isSubItemActive ? "text-[#1565C0]" : "text-gray-500"}`}
+                                  />
+                                  <span className="text-sm">{subItem.name}</span>
+                                </Link>
+                              )
+                            })}
+                          </div>
+                        )}
+                      </div>
                     )
                   })}
                 </nav>
@@ -123,30 +195,100 @@ export default function AdminDashboard() {
             <span className="ml-3 text-xl font-semibold text-gray-800">AdminPanel</span>
           </Link>
           <nav className="space-y-1.5">
-            {navigation.map(({ name, href, icon: Icon }) => {
-              // Only apply active styling if it's not the Dashboard and the path matches
-              const isActive =
-                href !== "/admin" && (location.pathname === href || location.pathname.startsWith(href + "/"))
+            {navigation.map((item) => {
+              // For regular menu items
+              if (!item.subItems) {
+                // Only apply active styling if it's not the Dashboard and the path matches
+                const isActive =
+                  item.href !== "/admin" && (location.pathname === item.href || location.pathname.startsWith(item.href + "/"))
 
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                      isActive
+                        ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                        : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                    }`}
+                  >
+                    <item.icon
+                      className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`}
+                    />
+                    <span className="truncate">{item.name}</span>
+                  </Link>
+                )
+              }
+              
+              // For dropdown items
+              const hasActiveSubItem = item.subItems && item.subItems.some(
+                subItem => location.pathname === subItem.href || location.pathname.startsWith(subItem.href + "/")
+              )
+              
               return (
-                <Link
-                  key={name}
-                  to={href}
-                  className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
-                      : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
-                  }`}
-                >
-                  <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
-                  <span className="truncate">{name}</span>
-                </Link>
+                <div key={item.name} className="space-y-1">
+                  <button
+                    onClick={() => toggleSubItems(item.name)}
+                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                      hasActiveSubItem
+                        ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                        : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <item.icon
+                        className={`h-5 w-5 mr-3 flex-shrink-0 ${hasActiveSubItem ? "text-[#1565C0]" : "text-gray-500"}`}
+                      />
+                      <span className="truncate">{item.name}</span>
+                    </div>
+                    <ChevronDownIcon 
+                      className={`h-4 w-4 transition-transform duration-200 ${expandedItems[item.name] ? 'rotate-180' : ''}`} 
+                    />
+                  </button>
+                  
+                  {expandedItems[item.name] && (
+                    <div className="pl-10 space-y-1">
+                      {item.subItems.map(subItem => {
+                        const isSubItemActive = location.pathname === subItem.href || location.pathname.startsWith(subItem.href + "/")
+                        
+                        return (
+                          <Link
+                            key={subItem.name}
+                            to={subItem.href}
+                            className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 ${
+                              isSubItemActive
+                                ? "bg-white text-[#1565C0] font-medium shadow-sm"
+                                : "text-gray-600 hover:bg-white/70"
+                            }`}
+                          >
+                            <subItem.icon
+                              className={`h-4 w-4 mr-3 flex-shrink-0 ${isSubItemActive ? "text-[#1565C0]" : "text-gray-500"}`}
+                            />
+                            <span className="text-sm">{subItem.name}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
               )
             })}
           </nav>
           <div className="mt-auto mb-[30%]">
-            <Link to="/admin/settings" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-              <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
+            <Link
+              to="/admin/settings"
+              className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                location.pathname === "/admin/settings"
+                  ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                  : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+              }`}
+            >
+              <Cog6ToothIcon
+                className={`h-5 w-5 mr-3 flex-shrink-0 ${
+                  location.pathname === "/admin/settings" ? "text-[#1565C0]" : "text-gray-500"
+                }`}
+              />
+              <span className="truncate">Settings</span>
             </Link>
           </div>
         </aside>

@@ -52,7 +52,7 @@ const userController = {
   login: asyncHandler(async (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) return next(err);
-      //check if user not found
+      
       if (!user) {
         return res.status(401).json({ message: "User Not Found" });
       }
@@ -95,22 +95,23 @@ const userController = {
         //generate the token
 
         const token = jwt.sign({ id: user?._id, role: user?.role }, process.env.JWT_SECRET, {
-          expiresIn: "3d",
+          expiresIn: "1d",
         });
         //set the token into the cooke
         res.cookie("token", token, {
           httpOnly: true,
           secure: false,
           sameSite: "strict",
-          maxAge: 24 * 60 * 60 * 1000, //1 day:
+          maxAge: 24 * 60 * 60 * 1000, 
         });
         //redirect the user dashboard
-        res.redirect("http://localhost:5173/dashboard");
+        res.redirect("http://localhost:5173/");
       }
     )(req, res, next);
   }),
   // ! check user authentication status
   checkAuthenticated: asyncHandler(async (req, res) => {
+    console.log(req.cookies)
     const token = req.cookies["token"];
     if (!token) {
       return res.status(401).json({ isAuthenticated: false });
@@ -502,7 +503,7 @@ const userController = {
           token
         });
       } else {
-        const generatePassword = () => Math.random().toString(36).slice(-8); // ✅ Generates a secure random password
+        const generatePassword = () => Math.random().toString(36).slice(-8); 
         const hashedPassword = await bcrypt.hash(generatePassword(), 10);
 
         const newUser = new User({

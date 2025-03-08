@@ -27,10 +27,14 @@ export const updatePostAPI = async ({ formData, postId }) => {
 };
 //! Fetch all posts
 export const fetchAllPosts = async (filters) => {
-  console.log("Filter" ,filters);
   const posts = await axios.get(BASE_URL, {
     params: filters,
   });
+  return posts.data;
+};
+
+export const fetchAllWebiners = async () => {
+  const posts = await axios.get(`${BASE_URL}/allwebiners`);
   return posts.data;
 };
 //! Fetch  post

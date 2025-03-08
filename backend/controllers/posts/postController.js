@@ -163,10 +163,40 @@ const postController = {
   }),
 
   //!list all posts
-  fetchAllPosts: asyncHandler(async (req, res) => {
+  fetchAllArticles: asyncHandler(async (req, res) => {
     const { category, title, page = 1, limit = 300 } = req.query;
     //Basic filter
-    let filter = { status: "approved" };
+    let filter = { status: "approved", contentData : "Article" };
+    // let filter = {};
+    if (category) {
+      filter.category = category;
+    }
+    if (title) {
+      filter.description = { $regex: title, $options: "i" }; //case insensitive
+    }
+
+    const posts = await Post.find(filter)
+      .populate("author")
+      .populate("refId")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+    //total posts
+    const totalPosts = await Post.countDocuments(filter);
+    res.json({
+      status: "success",
+      message: " Approved Post fetched successfully",
+      posts,
+      currentPage: page,
+      perPage: limit,
+      totalPages: Math.ceil(totalPosts / limit),
+    });
+  }),
+
+  fetchAllWebiners: asyncHandler(async (req, res) => {
+    const { category, title, page = 1, limit = 300 } = req.query;
+    //Basic filter
+    let filter = { status: "approved", contentData : "Webinar" };
     // let filter = {};
     if (category) {
       filter.category = category;
@@ -301,18 +331,20 @@ const postController = {
   //! get a post
   getPost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
-    //check for login user
     const userId = req.user ? req.user : null;
 
     const postFound = await Post.findById(postId).populate({
       path: "comments",
       populate: {
         path: "author",
+        select: "profilePicture name", // Fetch only necessary fields
       },
-    });
+    }).populate("refId");
+
     if (!postFound) {
       throw new Error("Post not found");
     }
+
     if (userId) {
       await Post.findByIdAndUpdate(
         postId,
@@ -324,12 +356,14 @@ const postController = {
         }
       );
     }
+
     res.json({
       status: "success",
       message: "Post fetched successfully",
       postFound,
     });
-  }),
+}),
+
   //! delete
   delete: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
@@ -521,7 +555,7 @@ const postController = {
 
       await post.save();
 
-      res.json({
+      res.status(200).json({
         message: "Post Bookmarked",
       });
     } catch (error) {
@@ -540,7 +574,7 @@ const postController = {
 
     await post.save();
 
-    res.json({
+    res.status(200).json({
       message: "Post Unbookmarked",
     });
   }),

@@ -10,7 +10,7 @@ const usersRouter = express.Router();
 // Authentication Routes
 usersRouter.post("/register", userController.register);
 usersRouter.post("/login", userController.login);
-usersRouter.get("/google", userController.googleauth);
+usersRouter.post("/google", userController.googleauth);
 usersRouter.get("/auth/google/callback", userController.googleAuthCallback);
 usersRouter.get("/check-auth", userController.checkAuthenticated);
 usersRouter.post("/logout", userController.logout);

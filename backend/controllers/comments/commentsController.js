@@ -12,8 +12,8 @@ const commentsController = {
       content,
       author: req.user,
       post: postId,
-      status: "pending", // Moderation
-      parentComment: parentCommentId || null, // Nested comments support
+      status: "pending", 
+      parentComment: parentCommentId || null, 
     });
     
     await Post.findByIdAndUpdate(postId, { $push: { comments: commentCreated._id } });

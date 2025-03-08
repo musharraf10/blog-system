@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -12,7 +12,7 @@ const WebinarForm = () => {
     time: "",
     price: "",
     description: "",
-    thumbnail: null, 
+    thumbnail: null,
   });
 
   const [previewImage, setPreviewImage] = useState(null);
@@ -32,7 +32,7 @@ const WebinarForm = () => {
         ...prevState,
         thumbnail: file,
       }));
-      setPreviewImage(URL.createObjectURL(file)); // Show preview
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
@@ -51,7 +51,7 @@ const WebinarForm = () => {
     formDataToSend.append("time", formData.time);
     formDataToSend.append("price", formData.price);
     formDataToSend.append("description", formData.description);
-    formDataToSend.append("thumbnail", formData.thumbnail); 
+    formDataToSend.append("thumbnail", formData.thumbnail);
 
     try {
       const response = await axios.post(
@@ -86,139 +86,173 @@ const WebinarForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4">
-      <div className="p-8">
-        <div
-          style={{ color: "#007bff" }}
-          className="uppercase tracking-wide text-sm font-semibold mb-1"
-        >
-          Webinar Registration
-        </div>
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Enter Webinar Details
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Webinar Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-            />
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* Header */}
+          <div className="px-8 py-6 bg-gradient-to-r from-blue-600 to-blue-700">
+            <h2 className="text-2xl font-bold text-white">Webinar Registration</h2>
+            <p className="mt-1 text-blue-100">Enter the details for your upcoming webinar</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Webinar Link
-            </label>
-            <input
-              type="url"
-              name="link"
-              value={formData.link}
-              onChange={handleChange}
-              required
-              placeholder="https://"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Add Price
-            </label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Time
-              </label>
-              <input
-                type="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-            ></textarea>
-          </div>
-
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Thumbnail Image
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              required
-              className="mt-1 block w-full"
-            />
-            {previewImage && (
-              <div className="mt-2">
-                <img
-                  src={previewImage}
-                  alt="Thumbnail Preview"
-                  className="w-full h-40 object-cover rounded-md border"
+          {/* Form */}
+          <div className="px-8 py-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Webinar Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-200 ease-in-out border p-2.5"
+                  placeholder="Enter webinar title"
                 />
               </div>
-            )}
-          </div>
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="inline-flex justify-center py-2 px-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2"
-            >
-              <Plus className="w-6 h-6 mr-3" />
-              <span>Add Webinar</span>
-            </button>
+              {/* Link */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Webinar Link
+                </label>
+                <input
+                  type="url"
+                  name="link"
+                  value={formData.link}
+                  onChange={handleChange}
+                  required
+                  placeholder="https://"
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-200 ease-in-out border p-2.5"
+                />
+              </div>
+
+              {/* Price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Price (in USD)
+                </label>
+                <div className="mt-1 relative rounded-lg shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">$</span>
+                  </div>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    required
+                    className="block w-full pl-7 rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-200 ease-in-out border p-2.5"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              {/* Date and Time */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-200 ease-in-out border p-2.5"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    required
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-200 ease-in-out border p-2.5"
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows="4"
+                  required
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-200 ease-in-out border p-2.5"
+                  placeholder="Enter webinar description"
+                ></textarea>
+              </div>
+
+              {/* Thumbnail Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Thumbnail Image
+                </label>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 transition-colors duration-200">
+                  <div className="space-y-1 text-center">
+                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                    <div className="flex text-sm text-gray-600">
+                      <label
+                        htmlFor="thumbnail"
+                        className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+                      >
+                        <span>Upload a file</span>
+                        <input
+                          id="thumbnail"
+                          name="thumbnail"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          required
+                          className="sr-only"
+                        />
+                      </label>
+                      <p className="pl-1">or drag and drop</p>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, GIF up to 10MB
+                    </p>
+                  </div>
+                </div>
+                {previewImage && (
+                  <div className="mt-4">
+                    <img
+                      src={previewImage}
+                      alt="Thumbnail Preview"
+                      className="w-full h-48 object-cover rounded-lg shadow-md"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-end pt-4">
+                <button
+                  type="submit"
+                  className="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ease-in-out transform hover:scale-105"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Add Webinar
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

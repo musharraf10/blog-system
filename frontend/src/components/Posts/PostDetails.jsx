@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { FaThumbsUp, FaThumbsDown, FaEye, FaComment, FaBookmark, FaCrown, FaLock } from "react-icons/fa";
 import { RiUserUnfollowFill, RiUserFollowLine } from "react-icons/ri";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Accordion, Card } from "react-bootstrap";
@@ -30,18 +31,7 @@ const PostDetails = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
-  const [isUserSubscribed, setIsUserSubscribed] = useState(false);
   const [selectedPost, setSelectedPost] = useState(postId);
-
-  useEffect(() => {
-    const userSubscriptionStatus = localStorage.getItem("userSubscriptionStatus");
-    setIsUserSubscribed(userSubscriptionStatus === "subscribed");
-  }, []);
-
-  useEffect(() => {
-    const savedBookmarks = JSON.parse(localStorage.getItem("bookmarkedPosts")) || [];
-    setBookmarkedPosts(savedBookmarks);
-  }, []);
 
   const toggleBookmark = (postId, e) => {
     e.preventDefault();
@@ -64,10 +54,17 @@ const PostDetails = () => {
     queryFn: () => fetchPost(selectedPost),
   });
 
+  const {data: userDetails } = useQuery({
+      queryKey: ["user-auth"],
+      queryFn: checkAuthStatusAPI,
+    });
+    let userRole = userDetails?.role;
+
   const { data: profileData, refetch: refetchProfile } = useQuery({
     queryKey: ["profile"],
     queryFn: () => userProfileAPI(),
   });
+
 
   const { isError, isLoading, data: allPostsData, refetch } = useQuery({
     queryKey: ["lists-posts", { ...filters, page }],
@@ -141,23 +138,32 @@ const PostDetails = () => {
     return price && price > 0;
   };
 
-  const handleSubscribe = () => {
-    localStorage.setItem("userSubscriptionStatus", "subscribed");
-    setIsUserSubscribed(true);
-  };
+ 
 
   return (
 <div className="container-fluid d-flex justify-content-center align-items-center py-4">
   <div className="row w-100">
     {/* Left Column (Post Details) with Scroll */}
+    
     <div className="col-md-8 col-12">
+    <Link
+      to={`/${userRole}`}
+      className="inline-flex items-center text-blue-600 hover:text-blue-800 border-none"
+    >
+      &larr; Back to Articles
+    </Link>
       <div className="bg-white rounded-lg shadow-lg p-6" style={{ height: "110vh", overflowY: "auto" }}>
+        {console.log("->",postData)}
         <img
-          src={postData?.postFound?.image}
-          alt={postData?.postFound?.description}
+          src={postData?.postFound?.refId?.thumbnail}
+          alt={"IMG"}
           className="w-full h-72 object-cover rounded-lg mb-4"
         />
-        <p className="text-gray-800 text-lg">{postData?.postFound?.description}</p>
+        <div
+          className="text-gray-800 text-lg"
+          dangerouslySetInnerHTML={{ __html: postData?.postFound?.refId?.description }}>
+        </div>
+
 
         {/* Follow Button (Added Back) */}
         <div className="flex justify-between items-center my-4 flex-wrap">
@@ -178,8 +184,8 @@ const PostDetails = () => {
 
           {/* Follow Button */}
           <button
-            className={`px-4 py-2 text-white text-sm font-bold rounded-md transition-all duration-300 ${
-              isFollowing ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+            className={`px-4 py-2 mt-2 text-white text-sm font-bold rounded-md transition-all duration-300 ${
+              isFollowing ? "bg-blue-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
             }`}
             onClick={isFollowing ? unfollowUserHandler : followUserHandler}
           >
@@ -208,7 +214,7 @@ const PostDetails = () => {
               (comment, index) => (
                 <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md flex items-start gap-4 transition-all duration-300 hover:shadow-lg">
                   <img
-                    src={comment.author?.profileImage || "/default-avatar.png"}
+                    src={comment.author?.profilePicture.path || "/default-avatar.png"}
                     alt={comment.author?.username}
                     className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
                   />
