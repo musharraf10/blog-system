@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-<<<<<<< HEAD
+
 import React from "react";
-import { useParams } from "react-router-dom";
+//import { useParams } from "react-router-dom";
 import {
   FaThumbsUp,
   FaThumbsDown,
@@ -9,11 +9,12 @@ import {
   FaComment,
   FaBookmark,
 } from "react-icons/fa";
-=======
-import React, { useState, useEffect } from "react";
+
+import  { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { FaThumbsUp, FaThumbsDown, FaEye, FaComment, FaBookmark, FaCrown, FaLock } from "react-icons/fa";
->>>>>>> f4c5ffbfb55d4f1b09d6830893cca31cd3ea16e8
+
+//import { FaThumbsUp, FaThumbsDown, FaEye, FaComment, FaBookmark, FaCrown, FaLock } from "react-icons/fa";
+
 import { RiUserUnfollowFill, RiUserFollowLine } from "react-icons/ri";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -80,16 +81,7 @@ const PostDetails = () => {
     queryFn: () => userProfileAPI(),
   });
 
-<<<<<<< HEAD
   const targetId = data?.postFound?.author;
-=======
-  const { isError, isLoading, data: allPostsData, refetch } = useQuery({
-    queryKey: ["lists-posts", { ...filters, page }],
-    queryFn: () =>
-      fetchAllPosts({ ...filters, title: searchTerm, page, limit: 9 }),
-  });
-  const targetId = postData?.postFound?.author;
->>>>>>> f4c5ffbfb55d4f1b09d6830893cca31cd3ea16e8
   const userId = profileData?.user?._id;
 
   const isFollowing = profileData?.user?.following?.some(
@@ -162,7 +154,6 @@ const PostDetails = () => {
   };
 
   return (
-<<<<<<< HEAD
     <div className="flex flex-col items-center p-6">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
         <img
@@ -216,41 +207,6 @@ const PostDetails = () => {
           )}
         </div>
 
-        {/* <div className="mt-6">
-          <h2 className="text-2xl font-semibold mb-4">Comments</h2>
-          <form onSubmit={formik.handleSubmit} className="mb-6">
-            <textarea
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              rows="3"
-              placeholder="Write a comment..."
-              {...formik.getFieldProps("content")}
-            ></textarea>
-            {formik.touched.content && formik.errors.content && (
-              <div className="text-red-500 mb-2">{formik.errors.content}</div>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white p-2 rounded-md hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black"
-            >
-              <FaComment className="inline mr-1" /> Add Comment
-            </button>
-          </form>
-
-          <div className="space-y-4">
-            {data?.postFound?.comments?.map((comment, index) => (
-              <div key={index} className="p-4 bg-gray-100 rounded-lg shadow-sm text-left">
-                <div className="mt-2 flex items-center text-gray-600 text-sm">
-                  <span className="font-semibold text-primary">{comment.author?.username}</span>
-                  <span className="ml-2 text-primary-500 ">
-                    {new Date(comment.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-gray-800">{comment.content}</p>
-                
-              </div>
-            ))}
-          </div>
-        </div> */}
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-4">Comments</h2>
           <form onSubmit={formik.handleSubmit} className="mb-6">
@@ -271,41 +227,14 @@ const PostDetails = () => {
             </button>
           </form>
 
-          {/* Scrollable Comments Section */}
-          {/* <div className="max-h-60 overflow-y-auto space-y-4 p-2 border rounded-lg">
-            {data?.postFound?.comments?.map((comment, index) => (
-              <div key={index} className="p-2 bg-gray-100 rounded-lg shadow-sm text-left">
-                <div className="mt-2 flex items-center text-gray-600 text-sm">
-      
-                  <div className="d-flex">
-              
-                    <img
-                      src={comment.author?.image || "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=600"}
-                      alt="User Avatar"
-                      className="w-10 h-10 rounded-full border border-gray-300 shadow-sm"
-                    />
-                    <div>
-                      <span className="font-semibold text-primary">{comment.author?.username}</span>
-                      <span className="ml-2 text-primary-500">
-                        {new Date(comment.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-            ))}
-          </div> */}
 
 <div 
   className="space-y-4 p-2 border rounded-lg"
   style={{ maxHeight: "250px", overflowY: data?.postFound?.comments?.length > 3 ? "auto" : "visible" }}
 >
-  {data?.postFound?.comments?.slice().reverse().map((comment, index) => (
+{data?.postFound?.comments?.slice().reverse().map((comment, index) => (
+  <>
     <div key={index} className="flex items-start space-x-4 p-2 bg-gray-100 rounded-lg shadow-sm text-left">
-      
       {/* Profile Picture */}
       <img
         src={comment.author?.profilePic } // Default profile pic
@@ -315,8 +244,6 @@ const PostDetails = () => {
 
       {/* Comment Content */}
       <div className="flex-1">
-      
-
         {/* Author Name & Date */}
         <div className="mt-2 flex items-center text-sm">
           <span className="font-bold text-blue-600">{comment.author?.username}</span>
@@ -325,49 +252,6 @@ const PostDetails = () => {
           </span>
         </div>
         <p className="text-gray-800 font-semibold">{comment.content}</p>
-=======
-    <div className="container-fluid d-flex justify-content-center align-items-center py-4">
-  <div className="row w-100">
-  {/* Left Column (Post Details) */}
-  <div className="col-md-8 col-12">
-  <div className="bg-white rounded-lg shadow-lg p-6">
-    <img
-      src={postData?.postFound?.image}
-      alt={postData?.postFound?.description}
-      className="w-full h-72 object-cover rounded-lg mb-4"
-    />
-    <p className="text-gray-800 text-lg">{postData?.postFound?.description}</p>
-
-    <div className="flex justify-between items-center my-4">
-      <div className="flex gap-6 items-center">
-        <span
-          className="flex items-center gap-2 text-gray-700 hover:text-blue-600 cursor-pointer 
-          border rounded-full p-2 transition-all duration-300 hover:bg-gray-200"
-          onClick={likePostHandler}
-        >
-          <FaThumbsUp className="text-xl" /> {postData?.postFound?.likes?.length || 0}
-        </span>
-        <span
-          className="flex items-center gap-2 text-gray-700 hover:text-red-600 cursor-pointer 
-          border rounded-full p-2 transition-all duration-300 hover:bg-gray-200"
-          onClick={dislikesPostHandler}
-        >
-          <FaThumbsDown className="text-xl" /> {postData?.postFound?.dislikes?.length || 0}
-        </span>
-        <span className="flex items-center gap-2 text-gray-700 
-          border rounded-full p-2 transition-all duration-300 hover:bg-gray-200">
-          <FaEye className="text-xl" /> {postData?.postFound?.viewers?.length || 0}
-        </span>
-        <span
-          className={`flex items-center gap-2 cursor-pointer text-xl 
-            border rounded-full p-2 transition-all duration-300 hover:bg-gray-200 ${
-              isBookmarked ? "text-blue-600" : "text-gray-600"
-            } hover:text-blue-500`}
-          onClick={isBookmarked ? unbookmarkPostHandler : bookmarkPostHandler}
-        >
-          <FaBookmark />
-        </span>
->>>>>>> f4c5ffbfb55d4f1b09d6830893cca31cd3ea16e8
       </div>
 
       {isFollowing ? (
@@ -386,61 +270,8 @@ const PostDetails = () => {
         </button>
       )}
     </div>
-
-    <div className="mt-6">
-      <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Comments</h2>
-      <form onSubmit={formik.handleSubmit} className="mb-6 bg-gray-50 p-4 rounded-lg shadow-sm">
-        <textarea
-          className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
-          rows="4"
-          placeholder="Write a comment..."
-          {...formik.getFieldProps("content")}
-        ></textarea>
-        {formik.touched.content && formik.errors.content && (
-          <div className="text-red-500 text-sm mt-1">{formik.errors.content}</div>
-        )}
-        <button
-          type="submit"
-          className="w-full mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2"
-        >
-          <FaComment className="text-lg" /> Add Comment
-        </button>
-      </form>
-
-      <div className="space-y-4">
-        {(showAllComments ? postData?.postFound?.comments : postData?.postFound?.comments?.slice(0, 5))?.map(
-          (comment, index) => (
-            <div
-              key={index}
-              className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md flex items-start gap-4 transition-all duration-300 hover:shadow-lg"
-            >
-              <img
-                src={comment.author?.profileImage || "/default-avatar.png"}
-                alt={comment.author?.username}
-                className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
-              />
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2 text-gray-900 font-semibold">
-                  <span>{comment.author?.username}</span>
-                  <span className="text-gray-500 text-xs">• {new Date(comment.createdAt).toLocaleDateString()}</span>
-                </div>
-                <p className="text-gray-700 mt-1 text-sm leading-relaxed">{comment.content}</p>
-              </div>
-            </div>
-          )
-        )}
-      </div>
-
-      {postData?.postFound?.comments?.length > 5 && (
-        <button
-          className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 transition-all duration-300 block mx-auto"
-          onClick={() => setShowAllComments(!showAllComments)}
-        >
-          {showAllComments ? "Show Less" : "Show All Comments"}
-        </button>
-      )}
-    </div>
-  </div>
+  </>
+))}
 </div>
 
 
@@ -514,7 +345,7 @@ const PostDetails = () => {
 </div>
 
 </div>
-
+</div>
   );
 };
 

@@ -18,6 +18,8 @@
   "description": "",
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
     "vite": "^6.2.0"
   }
 }

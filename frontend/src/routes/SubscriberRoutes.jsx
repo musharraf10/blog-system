@@ -32,11 +32,7 @@ import ViewGuide from "../components/Posts/ViewGuide";
 import GuideDetails from "../components/Posts/GuideDetails";
 import CheckoutForm from "../components/Plans/CheckoutForm";
 import PostDetails from "../components/Posts/PostDetails";
-<<<<<<< HEAD
 import BookmarkDetails from "../components/Posts/BookmarkDetails";
-=======
-import PlanDetails from "../components/Plans/PlanDetails";
->>>>>>> dcd53741e3188e9fcf2579b47cff1a51de5335cf
 
 const SubscriberRoutes = () => {
   return (
@@ -63,7 +59,6 @@ const SubscriberRoutes = () => {
 
         <Route path="bookmarks" element={<BookmarkPost />} />
         <Route path="profile" element={<AccountSummaryDashboard />} />
-
         <Route path="my-followings" element={<MyFollowing />} />
         <Route path="my-followers" element={<MyFollowers />} />
         <Route path="add-email" element={<AddEmailComponent />} />
@@ -75,7 +70,7 @@ const SubscriberRoutes = () => {
         <Route path="stepbystepguide" element={<ViewGuide />} />
         <Route path="guide/:guideId" element={<GuideDetails />} />
         <Route path="checkout/:planId" element={<CheckoutForm />} />
-        <Route path="plan-details" element={<PlanDetails />} />
+        <Route path="plan-details" element={<PostDetails />} />
       </Route>
       <Route
             path="/account-verification/:verifyToken"
