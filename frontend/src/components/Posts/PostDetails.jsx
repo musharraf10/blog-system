@@ -214,7 +214,7 @@ const PostDetails = () => {
               (comment, index) => (
                 <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-md flex items-start gap-4 transition-all duration-300 hover:shadow-lg">
                   <img
-                    src={comment.author?.profilePicture.path || "/default-avatar.png"}
+                    src={comment.author?.profilePicture?.path || "/default-avatar.png"}
                     alt={comment.author?.username}
                     className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
                   />

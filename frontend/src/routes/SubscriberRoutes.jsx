@@ -32,7 +32,11 @@ import ViewGuide from "../components/Posts/ViewGuide";
 import GuideDetails from "../components/Posts/GuideDetails";
 import CheckoutForm from "../components/Plans/CheckoutForm";
 import PostDetails from "../components/Posts/PostDetails";
+import BookmarkDetails from "../components/Posts/BookmarkDetails";
+
 import PlanDetails from "../components/Plans/PlanDetails";
+import UpcomingEvents from "../components/Posts/UpcomingEvents";
+
 
 const SubscriberRoutes = () => {
   return (
@@ -47,6 +51,7 @@ const SubscriberRoutes = () => {
         }
       >
         <Route index element={<PostsList />} />
+        <Route path="upcomingevents"element={<UpcomingEvents />} />
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route path="profilesettings" element={<SettingsSubPage />} />
@@ -78,6 +83,7 @@ const SubscriberRoutes = () => {
             element={<AccountVerifiedComponent />}
           />
       <Route path="/posts/:postId" element={<PostDetails/>}/>
+      <Route path="/bookmarks/:postId" element={<BookmarkDetails/>}/>
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
     </Routes>

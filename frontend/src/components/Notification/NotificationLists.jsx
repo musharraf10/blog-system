@@ -66,7 +66,7 @@ const Notifications = () => {
                   className="border-b border-gray-200 px-4 py-3 bg-gray-200 flex items-center gap-3"
                 >
                   <img
-                    src={notification.senderProfilePic || "/default-profile.png"}
+                    src={notification.userId.profilePicture || "/default-profile.png"}
                     alt="Sender Profile"
                     className="w-10 h-10 rounded-full border-2 border-gray-300"
                   />

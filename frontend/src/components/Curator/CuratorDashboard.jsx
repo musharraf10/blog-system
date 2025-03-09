@@ -2,7 +2,7 @@ import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags,FaBookmark } from "react-icons/fa";
-import { MdContentPaste } from "react-icons/md";
+import { MdContentPaste,MdPayment } from "react-icons/md";
 import { BsFileEarmarkText, BsCardList, BsCollection } from "react-icons/bs";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import PrivateNavbar from "../Navbar/PrivateNavbar";
@@ -14,6 +14,7 @@ const navigation = [
   { name: "Step-by-Step Guides", href: "/curator/stepbystepguide", icon: BsCardList },
   { name: "Articles", href: "/curator/articles", icon: BsFileEarmarkText },
   { name: "Bookmarks", href: "/curator/bookmarks", icon: FaBookmark},
+   { name: "Pricing", href: "/curator/pricing", icon: MdPayment },
 ];
 
 export default function CuratorDashboard() {

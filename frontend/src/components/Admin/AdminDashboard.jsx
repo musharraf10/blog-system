@@ -11,7 +11,6 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import PrivateNavbar from "../Navbar/PrivateNavbar"
 
 const navigation = [
-  { name: "Dashboard", href: "/admin", icon: HomeIcon },
   { name: "Content Management", href: "/admin/content-management", icon: MdContentPaste },
   { name: "User Management", href: "/admin/user-management", icon: FaUsersCog },
   { name: "Payment Management", href: "/admin/payment-management", icon: MdPayment },

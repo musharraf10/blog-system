@@ -17,8 +17,8 @@ const sendArticleNotification = async (to, postId, title) => {
       subject: `New Article Published: ${title}`,
       html: `
         <h2>${title}</h2>
-        <p>A new article has been published. Click the link below to read it:</p>
-        <p><a href="http://localhost:5173/article/${postId}" target="_blank">Read Article</a></p>
+        <p>A new article has been published or Updated. Click the link below to read it:</p>
+        <p><a href="http://localhost:5173/posts/article/${postId}" target="_blank">Read Article</a></p>
       `,
     };
 

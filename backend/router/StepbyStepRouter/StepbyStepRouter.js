@@ -3,6 +3,7 @@ const upload = require('../../utils/fileupload'); // Ensure correct path
 const  {addStepbyStepGuide, updateStepbyStepGuide, getVideoGuide, VideoGuideSingle} = require('../../controllers/StepbyStepGuide/StepbyStepController');
 const multer = require('multer');
 const isAuthenticated = require('../../middlewares/isAuthenticated');
+const isAccountVerified = require("../../middlewares/isAccountVerified")
 
 const VideoGuideRouter = express.Router();
 
@@ -29,7 +30,7 @@ VideoGuideRouter.post("/addguide", (req, res, next) => {
       console.log("req.files.thumbnailImage:", req.files.thumbnail);
       next(); 
     });
-  }, isAuthenticated, addStepbyStepGuide); 
+  }, isAuthenticated, isAccountVerified, addStepbyStepGuide); 
 
 // VideoGuideRouter.put(
 //     "/updateguide/:id",
@@ -68,7 +69,7 @@ VideoGuideRouter.put(
         next();
       });
     },
-    isAuthenticated,
+    isAuthenticated, isAccountVerified,
     updateStepbyStepGuide
 );
   

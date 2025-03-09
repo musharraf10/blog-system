@@ -103,12 +103,12 @@ export default function StepByStepGuide() {
     formData.append("steps", JSON.stringify(steps));
   
     if (thumbnailImage) {
-      formData.append("thumbnailImage", thumbnailImage);
+      formData.append("thumbnail", thumbnailImage);
     }
   
     steps.forEach((step, index) => {
       if (step.stepMedia) {
-        formData.append(`stepMedia${index}`, step.stepMedia);
+        formData.append(`stepMedia`, step.stepMedia);
       }
     });
   

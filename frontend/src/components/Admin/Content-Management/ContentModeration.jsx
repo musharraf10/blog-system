@@ -33,6 +33,7 @@ import axios from "axios";
 import ContentPart from "./ContentModerationSub";
 import { getallpostsdata } from "../../../APIServices/posts/postsAPI";
 import PostDetailsModal from "./Postdetailmodal";
+import Dashboard from "../Dashboard/Dashboard";
 
 const FormContainer = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
@@ -77,6 +78,7 @@ const ContentForm = () => {
 
   return (
     <>
+      <Dashboard/>
       <ContentPart />
       {/* <FormContainer>
         <Typography

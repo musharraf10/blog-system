@@ -18,7 +18,7 @@ const sendStepByStepNotification = async (to, postId, title) => {
       html: `
         <h2>${title}</h2>
         <p>A new step-by-step guide is available. Click below to follow the steps:</p>
-        <p><a href="http://localhost:5173/guide/${postId}" target="_blank">View Guide</a></p>
+        <p><a href="http://localhost:5173/posts/guide/${postId}" target="_blank">View Guide</a></p>
       `,
     };
 

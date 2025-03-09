@@ -15,6 +15,7 @@ const navigation = [
   { name: "Video Tutorials", href: "/subscriber/stepbystepguide", icon: FaUserEdit },
   { name: "Bookmarks", href: "/subscriber/bookmarks", icon: FaCalendarPlus },
   { name: "Upcoming Events", href: "/subscriber/upcomingevents", icon: FaTags },
+  { name: "Pricing", href: "subscriber/pricing", icon: MdPayment },
 ];
 
 export default function SubscriberDashboard() {

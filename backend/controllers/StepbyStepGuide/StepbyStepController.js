@@ -164,8 +164,9 @@ const updateStepbyStepGuide = async (req, res) => {
 
         const { title, description, tags, status, steps } = req.body;
         const { id } = req.params;
-
+        console.log("ID", id)
         const guide = await StepbyStepGuide.findById(id);
+        console.log(guide)
         if (!guide) {
             return res.status(404).json({ message: "Guide not found" });
         }
@@ -188,7 +189,7 @@ const updateStepbyStepGuide = async (req, res) => {
                 folder: 'step_guides',
                 resource_type: 'image'
             });
-            guide.thumbnailImage = uploadResult.secure_url;
+            guide.thumbnail = uploadResult.secure_url;
         }
 
         let stepMediaUrls = [];
@@ -230,7 +231,7 @@ const updateStepbyStepGuide = async (req, res) => {
                 { new: true, upsert: true }
             );
         }
-
+        sendStepByStepNotification(post.author.email, createPost._id ,title);
         res.status(200).json({ message: "Guide updated successfully", guide, post, tags: tagArray });
     } catch (error) {
         console.error("Error updating guide:", error);

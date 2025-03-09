@@ -145,7 +145,7 @@ const ContentPart = () => {
         const response = await axios.get(
           `${BackendServername}/posts/getallposts`
         );
-        console.log(response.data.posts);
+        console.log("data",response.data.posts);
         setallpostsdata(response.data.posts);
         setfilteredposts(response.data.posts);
       } catch (error) {

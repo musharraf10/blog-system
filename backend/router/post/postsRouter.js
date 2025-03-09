@@ -35,7 +35,7 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 
 
 ///gettingposts in conetnetmaganement in adminpanel
-
+postRouter.get("/ownerposts", isAuthenticated,postController.ownerposts)
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );

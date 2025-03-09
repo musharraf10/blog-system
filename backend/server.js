@@ -135,6 +135,9 @@ cron.schedule(
 );
 
 
+calculateEarnings()
+  .then(() => console.log("Earnings calculated successfully."))
+  .catch((err) => console.error("Error calculating earnings:", err));
 
 
 const app = express();

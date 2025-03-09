@@ -90,7 +90,7 @@ const updateWebinarController = async (req, res) => {
       postId: post._id,
       message: `Your webinar "${post.refId.title}" has been updated.`,
     });
-    sendWebinarNotification(author.email, "Webinar Updated", `Your webinar "${post.refId.title}" has been updated.`);
+    sendWebinarNotification(author.email, post._id, post.refId.title);
 
     return res.status(200).json({
       status: "success",

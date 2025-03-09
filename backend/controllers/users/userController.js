@@ -330,7 +330,7 @@ const userController = {
     //email
     const { email } = req.body;
     console.log(email)
-    const checkEmail = await User.find({email})
+    const checkEmail = await User.findOne({email})
     if(checkEmail){
       return res.status(302).json({message : "Email Already Exists"})
     }

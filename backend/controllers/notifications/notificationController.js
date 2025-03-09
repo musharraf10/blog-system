@@ -11,7 +11,7 @@ const notificationController = {
     const notifications = await Notification.find()
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .limit(Number(limit)).populate("userId")
     // console.log(notifications)
     const totalNotifications = await Notification.countDocuments();
     // console.log("T", totalNotifications)

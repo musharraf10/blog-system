@@ -214,6 +214,14 @@ const postController = {
     });
   }),
 
+  ownerposts : asyncHandler(async(req,res) =>{
+    const id = req.user;
+
+    const posts = await Post.find({author:id})
+
+    res.status(200).json({data : posts})
+  }),
+
   fetchAllWebiners: asyncHandler(async (req, res) => {
     const { category, title, page = 1, limit = 300 } = req.query;
     //Basic filter

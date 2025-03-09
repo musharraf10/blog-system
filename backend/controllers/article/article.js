@@ -105,7 +105,7 @@ const updateArticleController = async (req, res) => {
       postId: post._id,
       message: `Your article "${post.refId.title}" has been updated.`,
     });
-    sendNotificatiomMsg(author.email, "Article Updated", `Your article "${post.refId.title}" has been updated.`);
+    sendArticleNotification(author.email,post._id, title);
 
     return res.status(200).json({
       status: "success",

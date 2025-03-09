@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const Post = require("../../models/Post/Post");
 const Comment = require("../../models/Comment/Comment");
+const Notification = require("../../models/Notification/Notification");
+const {sendCommentNotification} = require("../../utils/commentNotification")
 
 const commentsController = {
   create: asyncHandler(async (req, res) => {
@@ -24,11 +26,7 @@ const commentsController = {
         message: `Your post has a new comment: "${content}".`,
     });
 
-    sendNotificatiomMsg(
-        post.author.email,
-        "New Comment on Your Post",
-        `Hello ${post.author.username},\n\nYour post has received a new comment:\n"${content}".\n\nCheck it out on the platform!`
-    );
+    sendCommentNotification(post.author.email, postId, content);
 
     res.json({ message: "Comment submitted for review", commentCreated });
   }),

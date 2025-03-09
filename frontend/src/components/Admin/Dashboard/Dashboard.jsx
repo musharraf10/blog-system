@@ -108,7 +108,7 @@ const Dashboard = () => {
       getAllGuides();
       getPaidusers();
       getUnPaidusers()
-    });
+    },[]);
   
 
   useEffect(() => {
@@ -214,7 +214,6 @@ const Dashboard = () => {
     <div
       style={{
         backgroundColor: "#f8fafc",
-        minHeight: "100vh",
         padding: "2rem 1rem",
         fontFamily: "'Poppins', sans-serif",
       }}
@@ -459,7 +458,7 @@ const Dashboard = () => {
           </Button>
         </div>
 
-        <Row className="mt-4">
+        {/* <Row className="mt-4">
           <Col>
             <Card
               style={{
@@ -479,14 +478,14 @@ const Dashboard = () => {
                 e.currentTarget.style.transform = "translateY(0)"
               }}
             >
-              <Card.Body>
-                <SubscriptionStats />
-              </Card.Body>
-            </Card>
+              {/* <Card.Body>
+                {/* <SubscriptionStats /> */}
+              {/* </Card.Body> */}
+            {/* </Card>
           </Col>
-        </Row>
+        </Row> */}
 
-        <h5
+        {/* <h5
           style={{
             background: "linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)",
             WebkitBackgroundClip: "text",
@@ -530,12 +529,12 @@ const Dashboard = () => {
                     padding: "1rem",
                   }}
                 >
-                  <MyChart data={chartData} options={chartOptions} />
-                </div>
+                  {/* <MyChart data={chartData} options={chartOptions} /> */}
+                {/* </div>
               </Card.Body>
             </Card>
           </Col>
-        </Row>
+        </Row> */} 
       </Container>
     </div>
   )

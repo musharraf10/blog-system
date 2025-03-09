@@ -102,7 +102,7 @@ const ManageData = () => {
     (item) => item.contentData === "video-tutorial"
   ).length;
   const guideCount = contentItems.filter(
-    (item) => item.contentData === "stepbystepguide"
+    (item) => item.contentData === "StepbyStepGuide"
   ).length;
   const webinarCount = contentItems.filter(
     (item) => item.contentData === "Webinar"
