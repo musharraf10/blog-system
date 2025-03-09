@@ -57,28 +57,42 @@ const updateArticleController = async (req, res) => {
     const { id } = req.params;
     const thumbnail = req.file ? req.file.path : null;
 
+    console.log("Received ID for update:", id);
+
     // Find the article
-    const article = await Article.findById(id);
+    const article = await Post.findById(id).populate("refId");
+
+    console.log("Fetched article:", article);
+
     if (!article) {
-      return res.status(404).json({
-        status: "error",
-        message: "Article not found.",
-      });
+      return res.status(404).json({ status: "error", message: "Article not found." });
     }
 
-    article.title = title || article.title;
-    article.description = content || article.description;
-    article.tags = tags || article.tags;
-    if (thumbnail) article.thumbnail = thumbnail;
+    if (!article.refId) {
+      return res.status(400).json({ status: "error", message: "Reference ID (refId) not found in the article." });
+    }
 
-    const post = await Post.findOne({ refId: id, contentData: "Article" });
+    // Update refId fields safely
+    article.refId.set({
+      title: title || article.refId.title,
+      description: content || article.refId.description,
+      tags: tags || article.refId.tags,
+      thumbnail: thumbnail || article.refId.thumbnail,
+    });
+
+    // Find the corresponding post
+    const post = await Post.findOne({ refId: article.refId._id, contentData: "Article" });
+
     if (post) {
-      post.status = status || post.status;
-      post.price = price || post.price;
-      if (thumbnail) post.thumbnail = thumbnail;
+      post.set({
+        status: status || post.status,
+        price: price || post.price,
+      });
       await post.save();
     }
 
+    // Save changes
+    await article.refId.save();
     await article.save();
 
     return res.status(200).json({
@@ -89,10 +103,7 @@ const updateArticleController = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating article:", error);
-    return res.status(500).json({
-      status: "error",
-      message: "Failed to update article. Please try again.",
-    });
+    return res.status(500).json({ status: "error", message: "Failed to update article. Please try again." });
   }
 };
 

@@ -15,8 +15,7 @@ webinarRouter.post("/addwebinar",
 webinarRouter.put(
         "/updatewebinar/:id",
         upload.single("thumbnail"),
-        isAuthenticated,
-        updateWebinarController
+        updateWebinarController,
       );
       
 

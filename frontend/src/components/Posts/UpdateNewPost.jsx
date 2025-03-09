@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import axios from "axios";
 import {
@@ -10,6 +10,8 @@ import {
   Container,
   TextField,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 
 const UpdateNewPost = () => {
   const { id } = useParams(); // Extract post ID from URL
@@ -18,21 +20,27 @@ const UpdateNewPost = () => {
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
   const [price, setPrice] = useState("");
-
+  const navigate = useNavigate();
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+  });
+
+  let userRole = data?.role;
 
   // Fetch existing post details
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${BackendServername}/managecontent/getpost/${id}`);
+        const response = await axios.get(`${BackendServername}/posts/managecontent/getpost/${id}`);
         const post = response.data;
-
-        // Set form values
-        setTitle(post.title);
-        setContent(post.content);
-        setTags(post.tags.join(", "));
-        setPrice(post.price || "");
+        console.log(post);
+        setTitle(post.refId.title);
+        setContent(post.refId.description);
+        setTags(post.refId.tags.join(","));
+        setPrice(post.price || "0");
       } catch (error) {
         console.error("Error fetching post:", error);
         alert("Failed to load post details.");
@@ -40,7 +48,7 @@ const UpdateNewPost = () => {
     };
 
     fetchPost();
-  }, [id]);
+  }, [id,BackendServername]);
 
   // Update the existing post
   const updatePost = async () => {
@@ -51,7 +59,7 @@ const UpdateNewPost = () => {
 
     try {
       const response = await axios.put(
-        `${BackendServername}/posts/update/${id}`,
+        `${BackendServername}/article/updatearticle/${id}`,
         {
           title,
           content,
@@ -63,6 +71,7 @@ const UpdateNewPost = () => {
 
       if (response.status === 200) {
         alert("Post updated successfully!");
+        navigate(`/${userRole}/manage-content`);
       } else {
         alert("Something went wrong! Please try again.");
       }

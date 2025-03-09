@@ -9,7 +9,7 @@ import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
   { name: "Dashboard", href: "/curator", icon: HomeIcon },
-  { name: "ContentDashBoard", href: "/curator/DashBoard", icon: MdContentPaste },
+  { name: "ContentDashBoard", href: "/curator/manage-content", icon: MdContentPaste },
   { name: "Webinars", href: "/curator/webinars", icon: BsCollection },
   { name: "Step-by-Step Guides", href: "/curator/stepbystepguide", icon: BsCardList },
   { name: "Articles", href: "/curator/articles", icon: BsFileEarmarkText },

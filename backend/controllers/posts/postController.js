@@ -135,7 +135,7 @@ const postController = {
   }),
   getonepost:asyncHandler(async(req,res)=>{
     try{
-      const post = await Post.findById(req.params.id)
+      const post = await Post.findById(req.params.id).populate("refId")
       if(!post){
         return res.status(404).json({status:"error",message:"Post not found"})
         }

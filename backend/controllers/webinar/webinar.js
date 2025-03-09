@@ -44,49 +44,55 @@ const addWebinarController = async (req, res) => {
 
 const updateWebinarController = async (req, res) => {
     try {
-        const { title, link, date, time, description, price } = req.body;
-        const { id } = req.params;
-        const thumbnail = req.file ? req.file.path : null;
-
-        
-        const webinar = await Webinar.findById(id);
-        if (!webinar) {
-            return res.status(404).json({
-                status: "error",
-                message: "Webinar not found.",
-            });
-        }
-
-        webinar.title = title || webinar.title;
-        webinar.link = link || webinar.link;
-        webinar.date = date || webinar.date;
-        webinar.time = time || webinar.time;
-        webinar.description = description || webinar.description;
-        if (thumbnail) webinar.thumbnail = thumbnail;
-
-        const post = await Post.findOne({ refId: id, contentData: "Webinar" });
-        if (post) {
-            post.price = price || post.price;
-            if (thumbnail) post.thumbnail = thumbnail;
-            await post.save();
-        }
-
-        await webinar.save();
-
-        return res.status(200).json({
-            status: "success",
-            message: "Webinar updated successfully!",
-            webinar,
-            post,
-        });
+      const { id } = req.params; // Webinar ID
+      const { title, link, date, time, description, price, status } = req.body;
+      const thumbnail = req.file ? req.file.path : null;
+  
+      console.log("Received update request for ID:", id);
+  
+      // Find the post that references this webinar
+      const post = await Post.findById(id).populate("refId");
+  
+      if (!post) {
+        return res.status(404).json({ status: "error", message: "Webinar post not found." });
+      }
+  
+      if (!post.refId) {
+        return res.status(400).json({ status: "error", message: "Webinar reference (refId) not found." });
+      }
+  
+      // Update the webinar details inside refId
+      post.refId.set({
+        title: title || post.refId.title,
+        link: link || post.refId.link,
+        date: date || post.refId.date,
+        time: time || post.refId.time,
+        description: description || post.refId.description,
+        thumbnail: thumbnail || post.refId.thumbnail,
+      });
+  
+      // Update the corresponding post
+      post.set({
+        status: status || post.status,
+        price: price || post.price,
+        thumbnail: thumbnail || post.thumbnail,
+      });
+  
+      // Save both the webinar and the post
+      await post.refId.save();
+      await post.save();
+  
+      return res.status(200).json({
+        status: "success",
+        message: "Webinar updated successfully!",
+        webinar: post.refId,
+        post,
+      });
     } catch (error) {
-        console.error("Error updating webinar:", error);
-        return res.status(500).json({
-            status: "error",
-            message: "Failed to update webinar. Please try again.",
-        });
+      console.error("Error updating webinar:", error);
+      return res.status(500).json({ status: "error", message: "Failed to update webinar. Please try again." });
     }
-};
+  };
 
 
 module.exports = {addWebinarController, updateWebinarController};

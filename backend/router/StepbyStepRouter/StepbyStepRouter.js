@@ -31,6 +31,26 @@ VideoGuideRouter.post("/addguide", (req, res, next) => {
     });
   }, isAuthenticated, addStepbyStepGuide); 
 
+// VideoGuideRouter.put(
+//     "/updateguide/:id",
+//     (req, res, next) => {
+//       uploadFields(req, res, (err) => {
+//         if (err) {
+//           console.error("Multer Error:", err);
+//           if (err instanceof multer.MulterError) {
+//             console.error("Multer Error Code:", err.code);
+//             console.error("Multer Error Field:", err.field);
+//           }
+//           return res.status(500).send("File upload error.");
+//         }
+//         console.log("req.files.stepMedia:", req.files.stepMedia);
+//         console.log("req.files.thumbnailImage:", req.files.thumbnailImage);
+//         next();
+//       });
+//     },
+//     isAuthenticated,
+//     updateStepbyStepGuide
+// );
 VideoGuideRouter.put(
     "/updateguide/:id",
     (req, res, next) => {

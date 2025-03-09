@@ -150,22 +150,32 @@ const addStepbyStepGuide = async (req, res) => {
 
 const updateStepbyStepGuide = async (req, res) => {
     try {
-        console.log("Request Body:", req.body);
-        console.log("Uploaded Files:", req.files);
+        const { id } = req.params; // Guide ID
+        const { title, description, tags, status, steps, price } = req.body;
+        const thumbnail = req.files?.['thumbnailImage'] ? req.files['thumbnailImage'][0].path : null;
 
-        const { title, description, tags, status, steps } = req.body;
-        const { id } = req.params;
+        console.log("Received update request for Guide ID:", id);
 
-        const guide = await StepbyStepGuide.findById(id);
-        if (!guide) {
-            return res.status(404).json({ message: "Guide not found" });
+        // Find the post that references this guide
+        const post = await Post.findById(id).populate("refId");
+
+        if (!post) {
+            return res.status(404).json({ status: "error", message: "Guide post not found." });
         }
 
-        guide.title = title || guide.title;
-        guide.description = description || guide.description;
-        guide.tags = tags || guide.tags;
+        if (!post.refId) {
+            return res.status(400).json({ status: "error", message: "Guide reference (refId) not found." });
+        }
 
-        let parsedSteps = guide.steps;
+        // Update the guide details inside refId
+        post.refId.set({
+            title: title || post.refId.title,
+            description: description || post.refId.description,
+            price: price !== undefined ? price : post.refId.price,
+            thumbnailImage: thumbnail || post.refId.thumbnailImage,
+        });
+
+        let parsedSteps = post.refId.steps;
         if (steps) {
             try {
                 parsedSteps = JSON.parse(steps);
@@ -174,16 +184,9 @@ const updateStepbyStepGuide = async (req, res) => {
             }
         }
 
-        if (req.files['thumbnailImage']) {
-            const uploadResult = await cloudinary.uploader.upload(req.files['thumbnailImage'][0].path, {
-                folder: 'step_guides',
-                resource_type: 'image'
-            });
-            guide.thumbnailImage = uploadResult.secure_url;
-        }
-
+        // Handle step media uploads
         let stepMediaUrls = [];
-        if (req.files['stepMedia']) {
+        if (req.files?.['stepMedia']) {
             for (let file of req.files['stepMedia']) {
                 const uploadResult = await cloudinary.uploader.upload(file.path, {
                     folder: 'step_guides',
@@ -193,39 +196,47 @@ const updateStepbyStepGuide = async (req, res) => {
             }
         }
 
+        // Assign media URLs to steps
         parsedSteps.forEach((step, index) => {
             step.stepMedia = stepMediaUrls[index] || step.stepMedia;
         });
 
-        guide.steps = parsedSteps;
+        post.refId.steps = parsedSteps;
 
-        
-        const post = await Post.findOne({ refId: id, contentData: "StepbyStepGuide" });
-        if (post) {
-            post.status = status || post.status;
-            await post.save();
-        }
+        // Update the corresponding post
+        post.set({
+            status: status || post.status,
+            price: post.refId.price,
+            thumbnail: thumbnail || post.thumbnail,
+        });
 
-        
-        await guide.save();
+        // Save both the guide and the post
+        await post.refId.save();
+        await post.save();
 
-        
+        // Handle tags update
         const tagArray = Array.isArray(tags) ? tags : JSON.parse(tags);
         for (const tagName of tagArray) {
             await Tag.findOneAndUpdate(
                 { tagname: tagName },
                 {
                     $setOnInsert: { tagname: tagName, createdBy: req.user },
-                    $push: { allposts: guide._id },
+                    $push: { allposts: post.refId._id },
                 },
                 { new: true, upsert: true }
             );
         }
 
-        res.status(200).json({ message: "Guide updated successfully", guide, post, tags: tagArray });
+        return res.status(200).json({
+            status: "success",
+            message: "Guide updated successfully!",
+            guide: post.refId,
+            post,
+            tags: tagArray,
+        });
     } catch (error) {
         console.error("Error updating guide:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
+        return res.status(500).json({ status: "error", message: "Failed to update guide. Please try again." });
     }
 };
 

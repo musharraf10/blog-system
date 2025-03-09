@@ -32,6 +32,7 @@ import PostsList from "../components/Posts/PostsList";
 import GuideDetails from "../components/Posts/GuideDetails";
 import { Webinars } from "../components/Webinar/Webinars";
 import ViewGuide from "../components/Posts/ViewGuide"
+import StepByStepGuide from "../components/Posts/StepByStepGuide";
 
 const CuratorRoutes = () => {
     return (
@@ -45,12 +46,12 @@ const CuratorRoutes = () => {
           }
         >
           <Route index="contentdashBoard" element={<ContentDashBoard />} />
-          <Route path="DashBoard" element={<ManageData />} />
           <Route path="Analytics" element={<Analytics />} />
           <Route path="AddCategory" element={<AddCategory />} />
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post/article" element={<CreatePost />} />
           <Route path="create-post/webinar" element={<WebinarForm />} />
+          <Route path="create-post/stepbystepguide" element={<StepByStepGuide />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
@@ -61,6 +62,7 @@ const CuratorRoutes = () => {
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="pricing" element={<Pricing />} />
+          <Route path="manage-content" element={<ManageData />} />
           <Route path="checkout/:planId" element={<CheckoutForm />} />
           <Route path="plan-details" element={<PlanDetails />} />
           <Route path="post" element={<PlanDetails />} />

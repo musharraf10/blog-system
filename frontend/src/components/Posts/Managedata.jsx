@@ -29,8 +29,11 @@ const ManageData = () => {
     return <Navigate to="/login" />;
   } else {
     var userId = data?._id;
+    
     console.log("userId",userId);
   }
+  let userRole = data?.role;
+
 
   const navigate = useNavigate();
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
@@ -47,11 +50,9 @@ const ManageData = () => {
             params: { userId },
             withCredentials: true, 
           }
-        );
-        
+        );        
         const data = response.data;
-        console.log(data.data);
-        
+        console.log(data.data);        
         setContentItems(data.data);
       } catch (error) {
         alert(error);
@@ -101,7 +102,7 @@ const ManageData = () => {
     (item) => item.contentData === "video-tutorial"
   ).length;
   const guideCount = contentItems.filter(
-    (item) => item.contentData === "StepbyStepGuide"
+    (item) => item.contentData === "stepbystepguide"
   ).length;
   const webinarCount = contentItems.filter(
     (item) => item.contentData === "Webinar"
@@ -122,7 +123,18 @@ const ManageData = () => {
     setselectedcontent(null);
     setselectedeyebutton(null);
   };
-
+  const handleDelete=(id)=>{
+    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+      axios.delete(`${BackendServername}/posts/managecontent/deletepost/${id}`)
+      .then(()=>{
+        alert("Post Deleted Successfully")
+        setContentItems((prevItems) => prevItems.filter(item => item._id !== id));
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+  }
   return (
     <>
     <div className="min-h-screen bg-gray-50">
@@ -151,7 +163,7 @@ const ManageData = () => {
                 <div
                   key={contentType.type}
                   className="bg-white border border-gray-200 rounded-xl p-6 group transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
-                  onClick={() => navigate(`/admin/create-post/${contentType.type}`)}
+                  onClick={() => navigate(`/${userRole}/create-post/${contentType.type}`)}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] opacity-0 transition-opacity duration-300 group-hover:opacity-5"></div>
                   <div className="flex items-center mb-4">
@@ -167,7 +179,7 @@ const ManageData = () => {
                     className="mt-2 inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white text-sm font-medium transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md relative overflow-hidden group-hover:scale-105"
                     onClick={(e) => {
                       e.stopPropagation()
-                      navigate(`/admin/create-post/${contentType.type}`)
+                      navigate(`/${userRole}/create-post/${contentType.type}`)
                     }}
                   >
                     <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 hover:opacity-20"></span>
@@ -301,7 +313,7 @@ const ManageData = () => {
                   const category = categoryDetails.find((cat) => cat.type === item.contentData)
 
                   return (
-                    <tr key={item.id} className="hover:bg-blue-50 transition-all duration-300">
+                    <tr key={item._id} className="hover:bg-blue-50 transition-all duration-300">
                       <td className="px-8 py-6">
                         <div className="text-sm font-medium text-gray-800 hover:text-[#1565C0] transition-colors duration-300">
                           {item.refId?.title}
@@ -323,12 +335,12 @@ const ManageData = () => {
                       </td>
                       <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
                         {/* <Eye onClick={() => handleOpenModalofposts(item)} /> */}
-                        <button className="px-3 py-1.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                        <button onClick={()=>navigate(`/update-post/${item.contentData}/${item._id}`)} className="px-3 py-1.5 bg-gradient-to-r from-[#1565C0] to-[#42A5F5] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#0D47A1] hover:to-[#1565C0] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
                           <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
                           <Edit className="h-3.5 w-3.5 inline mr-1.5" />
                           Edit
                         </button>
-                        <button className="px-3 py-1.5 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
+                        <button onClick={()=>handleDelete(item._id)}className="px-3 py-1.5 bg-gradient-to-r from-[#D32F2F] to-[#F44336] text-white rounded-md transition-all duration-300 hover:shadow-md hover:from-[#B71C1C] hover:to-[#D32F2F] text-xs font-medium transform hover:-translate-y-0.5 relative overflow-hidden group">
                           <span className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
                           <Trash2 className="h-3.5 w-3.5 inline mr-1.5" />
                           Delete

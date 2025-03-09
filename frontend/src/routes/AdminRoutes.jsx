@@ -38,8 +38,7 @@ import GuideDetails from "../components/Posts/GuideDetails";
 import { Webinars } from "../components/Webinar/Webinars";
 import { BookmarkPost } from "../components/Posts/BookmarkPost";
 import ViewGuide from "../components/Posts/ViewGuide"
-
-
+import UpdateGuide from "../components/Posts/UpdateGuide"
 
 
 
@@ -91,6 +90,9 @@ const AdminRoutes = () => {
             path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
+              <Route path="/update-post/Article/:id"element={<UpdateNewPost/>}/>
+                  <Route path="/update-post/Webinar/:id"element={<UpdateWebinar/>}/>
+                  <Route path="/update-post/StepbyStepGuide/:id"element={<UpdateGuide/>}/>
       </Routes>
     );
   };
