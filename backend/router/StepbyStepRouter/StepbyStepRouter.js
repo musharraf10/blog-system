@@ -8,7 +8,7 @@ const VideoGuideRouter = express.Router();
 
 // Upload Middleware
 const uploadFields = upload.fields([
-    { name: "thumbnailImage", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
     { name: "stepMedia", maxCount: 10 } 
 ]);
 
@@ -26,7 +26,7 @@ VideoGuideRouter.post("/addguide", (req, res, next) => {
         return res.status(500).send("File upload error.");
       }
       console.log("req.files.stepMedia:", req.files.stepMedia);
-      console.log("req.files.thumbnailImage:", req.files.thumbnailImage);
+      console.log("req.files.thumbnailImage:", req.files.thumbnail);
       next(); 
     });
   }, isAuthenticated, addStepbyStepGuide); 
@@ -64,7 +64,7 @@ VideoGuideRouter.put(
           return res.status(500).send("File upload error.");
         }
         console.log("req.files.stepMedia:", req.files.stepMedia);
-        console.log("req.files.thumbnailImage:", req.files.thumbnailImage);
+        console.log("req.files.thumbnailImage:", req.files.thumbnail);
         next();
       });
     },

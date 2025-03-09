@@ -84,8 +84,8 @@ const addStepbyStepGuide = async (req, res) => {
         }
 
         let thumbnailImageUrl = null;
-        if (req.files['thumbnailImage']) {
-            const uploadResult = await cloudinary.uploader.upload(req.files['thumbnailImage'][0].path, {
+        if (req.files['thumbnail']) {
+            const uploadResult = await cloudinary.uploader.upload(req.files['thumbnail'][0].path, {
                 folder: 'step_guides',
                 resource_type: 'image'
             });
@@ -112,7 +112,7 @@ const addStepbyStepGuide = async (req, res) => {
         const newGuide = new StepbyStepGuide({
             title,
             description,
-            thumbnailImage: thumbnailImageUrl, 
+            thumbnail: thumbnailImageUrl, 
             steps,
             tags
         });
@@ -139,6 +139,15 @@ const addStepbyStepGuide = async (req, res) => {
             
         }
         await createPost.save()
+        const followers = await User.find({ following: req.user._id });
+            for (const follower of followers) {
+                await Notification.create({
+                    userId: follower._id,
+                    postId: createPost._id,
+                    message: `New guide "${title}" added by ${req.user.username}.`,
+                });
+                sendStepByStepNotification(follower.email, createPost._id ,title);
+            }
         
 
         res.status(201).json({ message: 'Guide added successfully', guide: newGuide , Tag : tagArray});
@@ -150,32 +159,22 @@ const addStepbyStepGuide = async (req, res) => {
 
 const updateStepbyStepGuide = async (req, res) => {
     try {
-        const { id } = req.params; // Guide ID
-        const { title, description, tags, status, steps, price } = req.body;
-        const thumbnail = req.files?.['thumbnailImage'] ? req.files['thumbnailImage'][0].path : null;
+        console.log("Request Body:", req.body);
+        console.log("Uploaded Files:", req.files);
 
-        console.log("Received update request for Guide ID:", id);
+        const { title, description, tags, status, steps } = req.body;
+        const { id } = req.params;
 
-        // Find the post that references this guide
-        const post = await Post.findById(id).populate("refId");
-
-        if (!post) {
-            return res.status(404).json({ status: "error", message: "Guide post not found." });
+        const guide = await StepbyStepGuide.findById(id);
+        if (!guide) {
+            return res.status(404).json({ message: "Guide not found" });
         }
 
-        if (!post.refId) {
-            return res.status(400).json({ status: "error", message: "Guide reference (refId) not found." });
-        }
+        guide.title = title || guide.title;
+        guide.description = description || guide.description;
+        guide.tags = tags || guide.tags;
 
-        // Update the guide details inside refId
-        post.refId.set({
-            title: title || post.refId.title,
-            description: description || post.refId.description,
-            price: price !== undefined ? price : post.refId.price,
-            thumbnailImage: thumbnail || post.refId.thumbnailImage,
-        });
-
-        let parsedSteps = post.refId.steps;
+        let parsedSteps = guide.steps;
         if (steps) {
             try {
                 parsedSteps = JSON.parse(steps);
@@ -184,9 +183,16 @@ const updateStepbyStepGuide = async (req, res) => {
             }
         }
 
-        // Handle step media uploads
+        if (req.files['thumbnail']) {
+            const uploadResult = await cloudinary.uploader.upload(req.files['thumbnail'][0].path, {
+                folder: 'step_guides',
+                resource_type: 'image'
+            });
+            guide.thumbnailImage = uploadResult.secure_url;
+        }
+
         let stepMediaUrls = [];
-        if (req.files?.['stepMedia']) {
+        if (req.files['stepMedia']) {
             for (let file of req.files['stepMedia']) {
                 const uploadResult = await cloudinary.uploader.upload(file.path, {
                     folder: 'step_guides',
@@ -196,47 +202,39 @@ const updateStepbyStepGuide = async (req, res) => {
             }
         }
 
-        // Assign media URLs to steps
         parsedSteps.forEach((step, index) => {
             step.stepMedia = stepMediaUrls[index] || step.stepMedia;
         });
 
-        post.refId.steps = parsedSteps;
+        guide.steps = parsedSteps;
 
-        // Update the corresponding post
-        post.set({
-            status: status || post.status,
-            price: post.refId.price,
-            thumbnail: thumbnail || post.thumbnail,
-        });
+        
+        const post = await Post.findOne({ refId: id, contentData: "StepbyStepGuide" });
+        if (post) {
+            post.status = status || post.status;
+            await post.save();
+        }
 
-        // Save both the guide and the post
-        await post.refId.save();
-        await post.save();
+        
+        await guide.save();
 
-        // Handle tags update
+        
         const tagArray = Array.isArray(tags) ? tags : JSON.parse(tags);
         for (const tagName of tagArray) {
             await Tag.findOneAndUpdate(
                 { tagname: tagName },
                 {
                     $setOnInsert: { tagname: tagName, createdBy: req.user },
-                    $push: { allposts: post.refId._id },
+                    $push: { allposts: guide._id },
                 },
                 { new: true, upsert: true }
             );
         }
 
-        return res.status(200).json({
-            status: "success",
-            message: "Guide updated successfully!",
-            guide: post.refId,
-            post,
-            tags: tagArray,
-        });
+        res.status(200).json({ message: "Guide updated successfully", guide, post, tags: tagArray });
     } catch (error) {
         console.error("Error updating guide:", error);
-        return res.status(500).json({ status: "error", message: "Failed to update guide. Please try again." });
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
 

@@ -19,11 +19,6 @@ const commentSchema = new mongoose.Schema(
       required: true,
       index: true, // Optimize post-based queries
     },
-    status: {
-      type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending", // Moderation support
-    },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     replies: [{

@@ -1,12 +1,14 @@
 const Tag =require("../../models/Tags/Tags.js");
-
+const User = require("../../models/User/User");
+const Notification = require("../../models/Notification/Notification");
+const sendArticleNotification = require("../../utils/articleNotification.js");
 const Article = require("../../models/article/article.js");
 const Post = require("../../models/Post/Post.js");
 
-const addarticleconroller = async (req, res) => {
+const addarticlecontroller = async (req, res) => {
   try {
     const { title, content, status, tags, price } = req.body;
-    const thumbnail = req.file ? req.file.path : null; 
+    const thumbnail = req.file ? req.file.path : null;
 
     if (!title || !content || !status) {
       return res.status(400).json({
@@ -23,18 +25,31 @@ const addarticleconroller = async (req, res) => {
       thumbnail,
     });
 
-    
+    // Create related post
     const createPost = new Post({
       author: req.user,
       status,
       contentData: "Article",
       refId: newArticle._id,
       price,
-      thumbnail, 
+      thumbnail,
     });
 
     await newArticle.save();
     await createPost.save();
+
+    // Fetch the user's followers
+    const user = await User.findById(req.user).populate("followers");
+
+    // Send notifications to followers
+    user.followers.forEach(async (follower) => {
+      await Notification.create({
+        userId: follower._id,
+        postId: createPost._id,
+        message: `New article posted by ${user.username}: ${title}`,
+      });
+      sendArticleNotification(follower.email, createPost._id,title);
+    });
 
     return res.status(201).json({
       status: "success",
@@ -57,22 +72,12 @@ const updateArticleController = async (req, res) => {
     const { id } = req.params;
     const thumbnail = req.file ? req.file.path : null;
 
-    console.log("Received ID for update:", id);
-
-    // Find the article
     const article = await Post.findById(id).populate("refId");
 
-    console.log("Fetched article:", article);
-
-    if (!article) {
+    if (!article || !article.refId) {
       return res.status(404).json({ status: "error", message: "Article not found." });
     }
 
-    if (!article.refId) {
-      return res.status(400).json({ status: "error", message: "Reference ID (refId) not found in the article." });
-    }
-
-    // Update refId fields safely
     article.refId.set({
       title: title || article.refId.title,
       description: content || article.refId.description,
@@ -80,7 +85,6 @@ const updateArticleController = async (req, res) => {
       thumbnail: thumbnail || article.refId.thumbnail,
     });
 
-    // Find the corresponding post
     const post = await Post.findOne({ refId: article.refId._id, contentData: "Article" });
 
     if (post) {
@@ -91,9 +95,17 @@ const updateArticleController = async (req, res) => {
       await post.save();
     }
 
-    // Save changes
     await article.refId.save();
     await article.save();
+
+    // Notify the author about the update
+    const author = await User.findById(post.author);
+    await Notification.create({
+      userId: author._id,
+      postId: post._id,
+      message: `Your article "${post.refId.title}" has been updated.`,
+    });
+    sendNotificatiomMsg(author.email, "Article Updated", `Your article "${post.refId.title}" has been updated.`);
 
     return res.status(200).json({
       status: "success",
@@ -106,10 +118,6 @@ const updateArticleController = async (req, res) => {
     return res.status(500).json({ status: "error", message: "Failed to update article. Please try again." });
   }
 };
-
-
-
-
 
  const getAllArticles = async (req, res) => {
   try {
@@ -131,4 +139,4 @@ const updateArticleController = async (req, res) => {
 };
 
 
-module.exports={addarticleconroller,getAllArticles,updateArticleController}
+module.exports={addarticlecontroller, getAllArticles, updateArticleController}

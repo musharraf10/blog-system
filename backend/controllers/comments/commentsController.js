@@ -5,20 +5,34 @@ const Comment = require("../../models/Comment/Comment");
 const commentsController = {
   create: asyncHandler(async (req, res) => {
     const { postId, content, parentCommentId } = req.body;
+
     const post = await Post.findById(postId).populate("author");
     if (!post) throw new Error("Post not found");
-    
+
     const commentCreated = await Comment.create({
-      content,
-      author: req.user,
-      post: postId,
-      status: "pending", 
-      parentComment: parentCommentId || null, 
+        content,
+        author: req.user,
+        post: postId,
+        parentComment: parentCommentId || null,
     });
-    
+
     await Post.findByIdAndUpdate(postId, { $push: { comments: commentCreated._id } });
+
+    await Notification.create({
+        userId: post.author._id,
+        postId: postId,
+        message: `Your post has a new comment: "${content}".`,
+    });
+
+    sendNotificatiomMsg(
+        post.author.email,
+        "New Comment on Your Post",
+        `Hello ${post.author.username},\n\nYour post has received a new comment:\n"${content}".\n\nCheck it out on the platform!`
+    );
+
     res.json({ message: "Comment submitted for review", commentCreated });
   }),
+
 
   delete: asyncHandler(async (req, res) => {
     const { commentId } = req.params;

@@ -148,10 +148,31 @@ const postController = {
   
   
   approvePost: asyncHandler(async (req, res) => {
-    const postId = req.params.postId;
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId).populate("author");
+    if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+    }
+
     await Post.findByIdAndUpdate(postId, { status: "approved" });
+
+    await Notification.create({
+        userId: post.author._id,
+        postId: postId,
+        message: `Your post "${post.title}" has been approved by the admin.`,
+    });
+
+    
+    sendNotificatiomMsg(
+        post.author.email,
+        "Post Approved",
+        `Hello ${post.author.username},\n\nGreat news! Your post "${post.title}" has been approved by the admin and is now live.\n\nCheck it out on the platform!`
+    );
+
     res.json({ message: "Post approved successfully" });
   }),
+
 
   reportPost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
@@ -277,19 +298,55 @@ const postController = {
     }),
 
 
-    approveAll : asyncHandler(async(req,res) =>{
-
-        await Post.updateMany({}, { status: "approved" });
-
-        res.status(200).json({ message: "All posts approved successfully!" });
-    }),
+    approveAll: asyncHandler(async (req, res) => {
+      // Fetch all posts that are pending approval
+      const posts = await Post.find({ status: { $ne: "approved" } }).populate("author");
+  
+      if (posts.length === 0) {
+          return res.status(404).json({ message: "No posts found for approval." });
+      }
+  
+      // Update all posts to "approved"
+      await Post.updateMany({}, { status: "approved" });
+  
+      // Send notifications and emails to all authors
+      const notifications = posts.map(post => ({
+          userId: post.author._id,
+          postId: post._id,
+          message: `Your post "${post.title}" has been approved by the admin.`,
+      }));
+  
+      await Notification.insertMany(notifications);
+  
+     
+  
+      res.status(200).json({ message: "All posts approved successfully!" });
+  }),
+  
     
-    rejectedAll : asyncHandler(async(req,res) =>{
+  rejectedAll: asyncHandler(async (req, res) => {
+    
+    const posts = await Post.find({ status: { $ne: "rejected" } }).populate("author");
 
-        await Post.updateMany({}, { status: "rejected" });
+    if (posts.length === 0) {
+        return res.status(404).json({ message: "No posts found for rejection." });
+    }
 
-        res.status(200).json({ message: "All posts rejected successfully!" });
-    }),
+    // Update all posts to "rejected"
+    await Post.updateMany({}, { status: "rejected" });
+
+    // Send notifications and emails to all authors
+    const notifications = posts.map(post => ({
+        userId: post.author._id,
+        postId: post._id,
+        message: `Your post "${post.title}" has been rejected by the admin.`,
+    }));
+
+    await Notification.insertMany(notifications);
+
+    res.status(200).json({ message: "All posts rejected successfully!" });
+}),
+
 
 
   
