@@ -838,7 +838,7 @@ const ContentPart = () => {
           marginTop: 2,
           width: "100%",
           fontWeight: "bold",
-          marginLeft:-10,
+          marginLeft:1,
           textTransform: "uppercase",
           letterSpacing: "1.0px",
           padding: "15px 0",

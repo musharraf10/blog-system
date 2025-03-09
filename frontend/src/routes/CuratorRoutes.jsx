@@ -51,7 +51,7 @@ const CuratorRoutes = () => {
           <Route path="profile" element={<AccountSummaryDashboard />} />
           <Route path="create-post/article" element={<CreatePost />} />
           <Route path="create-post/webinar" element={<WebinarForm />} />
-          <Route path="create-post/stepbystepguide" element={<StepByStepGuide />} />
+          <Route path="create-post/StepbyStepGuide" element={<StepByStepGuide />} />
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
