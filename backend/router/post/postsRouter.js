@@ -35,6 +35,15 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 
 ///gettingposts in conetnetmaganement in adminpanel
 
+
+postRouter.get("/trending/videos", postController.fetchTrendingVideos);
+postRouter.get("/trending/articles", postController.fetchTrendingArticles);
+postRouter.get("/most-liked/videos", postController.fetchMostLikedVideos);
+postRouter.get("/most-liked/articles", postController.fetchMostLikedArticles);
+
+
+
+
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );

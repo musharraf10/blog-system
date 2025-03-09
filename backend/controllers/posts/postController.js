@@ -570,6 +570,57 @@ const postController = {
       res.status(500).json({ message: "Server Error" });
     }
   }),
+
+  fetchTrendingVideos: asyncHandler(async (req, res) => {
+    try {
+        const trendingVideos = await Post.find({ status: "approved", contentData: "VideoTutorial" })
+           .populate(refId);
+           
+
+        res.json({ status: "success", message: "Trending videos fetched", data: trendingVideos });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching trending videos" });
+    }
+}),
+
+fetchTrendingArticles: asyncHandler(async (req, res) => {
+    try {
+        const trendingArticles = await Post.find({ status: "approved", contentData: "Article" })
+            .populate("refId");
+
+        res.json({ status: "success", message: "Trending articles fetched", data: trendingArticles });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching trending articles" });
+    }
+}),
+
+fetchMostLikedVideos: asyncHandler(async (req, res) => {
+    try {
+        const mostLikedVideos = await Post.find({ status: "approved", contentData: "VideoTutorial" })
+            .sort({ likes: -1 })
+            .limit(10)
+            .populate("author");
+
+        res.json({ status: "success", message: "Most liked videos fetched", data: mostLikedVideos });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching most liked videos" });
+    }
+}),
+
+
+fetchMostLikedArticles: asyncHandler(async (req, res) => {
+    try {
+        const mostLikedArticles = await Post.find({ status: "approved", contentData: "Article" })
+            .sort({ likes: -1 })
+            .limit(10)
+            .populate("refId");
+
+        res.json({ status: "success", message: "Most liked articles fetched", data: mostLikedArticles });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching most liked articles" });
+    }
+}),
+
 };
 
 module.exports = postController;

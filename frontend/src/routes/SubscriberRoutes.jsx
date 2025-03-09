@@ -24,7 +24,7 @@ import SearchFilter from "../components/Subscribers/Webinars/SearchFilter";
 import { Webinars } from "../components/Webinar/Webinars";
 
 import PayingFreePlan from "../components/Plans/PayingFreePlan";
-import Trending from "../components/Subscribers/Trending/Trending";
+
 import { BookmarkPost } from "../components/Posts/BookmarkPost";
 
 import ResetPassword from "../components/Subscribers/ResetPassword";
@@ -32,11 +32,15 @@ import ViewGuide from "../components/Posts/ViewGuide";
 import GuideDetails from "../components/Posts/GuideDetails";
 import CheckoutForm from "../components/Plans/CheckoutForm";
 import PostDetails from "../components/Posts/PostDetails";
-<<<<<<< HEAD
-import BookmarkDetails from "../components/Posts/BookmarkDetails";
-=======
 import PlanDetails from "../components/Plans/PlanDetails";
->>>>>>> dcd53741e3188e9fcf2579b47cff1a51de5335cf
+import LikedContent from "../components/Posts/LikedContent";
+import TrendingPosts from "../components/Posts/TrendingPosts";
+import Example from "../components/Posts/example";
+import BookmarkDetails from "../components/Posts/BookmarkDetails";
+// import TrendingPosts from "../components/Posts/TrendingPosts";
+
+
+
 
 const SubscriberRoutes = () => {
   return (
@@ -51,6 +55,7 @@ const SubscriberRoutes = () => {
         }
       >
         <Route index element={<PostsList />} />
+
         <Route path="upload-profile-photo" element={<UploadProfilePic />} />
         <Route path="settings" element={<Settings />}>
           <Route path="profilesettings" element={<SettingsSubPage />} />
@@ -58,7 +63,7 @@ const SubscriberRoutes = () => {
           <Route path="billing" element={<Billing />} />
           <Route path="security" element={<ChangePassword />} />
           <Route path="become-creator" element={<BecomeCreator />} />
-          <Route path="trendingcontent" element={<Trending />} />
+
         </Route>
 
         <Route path="bookmarks" element={<BookmarkPost />} />
@@ -76,6 +81,10 @@ const SubscriberRoutes = () => {
         <Route path="guide/:guideId" element={<GuideDetails />} />
         <Route path="checkout/:planId" element={<CheckoutForm />} />
         <Route path="plan-details" element={<PlanDetails />} />
+
+        <Route path = "likedContent" element = {<LikedContent/>}/>
+
+        <Route path = "trendingcontent" element = {<TrendingPosts/>}/>
       </Route>
       <Route
             path="/account-verification/:verifyToken"

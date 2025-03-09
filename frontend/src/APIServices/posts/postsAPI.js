@@ -28,10 +28,11 @@ export const updatePostAPI = async ({ formData, postId }) => {
 export const fetchAllPosts = async (filters) => {
   console.log("Filter" ,filters);
   const posts = await axios.get(BASE_URL, {
+    withCredentials: true,
     params: filters,
   });
   return posts.data;
-};
+}
 //! Fetch  post
 export const fetchPost = async (postId) => {
   const posts = await axios.get(`${BASE_URL}/${postId}`, {
@@ -167,4 +168,25 @@ const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
       return [];
     }
   };
+
+  export const fetchTrendingVideos = async () => {
+    const response = await axios.get(`${BASE_URL}/trending/videos`, { withCredentials: true });
+    return response.data;
+};
+
+export const fetchTrendingArticles = async () => {
+    const response = await axios.get(`${BASE_URL}/trending/articles`, { withCredentials: true });
+    return response.data;
+};
+
+export const fetchMostLikedVideos = async () => {
+    const response = await axios.get(`${BASE_URL}/most-liked/videos`, { withCredentials: true });
+    return response.data;
+};
+
+export const fetchMostLikedArticles = async () => {
+    const response = await axios.get(`${BASE_URL}/most-liked/articles`, { withCredentials: true });
+    return response.data;
+};
+
 

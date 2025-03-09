@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState, useEffect } from "react";
 import "./postCss.css";
-import { deletePostAPI, fetchAllPosts } from "../../APIServices/posts/postsAPI";
+import { deletePostAPI, fetchAllPosts, fetchMostLikedArticles, fetchMostLikedVideos, fetchTrendingArticles, fetchTrendingVideos } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
 import NoDataFound from "../Alert/NoDataFound";
 import AlertMessage from "../Alert/AlertMessage";
@@ -12,11 +12,16 @@ import { useLocation } from "react-router-dom";
 import PublicNavbar from "../Navbar/PublicNavbar";
 import axios from "axios";
 
+
+
 import { loadStripe } from '@stripe/stripe-js';
 import { motion } from "framer-motion";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import TrendingPosts from "./TrendingPosts";
+import LikedContent from "./LikedContent";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const PostsList = () => {
   const [filters, setFilters] = useState({});
@@ -26,7 +31,72 @@ const PostsList = () => {
   const [planName, setPlanName] = useState("");
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+  const [error1, setError] = useState({ articles: null, videos: null });
+   const [mostLikedVideos, setMostLikedVideos] = useState([]);
+    const [mostLikedArticles, setMostLikedArticles] = useState([]);
+
+      const [trendingVideos, setTrendingVideos] = useState([]);
+      const [trendingArticles, setTrendingArticles] = useState([]);
+      const [loading1, setLoading1] = useState(true);
+   
+
+
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
+
+  const CustomPrevArrow = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      className="absolute left-[-40px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-600"
+    >
+      <FaArrowLeft size={20} />
+    </button>
+  );
+  
+  const CustomNextArrow = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      className="absolute right-[-40px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-600"
+    >
+      <FaArrowRight size={20} />
+    </button>
+  );
+
+  const CustomPrevArrowV = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      className="absolute left-[-40px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-600"
+    >
+      <FaArrowLeft size={20} />
+    </button>
+  );
+  
+  const CustomNextArrowV = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      className="absolute right-[-40px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-600"
+    >
+      <FaArrowRight size={20} />
+    </button>
+  );
+
+  const CustomPrevArrowTA = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      className="absolute left-[-40px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-600"
+    >
+      <FaArrowLeft size={20} />
+    </button>
+  );
+  
+  const CustomNextArrowTA = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      className="absolute right-[-40px] top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-600"
+    >
+      <FaArrowRight size={20} />
+    </button>
+  );
 
   // Slick Carousel Settings
   const settings = {
@@ -48,6 +118,88 @@ const PostsList = () => {
       }
     ]
   };
+
+  const settings1 = {
+    dots: true,
+    infinite: true,
+    speed: 3000,
+    slidesToShow: 3, // Adjust based on your design
+    slidesToScroll: 1,
+    autoplay: true, // Enable autoplay if needed
+    autoplaySpeed: 1000,
+    prevArrow: <CustomPrevArrow />, // Added custom previous arrow
+    nextArrow: <CustomNextArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
+
+
+  const settings2 = {
+    dots: true,
+    infinite: true,
+    speed: 1000, // Slow transition for smooth effect
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000, // Slower autoplay
+    prevArrow: <CustomPrevArrowV />, // Custom Previous Arrow
+    nextArrow: <CustomNextArrowV />, // Custom Next Arrow
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
+
+  const settings3 = {
+    dots: true,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    prevArrow: <CustomPrevArrowTA />,
+    nextArrow: <CustomNextArrowTA />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
+
+  
+
 
   const getPlan = async () => {
     try {
@@ -205,6 +357,52 @@ const PostsList = () => {
   const premiumPosts = data?.posts?.filter(isPremiumPost);
   const nonPremiumPosts = data?.posts?.filter(post => !isPremiumPost(post));
 
+
+
+   useEffect(() => {
+      const fetchLikedContent = async () => {
+        try {
+          const videos = await fetchMostLikedVideos();
+          const articles = await fetchMostLikedArticles();
+  
+          console.log("API Liked Videos Response:", videos);
+          console.log("API Liked Articles Response:", articles);
+  
+          setMostLikedVideos(videos?.data || []);
+          setMostLikedArticles(articles?.data || []);
+        } catch (error) {
+          console.error("Error fetching liked content:", error);
+          setError({
+            articles: "Failed to load liked articles.",
+            videos: "Failed to load liked videos.",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchLikedContent();
+    }, []);
+
+    useEffect(() => {
+        const fetchTrending = async () => {
+          try {
+            const videos = await fetchTrendingVideos();
+            const articles = await fetchTrendingArticles();
+    
+            console.log("API Trending Videos Response:", videos);
+            console.log("API Trending Articles Response:", articles);
+    
+            setTrendingVideos(videos?.data || []);
+            setTrendingArticles(articles?.data || []);
+          } catch (error) {
+            console.error("Error fetching trending posts:", error);
+          } finally {
+            setLoading1(false);
+          }
+        };
+        fetchTrending();
+      }, []);
+
   return (
     <>
       {showHeaderFooter && <PublicNavbar />}
@@ -279,11 +477,11 @@ const PostsList = () => {
                         </div>
                       )}
                       <div className="post-image-container">
-                        <img
-                          className="post-image"
-                          src={post?.refId.thumbnail}
-                          alt={post?.price || "Post image"}
-                        />
+    <img
+        className="post-image"
+        src={post?.refId?.thumbnail || "/default-image.jpg"}  // Provide a fallback image
+        alt={post?.price || "Post image"}
+    />
                         {/* <button
                           className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
                           onClick={(e) => toggleBookmark(post._id, e)}
@@ -311,9 +509,9 @@ const PostsList = () => {
                         className="block"
                       >
                         <div className="post-content">
-                          <h3 className="post-title">
-                            {post?.refId.title || "Untitled Post"}
-                          </h3>
+                        <h3 className="post-title">
+                           {post?.refId?.title || "Untitled Post"}
+                        </h3>
                           <p className="post-excerpt">
                             {truncateString(post?.description || "", 120)}
                           </p>
@@ -404,6 +602,124 @@ const PostsList = () => {
 
               {/* Pagination */}
               {renderPagination()}
+
+
+              <div className=" relative mb-12">
+      <h3 className="text-2xl font-semibold text-blue-600 text-center mb-6">
+        Most Liked Articles
+      </h3>
+      {error1.articles ? (
+        <p className="text-red-500 text-center">{error1.articles}</p>
+      ) : mostLikedArticles.length === 0 ? (
+        <p className="text-center text-gray-500">No liked articles available.</p>
+      ) : (
+        <Slider {...settings1}>
+          {mostLikedArticles.map((article) => (
+            <motion.div
+              key={article._id}
+              whileHover={{ scale: 1.05, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)" }}
+              className="bg-white shadow-lg rounded-lg overflow-hidden p-6 mx-2"
+            >
+              <h5 className="text-lg font-bold">{article.title || "No Title"}</h5>
+              <p className="text-gray-600">{article.description || "No Description"}</p>
+              <Link to={`/posts/${article._id}`} className="btn btn-primary w-full mt-4">
+                Read More
+              </Link>
+            </motion.div>
+          ))}
+        </Slider>
+      )}
+    </div>
+
+
+    <div className="relative mb-12">
+      <h3 className="text-2xl font-semibold text-red-600 text-center mb-6">
+        Most Liked Videos
+      </h3>
+      {error1.videos ? (
+        <p className="text-red-500 text-center">{error1.videos}</p>
+      ) : mostLikedVideos.length === 0 ? (
+        <p className="text-center text-gray-500">No liked videos available.</p>
+      ) : (
+        <Slider {...settings2}>
+          {mostLikedVideos.map((video) => (
+            <motion.div
+              key={video._id}
+              whileHover={{ scale: 1.05, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)" }}
+              className="bg-white shadow-lg rounded-lg overflow-hidden p-6 mx-2"
+            >
+              <h5 className="text-lg font-bold">{video.title || "No Title"}</h5>
+              <p className="text-gray-600">{video.description || "No Description"}</p>
+              <Link to={`/posts/${video._id}`} className="btn btn-danger w-full mt-4">
+                Watch Video
+              </Link>
+            </motion.div>
+          ))}
+        </Slider>
+      )}
+    </div>
+
+
+    <div className="mb-5 relative">
+        <h3 className="text-2xl font-semibold text-blue-600 text-center mb-6">Trending Articles</h3>
+        {loading1 ? (
+          <p className="text-center text-secondary mt-3">Loading...</p>
+        ) : trendingArticles.length === 0 ? (
+          <p className="text-center text-muted mt-3">No trending articles available.</p>
+        ) : (
+          <Slider {...settings3}>
+            {trendingArticles.map((article) => (
+              <motion.div
+                key={article._id}
+                whileHover={{ scale: 1.05, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)" }}
+                className="card border-0 shadow-lg rounded overflow-hidden p-3 mx-2"
+              >
+                <div className="card-body">
+                  <h5 className="card-title fw-bold">{article.refId.title || "No Title"}</h5>
+                  <p className="card-text text-muted">{article.refId.description || "No Description"}</p>
+                  <Link to={`/posts/${article._id}`} className="btn btn-primary w-100">
+                    Read More
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </Slider>
+        )}
+      </div>
+
+
+      <div className="mb-5 relative">
+        <h3 className="text-2xl font-semibold text-blue-600 text-center mb-6">Trending Videos</h3>
+        {loading1 ? (
+          <p className="text-center text-secondary mt-3">Loading...</p>
+        ) : trendingVideos.length === 0 ? (
+          <p className="text-center text-muted mt-3">No trending videos available.</p>
+        ) : (
+          <Slider {...settings3}>
+            {trendingVideos.map((video) => (
+              <motion.div
+                key={video._id}
+                whileHover={{ scale: 1.05, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)" }}
+                className="card border-0 shadow-lg rounded overflow-hidden p-3 mx-2"
+              >
+                <div className="card-body">
+                  <h5 className="card-title fw-bold">{video.title || "No Title"}</h5>
+                  <p className="card-text text-muted">{video.description || "No Description"}</p>
+                  <Link to={`/posts/${video._id}`} className="btn btn-danger w-100">
+                    Watch Video
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </Slider>
+        )}
+      </div>
+  
+
+
+              {/* <LikedContent /> */}
+              {/* <TrendingPosts /> */}
+
             </>
           )}
         </div>
