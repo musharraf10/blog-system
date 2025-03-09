@@ -331,7 +331,7 @@ const ManageData = () => {
                       </td>
                       <td className="px-6 py-6 text-sm text-gray-600 text-center">{item.author?.username}</td>
                       <td className="px-6 py-6 text-sm text-gray-600 text-center">
-                        {new Date(item.date).toLocaleDateString()}
+                        {new Date(item.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-8 py-6 text-right text-sm font-medium space-x-3 text-center">
                         {/* <Eye onClick={() => handleOpenModalofposts(item)} /> */}
