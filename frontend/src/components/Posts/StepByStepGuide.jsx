@@ -6,6 +6,7 @@ export default function StepByStepGuide() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState([]);
+  const [price, setPrice] = useState(''); // Changed from array to string
   const [currentTag, setCurrentTag] = useState('');
   const [thumbnailImage, setThumbnailImage] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
@@ -44,6 +45,15 @@ export default function StepByStepGuide() {
     }
   };
 
+  // Updated handlePrice function to correctly update price state
+  const handlePriceChange = (e) => {
+    // Allow only numbers and decimal point
+    const value = e.target.value;
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setPrice(value);
+    }
+  };
+
   const handleRemoveTag = (tagToRemove) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
@@ -73,6 +83,9 @@ export default function StepByStepGuide() {
     formData.append('status', status);
     formData.append('steps', JSON.stringify(steps.map(({ stepTitle, stepDescription }) => ({ stepTitle, stepDescription }))));
     
+    // Add price to formData
+    formData.append('price', price);
+    
     if (thumbnailImage) {
       formData.append('thumbnail', thumbnailImage);
     }
@@ -94,6 +107,7 @@ export default function StepByStepGuide() {
         setTitle('');
         setDescription('');
         setTags([]);
+        setPrice(''); // Reset price too
         setThumbnailImage(null);
         setThumbnailPreview(null);
         setSteps([]);
@@ -230,6 +244,25 @@ export default function StepByStepGuide() {
                   className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Price Section - Separate from tags */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+              Price
+            </label>
+            <div className="flex">
+              <div className="flex-none bg-gray-100 flex items-center justify-center px-3 rounded-l-md border border-r-0 border-gray-300">
+                $
+              </div>
+              <input
+                type="text"
+                value={price}
+                onChange={handlePriceChange}
+                placeholder="Enter price (e.g., 19.99)"
+                className="flex-1 rounded-r-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
             </div>
           </div>
 

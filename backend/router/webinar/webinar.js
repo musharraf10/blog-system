@@ -10,12 +10,13 @@ const webinarRouter = express.Router();
 
 
 webinarRouter.post("/addwebinar", 
-    isAuthenticated, isAccountVerified, upload.single("thumbnail"),
+  isAccountVerified, isAuthenticated, upload.single("thumbnail"),
     addWebinarController);
 
 webinarRouter.put(
         "/updatewebinar/:id",
         upload.single("thumbnail"),
+        isAccountVerified,
         updateWebinarController,
       );
       
@@ -33,7 +34,9 @@ webinarRouter.get("/", async (req, res) => {
 webinarRouter.get("/", async (req, res) => {
   try {
     const webinars = await require("../../models/webinar/webinar.js").find();
+
     res.status(200).json(webinars);
+    
   } catch (error) {
     res
       .status(500)
@@ -42,7 +45,7 @@ webinarRouter.get("/", async (req, res) => {
 });
 
 
-webinarRouter.get("/upcomingevents",async (req, res) => {
+webinarRouter.get("/upcomingevents",isAccountVerified,async (req, res) => {
     try {
       const upcomingdata = await Webinar.find();
       // console.log(upcomingdata)

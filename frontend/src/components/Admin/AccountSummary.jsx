@@ -268,7 +268,7 @@ const AccountSummaryDashboard = () => {
   const totalFollowing = data?.user?.following?.length || 0;
   const userPosts = data?.user?.posts?.length || 0;
 
-  let totalViews = data.user.hasSelectedPlan;
+  let totalViews = hasPlan;
   let totalLikes = 0;
   let totalComments = 0;
   let totalDislikes = 0;

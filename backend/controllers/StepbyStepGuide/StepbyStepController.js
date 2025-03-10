@@ -57,7 +57,10 @@ const StepbyStepGuide = require('../../models/StepbyStepGuide/StepbyStepGuide');
 const cloudinary = require('../../utils/Cloudinary');
 const Tag = require("../../models/Tags/Tags.js");
 const Post = require("../../models/Post/Post.js");
+const Notification = require("../../models/Notification/Notification.js")
 const { response } = require('express');
+const sendStepByStepNotification = require("../../utils/stepbystepGuide.js")
+const User = require("../../models/User/User.js")
 
 
 const addStepbyStepGuide = async (req, res) => {
@@ -65,10 +68,10 @@ const addStepbyStepGuide = async (req, res) => {
         console.log("Request Body:", req.body);
         console.log("Uploaded Files:", req.files);
 
-        const { title, description, tags, status } = req.body;
+        const { title, description, tags, status, price } = req.body;
 
 
-        if( !title || !description || !status){
+        if( !title || !description || !status || !price){
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -120,6 +123,7 @@ const addStepbyStepGuide = async (req, res) => {
         const createPost=new Post({
             author: req.user,
             status,
+            price,
             contentData: "StepbyStepGuide",  
             refId: newGuide._id
           })
