@@ -222,6 +222,25 @@ const postController = {
     res.status(200).json({data : posts})
   }),
 
+  curatorDetails: asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized: No user ID provided" });
+      }
+  
+      console.log("Fetching posts for user:", userId);
+  
+      const posts = await Post.find({ author: userId }).populate("refId");
+  
+      res.json({ data: posts });
+    } catch (err) {
+      console.error("Error fetching user posts:", err);
+      res.status(500).json({ message: "Server Error" });
+    }
+  })
+  ,
+
   fetchAllWebiners: asyncHandler(async (req, res) => {
     const { category, title, page = 1, limit = 300 } = req.query;
     //Basic filter

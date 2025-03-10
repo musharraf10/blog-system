@@ -125,15 +125,9 @@ import {
 const COLORS = ["#3498db", "#2ecc71", "#f1c40f", "#e74c3c", "#9b59b6"];
 
 // Sample data
-const data = [
-  { name: "Posted", value: 15 },
-  { name: "Pending", value: 8 },
-  { name: "Verified", value: 4 },
-  { name: "Rejected", value: 2 },
-  { name: "Scheduled", value: 1 },
-];
 
-const Analytics = () => {
+
+const Analytics = ({data}) => {
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-50 rounded-lg">
       {/* Analytics Overview Heading */}

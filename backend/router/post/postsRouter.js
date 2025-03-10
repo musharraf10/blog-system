@@ -27,6 +27,7 @@ postRouter.post(
 // List all approved posts
 postRouter.get("/", postController.fetchAllArticles);
 postRouter.get("/allwebiners", postController.fetchAllWebiners);
+postRouter.get("/curatordetails",isAuthenticated,postController.curatorDetails);
 
 postRouter.get("/pendingposts", postController.pendingPosts);
 
