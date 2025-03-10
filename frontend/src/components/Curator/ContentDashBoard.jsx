@@ -105,7 +105,7 @@ const Dashboard = () => {
           bg: "linear-gradient(135deg, #f46b45 0%, #eea849 100%)",
           hover: "linear-gradient(135deg, #eea849 0%, #f46b45 100%)",
         };
-    
+
       case "Rejected":
         return {
           bg: "linear-gradient(135deg, #CB356B 0%, #BD3F32 100%)",
@@ -306,6 +306,7 @@ const Dashboard = () => {
                     >
                       <CardContent sx={{ p: 3 }}>
                         <div
+                          className="d-inline flex-row"
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -319,6 +320,22 @@ const Dashboard = () => {
                           >
                             {category.status}
                           </Typography>
+
+                          <Chip
+                            size="small"
+                            label={
+                              selectedSubCategory !== "All"
+                                ? selectedSubCategory
+                                : "All"
+                            }
+                            sx={{
+                              height: 20,
+                              fontSize: "0.6rem",
+                              background: "rgba(255, 255, 255, 0.2)",
+                              color: "white",
+                              ml: 1,
+                            }}
+                          />
                         </div>
 
                         <Typography variant="h3" fontWeight="bold">
@@ -358,6 +375,29 @@ const Dashboard = () => {
                           </Typography>
                         </Box>
                       </CardContent>
+                      {/* Decorative elements */}
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          width: 40,
+                          height: 40,
+                          borderRadius: "50%",
+                          background: "rgba(255, 255, 255, 0.1)",
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          bottom: -20,
+                          right: -20,
+                          width: 80,
+                          height: 80,
+                          borderRadius: "50%",
+                          background: "rgba(255, 255, 255, 0.05)",
+                        }}
+                      />
                     </Card>
                   </motion.div>
                 </Grid>
