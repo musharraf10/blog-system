@@ -45,7 +45,7 @@ const Dashboard = () => {
     const fetchCuratorDetails = async () => {
       try {
         const response = await axios.get(
-        `  ${BackendServername}/posts/curatordetails`,
+          `  ${BackendServername}/posts/curatordetails`,
           {
             withCredentials: true,
           }
@@ -66,18 +66,20 @@ const Dashboard = () => {
     const filteredItems =
       selectedSubCategory === "All"
         ? categoryData
-        : categoryData.filter((item) => item.contentData === selectedSubCategory);
+        : categoryData.filter(
+            (item) => item.contentData === selectedSubCategory
+          );
 
     setFilteredData(filteredItems);
 
-
-    console.log(filteredData)
+    console.log(filteredData);
     // Compute status counts based on filtered data
     const counts = {
       Total: filteredItems.length,
       Posted: filteredItems.filter((item) => item.status === "approved").length,
       Pending: filteredItems.filter((item) => item.status === "pending").length,
-      Rejected: filteredItems.filter((item) => item.status === "rejected").length,
+      Rejected: filteredItems.filter((item) => item.status === "rejected")
+        .length,
       Draft: filteredItems.filter((item) => item.status === "draft").length,
     };
 
@@ -103,17 +105,13 @@ const Dashboard = () => {
           bg: "linear-gradient(135deg, #f46b45 0%, #eea849 100%)",
           hover: "linear-gradient(135deg, #eea849 0%, #f46b45 100%)",
         };
-      case "Verified":
-        return {
-          bg: "linear-gradient(135deg, #009FFD 0%, #2A2A72 100%)",
-          hover: "linear-gradient(135deg, #2A2A72 0%, #009FFD 100%)",
-        };
+    
       case "Rejected":
         return {
           bg: "linear-gradient(135deg, #CB356B 0%, #BD3F32 100%)",
           hover: "linear-gradient(135deg, #BD3F32 0%, #CB356B 100%)",
         };
-      case "Scheduled":
+      case "Draft":
         return {
           bg: "linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)",
           hover: "linear-gradient(135deg, #d04ed6 0%, #834d9b 100%)",
@@ -136,7 +134,7 @@ const Dashboard = () => {
     const fetchCuratorDetails = async () => {
       try {
         const response = await axios.get(
-         ` ${BackendServername}/posts/curatordetails`,
+          ` ${BackendServername}/posts/curatordetails`,
           {
             withCredentials: true,
           }
@@ -186,30 +184,20 @@ const Dashboard = () => {
     { status: "Draft", count: statusCounts.Draft || 0 },
   ];
 
-
-
-
-
-
-
   const analyticsData = {
     approvedData: categoryData.filter((e) => e.status === "approved"),
     pendingData: categoryData.filter((e) => e.status === "pending"),
     draftData: categoryData.filter((e) => e.status === "draft"),
     rejectedData: categoryData.filter((e) => e.status === "rejected"),
   };
-  
- 
+
   const analyticsArray = [
     { name: "Approved", value: analyticsData.approvedData.length },
     { name: "Pending", value: analyticsData.pendingData.length },
     { name: "Draft", value: analyticsData.draftData.length },
     { name: "Rejected", value: analyticsData.rejectedData.length },
   ];
-  
-  
-  
-  
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -353,14 +341,28 @@ const Dashboard = () => {
                             category.count
                           )}
                         </Typography>
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                            mt: 1,
+                          }}
+                        >
+                          <TimelineIcon fontSize="small" />
+                          <Typography variant="caption">
+                            {selectedSubCategory !== "All"
+                              ? selectedSubCategory
+                              : "All Categories"}
+                          </Typography>
+                        </Box>
                       </CardContent>
                     </Card>
                   </motion.div>
                 </Grid>
               ))}
             </Grid>
-
-          
           </Paper>
         </Container>
       </LocalizationProvider>
