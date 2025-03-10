@@ -1,23 +1,11 @@
+"use client"
 
 import { useState, useEffect } from "react"
 // import Image from "next/image"
-import {
-  Search,
-  ChevronRight,
-  Play,
-  FileText,
-  Video,
-  Calendar,
-  CheckCircle,
-  ArrowRight,
-  Mail,
-  BookOpen,
-  Menu,
-  X,
-} from "lucide-react"
-import { useQuery } from "@tanstack/react-query";
-import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
-import {Link} from "react-router-dom"
+import { ChevronRight, Play, FileText, Video, Calendar, ArrowRight, Mail, BookOpen, Menu, X } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI"
+import { Link } from "react-router-dom"
 import Pricing from "../Plans/Pricing"
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All")
@@ -28,9 +16,9 @@ export default function HomePage() {
   const { isLoading, data } = useQuery({
     queryKey: ["user-auth"],
     queryFn: checkAuthStatusAPI,
-  });
+  })
 
-  let user = data?.role;
+  const user = data?.role
 
   useEffect(() => {
     setIsVisible(true)
@@ -345,84 +333,53 @@ export default function HomePage() {
             </ul>
           </nav>
 
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                background: "white",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                display: isMobile ? "block" : "none",
-              }}
-            >
-              <ul style={{ display: "flex", flexDirection: "column", listStyle: "none", margin: 0, padding: "1rem" }}>
-                {navSections.map((section) => (
-                  <li key={section.id} style={{ padding: "0.75rem 0", borderBottom: "1px solid #f0f0f0" }}>
-                    <a
-                      href={`#${section.id}`}
-                      style={{
-                        color: "#333",
-                        textDecoration: "none",
-                        fontWeight: "500",
-                        display: "block",
-                      }}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {section.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Action Buttons */}
+          {/* Action Buttons - Desktop */}
           <div style={{ display: isMobile ? "none" : "flex", gap: "1rem", alignItems: "center" }}>
-           
-           {user ?<a
-              href={`${user}`}
-              style={{
-                color: primaryColor,
-                background: "white",
-                padding: "0.5rem 1rem",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontWeight: "600",
-                border: `1px solid ${primaryColor}`,
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f0f4f8"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "white"
-              }}
-            >
-              DashBoard
-            </a> : <Link
-              to="/login"
-              style={{
-                color: primaryColor,
-                background: "white",
-                padding: "0.5rem 1rem",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontWeight: "600",
-                border: `1px solid ${primaryColor}`,
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f0f4f8"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "white"
-              }}
-            >
-              Sign In
-            </Link>}
+            {user ? (
+              <a
+                href={`${user}`}
+                style={{
+                  color: primaryColor,
+                  background: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  border: `1px solid ${primaryColor}`,
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f0f4f8"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white"
+                }}
+              >
+                DashBoard
+              </a>
+            ) : (
+              <Link
+                to="/login"
+                style={{
+                  color: primaryColor,
+                  background: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  border: `1px solid ${primaryColor}`,
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f0f4f8"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white"
+                }}
+              >
+                Sign In
+              </Link>
+            )}
             <a
               href="#pricing"
               style={{
@@ -447,6 +404,102 @@ export default function HomePage() {
               Subscribe
             </a>
           </div>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "white",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                display: isMobile ? "block" : "none",
+                zIndex: 100,
+              }}
+            >
+              <ul style={{ display: "flex", flexDirection: "column", listStyle: "none", margin: 0, padding: "1rem" }}>
+                {navSections.map((section) => (
+                  <li key={section.id} style={{ padding: "0.75rem 0", borderBottom: "1px solid #f0f0f0" }}>
+                    <a
+                      href={`#${section.id}`}
+                      style={{
+                        color: "#333",
+                        textDecoration: "none",
+                        fontWeight: "500",
+                        display: "block",
+                      }}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {section.label}
+                    </a>
+                  </li>
+                ))}
+                {/* Mobile Action Buttons */}
+                <li
+                  style={{
+                    padding: "1rem 0",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.75rem",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  {user ? (
+                    <a
+                      href={`${user}`}
+                      style={{
+                        color: primaryColor,
+                        background: "white",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "4px",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        border: `1px solid ${primaryColor}`,
+                        textAlign: "center",
+                      }}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      DashBoard
+                    </a>
+                  ) : (
+                    <Link
+                      to="/login"
+                      style={{
+                        color: primaryColor,
+                        background: "white",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "4px",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        border: `1px solid ${primaryColor}`,
+                        textAlign: "center",
+                      }}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                  <a
+                    href="#pricing"
+                    style={{
+                      color: "white",
+                      background: primaryColor,
+                      padding: "0.5rem 1rem",
+                      borderRadius: "4px",
+                      textDecoration: "none",
+                      fontWeight: "600",
+                      textAlign: "center",
+                    }}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Subscribe
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </header>
 
@@ -704,7 +757,11 @@ export default function HomePage() {
                 style={{
                   display: "flex",
                   gap: "0.5rem",
-                  flexWrap: "wrap",
+                  flexWrap: isMobile ? "nowrap" : "wrap",
+                  overflowX: isMobile ? "auto" : "visible",
+                  width: isMobile ? "100%" : "auto",
+                  paddingBottom: isMobile ? "0.5rem" : "0",
+                  WebkitOverflowScrolling: "touch",
                 }}
               >
                 {categories.map((category) => (
@@ -720,6 +777,8 @@ export default function HomePage() {
                       cursor: "pointer",
                       fontWeight: "500",
                       transition: "all 0.3s ease",
+                      whiteSpace: isMobile ? "nowrap" : "normal",
+                      flexShrink: 0,
                     }}
                   >
                     {category}
@@ -744,6 +803,7 @@ export default function HomePage() {
                     overflow: "hidden",
                     boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                     transition: "all 0.3s ease",
+                    width: "100%",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-5px)"
@@ -799,6 +859,7 @@ export default function HomePage() {
                         marginBottom: "0.5rem",
                         display: "flex",
                         justifyContent: "space-between",
+                        flexWrap: "wrap",
                       }}
                     >
                       <span>{item.category}</span>
@@ -830,6 +891,8 @@ export default function HomePage() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: "0.5rem",
                       }}
                     >
                       <div style={{ fontSize: "0.9rem", color: "#666" }}>By {item.author}</div>
@@ -952,6 +1015,7 @@ export default function HomePage() {
                     transition: "all 0.3s ease",
                     display: "flex",
                     gap: "1rem",
+                    flexDirection: isMobile ? "column" : "row",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-5px)"
@@ -962,19 +1026,6 @@ export default function HomePage() {
                     e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)"
                   }}
                 >
-                  {/* <img
-                    src={webinar.image || "/placeholder.svg"}
-                    alt={webinar.title}
-                    width={180}
-                    height={100}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  /> */}
-
                   <div>
                     <h3
                       style={{
@@ -1210,13 +1261,15 @@ export default function HomePage() {
             </div>
           </div>
         </section> */}
-        <section id="pricing"
+        <section
+          id="pricing"
           style={{
             padding: "4rem 1rem",
             background: "#f8f9fa",
             color: "#333",
-          }}>
-        <Pricing />
+          }}
+        >
+          <Pricing />
         </section>
         {/* Testimonials */}
         <section
@@ -1473,6 +1526,7 @@ export default function HomePage() {
                 maxWidth: "500px",
                 margin: "0 auto",
                 flexDirection: isMobile ? "column" : "row",
+                width: "100%",
               }}
             >
               <input
@@ -1485,6 +1539,8 @@ export default function HomePage() {
                   border: "1px solid #ddd",
                   outline: "none",
                   fontSize: "1rem",
+                  width: "100%",
+                  boxSizing: "border-box",
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = primaryColor
@@ -1505,6 +1561,7 @@ export default function HomePage() {
                   fontWeight: "600",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: isMobile ? "center" : "flex-start",
                   gap: "0.5rem",
                   transition: "all 0.3s ease",
                 }}
@@ -1717,7 +1774,7 @@ export default function HomePage() {
               paddingTop: "2rem",
               display: "flex",
               justifyContent: "space-between",
-              flexWrap: "wrap",
+              flexDirection: isMobile ? "column" : "row",
               gap: "1rem",
               color: "rgba(255,255,255,0.7)",
               fontSize: "0.9rem",
@@ -1728,6 +1785,7 @@ export default function HomePage() {
               style={{
                 display: "flex",
                 gap: "1.5rem",
+                flexWrap: "wrap",
               }}
             >
               {["Terms of Service", "Privacy Policy", "Cookie Policy"].map((policy, index) => (

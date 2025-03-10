@@ -68,6 +68,8 @@ const Register = () => {
   return (
     <div className="register-container">
       <div className="register-wrapper">
+
+        
         <h1>Registration Form</h1>
         <br />
         <form onSubmit={formik.handleSubmit}>
@@ -172,6 +174,30 @@ const Register = () => {
           >
             <span>Sign in with Google</span>
           </a>
+
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate("/")
+            }}
+            style={{
+              color: "#4a90e2",
+              textDecoration: "none",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "all 0.2s ease",
+  
+            }}
+            onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
+            onMouseOut={(e) => (e.target.style.textDecoration = "none")}
+          >
+            Back to Dashboard
+          </a>
+        </div>
+
+          
         </form>
       </div>
     </div>
