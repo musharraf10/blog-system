@@ -1,4 +1,4 @@
-const Tag =require("../../models/Tags/Tags.js");
+const Tag = require("../../models/Tags/Tags.js");
 const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 const sendArticleNotification = require("../../utils/articleNotification.js");
@@ -48,9 +48,9 @@ const addarticlecontroller = async (req, res) => {
         postId: createPost._id,
         message: `New article posted by ${user.username}: ${title}`,
       });
-      sendArticleNotification(follower.email, createPost._id,title);
+      sendArticleNotification(follower.email, createPost._id, title);
     });
-
+    console.log("article ");
     return res.status(201).json({
       status: "success",
       message: "Article created successfully!",
@@ -75,7 +75,9 @@ const updateArticleController = async (req, res) => {
     const article = await Post.findById(id).populate("refId");
 
     if (!article || !article.refId) {
-      return res.status(404).json({ status: "error", message: "Article not found." });
+      return res
+        .status(404)
+        .json({ status: "error", message: "Article not found." });
     }
 
     article.refId.set({
@@ -85,7 +87,10 @@ const updateArticleController = async (req, res) => {
       thumbnail: thumbnail || article.refId.thumbnail,
     });
 
-    const post = await Post.findOne({ refId: article.refId._id, contentData: "Article" });
+    const post = await Post.findOne({
+      refId: article.refId._id,
+      contentData: "Article",
+    });
 
     if (post) {
       post.set({
@@ -105,7 +110,7 @@ const updateArticleController = async (req, res) => {
       postId: post._id,
       message: `Your article "${post.refId.title}" has been updated.`,
     });
-    sendArticleNotification(author.email,post._id, title);
+    sendArticleNotification(author.email, post._id, title);
 
     return res.status(200).json({
       status: "success",
@@ -115,14 +120,18 @@ const updateArticleController = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating article:", error);
-    return res.status(500).json({ status: "error", message: "Failed to update article. Please try again." });
+    return res
+      .status(500)
+      .json({
+        status: "error",
+        message: "Failed to update article. Please try again.",
+      });
   }
 };
 
- const getAllArticles = async (req, res) => {
+const getAllArticles = async (req, res) => {
   try {
-    const articles = await Article.find()
-      
+    const articles = await Article.find();
 
     return res.status(200).json({
       status: "success",
@@ -138,5 +147,8 @@ const updateArticleController = async (req, res) => {
   }
 };
 
-
-module.exports={addarticlecontroller, getAllArticles, updateArticleController}
+module.exports = {
+  addarticlecontroller,
+  getAllArticles,
+  updateArticleController,
+};

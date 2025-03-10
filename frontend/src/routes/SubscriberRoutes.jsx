@@ -82,7 +82,7 @@ const SubscriberRoutes = () => {
             path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
-      <Route path="/posts/:postId" element={<PostDetails/>}/>
+      {/* <Route path="/posts/:postId" element={<PostDetails/>}/> */}
       <Route path="/bookmarks/:postId" element={<BookmarkDetails/>}/>
 
       <Route path="reset-password/:verifyToken" element={<ResetPassword />} />
