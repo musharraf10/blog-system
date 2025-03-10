@@ -5,7 +5,8 @@ import { Link, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { verifyUserAccountAPI } from "../../APIServices/users/usersAPI";
 import AlertMessage from "../Alert/AlertMessage";
-
+import { useQuery } from "@tanstack/react-query";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 const AccountVerifiedComponent = () => {
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
