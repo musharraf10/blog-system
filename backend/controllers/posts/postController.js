@@ -163,7 +163,6 @@ const postController = {
         message: `Your post "${post.title}" has been approved by the admin.`,
     });
 
-    
     sendNotificatiomMsg(
         post.author.email,
         "Post Approved",
@@ -550,24 +549,25 @@ const postController = {
         .json({ success: false, message: "Failed to fetch post analytics" });
     }
   },
-  curatorDetails: asyncHandler(async (req, res) => {
-    try {
-      const userId = req.user;
-      console.log(userId)
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized: No user ID provided" });
-      }
+
+  // curatorDetails: asyncHandler(async (req, res) => {
+  //   try {
+  //     const userId = req.user;
+  //     console.log(userId)
+  //     if (!userId) {
+  //       return res.status(401).json({ message: "Unauthorized: No user ID provided" });
+  //     }
   
-      console.log("Fetching posts for user:", userId);
+  //     console.log("Fetching posts for user:", userId);
   
-      const posts = await Post.find({ author: userId }).populate("refId");
+  //     const posts = await Post.find({ author: userId }).populate("refId");
   
-      res.json({ data: posts });
-    } catch (err) {
-      console.error("Error fetching user posts:", err);
-      res.status(500).json({ message: "Server Error" });
-    }
-  }),
+  //     res.json({ data: posts });
+  //   } catch (err) {
+  //     console.error("Error fetching user posts:", err);
+  //     res.status(500).json({ message: "Server Error" });
+  //   }
+  // }),
 
   like: asyncHandler(async (req, res) => {
     try {
@@ -623,6 +623,24 @@ const postController = {
     res.json({
       message: "Post Disliked",
     });
+  }),
+
+  curatorDetails: asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized: No user ID provided" });
+      }
+  
+      console.log("Fetching posts for user:", userId);
+  
+      const posts = await Post.find({ author: userId }).populate("refId");
+  
+      res.json({ data: posts });
+    } catch (err) {
+      console.error("Error fetching user posts:", err);
+      res.status(500).json({ message: "Server Error" });
+    }
   }),
 
   BookMarkPost: asyncHandler(async (req, res) => {
