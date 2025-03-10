@@ -1,133 +1,3 @@
-// import React, { useState } from "react";
-// import { Container, Button, Tabs, Tab, Box, Typography, Card, CardContent, Grid, TextField } from "@mui/material";
-// import { motion } from "framer-motion";
-// import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import dayjs from "dayjs";
-// import Analytics from "./contentEditor/Analytics";
-
-// const Dashboard = () => {
-//   const [selectedTime, setSelectedTime] = useState("today");
-//   const [selectedSubCategory, setSelectedSubCategory] = useState("All");
-//   const [startDate, setStartDate] = useState(dayjs().subtract(1, "month"));
-//   const [endDate, setEndDate] = useState(dayjs());
-
-//   const timeFilters = ["today", "yesterday", "monthYear"];
-//   const subCategories = ["All", "Articles", "Videos", "Tutorials", "Webinars"];
-
-//   const categoryData = {
-//     today: {
-//       Articles: [{ name: "Total", count: 10 }, { name: "Posted", count: 5 }, { name: "Pending", count: 3 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 0 }],
-//       Videos: [{ name: "Total", count: 20 }, { name: "Posted", count: 10 }, { name: "Pending", count: 5 }, { name: "Verified", count: 3 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 1 }],
-//       Tutorials: [{ name: "Total", count: 15 }, { name: "Posted", count: 7 }, { name: "Pending", count: 4 }, { name: "Verified", count: 2 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 1 }],
-//       Webinars: [{ name: "Total", count: 5 }, { name: "Posted", count: 2 }, { name: "Pending", count: 1 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 1 }],
-//     },
-//     yesterday: {
-//       Articles: [{ name: "Total", count: 8 }, { name: "Posted", count: 4 }, { name: "Pending", count: 2 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 0 }],
-//       Videos: [{ name: "Total", count: 18 }, { name: "Posted", count: 9 }, { name: "Pending", count: 4 }, { name: "Verified", count: 3 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 1 }],
-//       Tutorials: [{ name: "Total", count: 12 }, { name: "Posted", count: 6 }, { name: "Pending", count: 3 }, { name: "Verified", count: 2 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 1 }],
-//       Webinars: [{ name: "Total", count: 4 }, { name: "Posted", count: 2 }, { name: "Pending", count: 1 }, { name: "Verified", count: 1 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 0 }],
-//     },
-//     monthYear: {
-//       Articles: [{ name: "Total", count: 30 }, { name: "Posted", count: 15 }, { name: "Pending", count: 8 }, { name: "Verified", count: 4 }, { name: "Rejected", count: 2 }, { name: "Scheduled", count: 1 }],
-//       Videos: [{ name: "Total", count: 40 }, { name: "Posted", count: 20 }, { name: "Pending", count: 10 }, { name: "Verified", count: 6 }, { name: "Rejected", count: 2 }, { name: "Scheduled", count: 2 }],
-//       Tutorials: [{ name: "Total", count: 25 }, { name: "Posted", count: 12 }, { name: "Pending", count: 6 }, { name: "Verified", count: 4 }, { name: "Rejected", count: 1 }, { name: "Scheduled", count: 2 }],
-//       Webinars: [{ name: "Total", count: 10 }, { name: "Posted", count: 5 }, { name: "Pending", count: 2 }, { name: "Verified", count: 2 }, { name: "Rejected", count: 0 }, { name: "Scheduled", count: 1 }],
-//     },
-//   };
-
-//   const getFilteredData = () => {
-//     if (selectedSubCategory === "All") {
-//       return Object.values(categoryData[selectedTime]).flat().reduce((acc, item) => {
-//         let existing = acc.find((el) => el.name === item.name);
-//         if (existing) {
-//           existing.count += item.count;
-//         } else {
-//           acc.push({ ...item });
-//         }
-//         return acc;
-//       }, []);
-//     }
-//     return categoryData[selectedTime][selectedSubCategory] || [];
-//   };
-
-//   return (
-//     <>
-//       <LocalizationProvider dateAdapter={AdapterDayjs}>
-//         <Container>
-//           <Box display="flex" justifyContent="center" gap={2} my={2}>
-//             {timeFilters.map((time) => (
-//               <Button key={time} variant={selectedTime === time ? "contained" : "outlined"} onClick={() => { setSelectedTime(time); setSelectedSubCategory("All"); }} className="hover:text-white">
-//                 {time === "monthYear" ? "Month/Year" : time.charAt(0).toUpperCase() + time.slice(1)}
-//               </Button>
-//             ))}
-//           </Box>
-
-//           {selectedTime === "monthYear" && (
-//             <Box display="flex" justifyContent="center" gap={2} my={2}>
-//               <DatePicker
-//                 views={["year", "month", "day"]}
-//                 label="Start Date"
-//                 value={startDate}
-//                 onChange={(newValue) => setStartDate(newValue)}
-//                 renderInput={(params) => <TextField {...params} />}
-//               />
-//               <DatePicker
-//                 views={["year", "month", "day"]}
-//                 label="End Date"
-//                 value={endDate}
-//                 onChange={(newValue) => setEndDate(newValue)}
-//                 renderInput={(params) => <TextField {...params} />}
-//               />
-//             </Box>
-//           )}
-
-//           <Tabs
-//             value={selectedSubCategory}
-//             onChange={(e, newValue) => setSelectedSubCategory(newValue)}
-//             centered
-//           >
-//             {subCategories.map((sub, index) => (
-//               <Tab
-//                 key={index}
-//                 label={sub}
-//                 value={sub}
-//                 sx={{
-//                   color: selectedSubCategory === sub ? 'white' : 'inherit',
-//                   transition: 'color 0.3s ease',
-//                   '&:hover': { color: 'white' },
-//                 }}
-//                 className="rounded-3"
-//               />
-//             ))}
-//           </Tabs>
-
-//           <Grid container spacing={2} justifyContent="center" mt={2}>
-//             {getFilteredData().map((category, index) => (
-//               <Grid item key={index} xs={12} sm={6} md={4} lg={2}>
-//                 <motion.div whileHover={{ scale: 1.1 }}>
-//                   <Card sx={{ textAlign: "center", p: 1, backgroundColor: "#f5f5f5", boxShadow: 3 }}>
-//                     <CardContent>
-//                       <Typography variant="subtitle1" color="primary" fontWeight="bold">{category.name}</Typography>
-//                       <Typography variant="h6" color="green">{category.count}</Typography>
-//                     </CardContent>
-//                   </Card>
-//                 </motion.div>
-//               </Grid>
-//             ))}
-//           </Grid>
-//         </Container>
-//       </LocalizationProvider>
-//       <br></br>
-//       {/* Wrapped Analytics inside the fragment */}
-// <div>
-//   <Analytics />
-// </div>
-//     </>
-//   );
-// }
-
-// export default Dashboard;
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -147,132 +17,75 @@ import {
   Tooltip,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DownloadIcon from "@mui/icons-material/Download";
 import TimelineIcon from "@mui/icons-material/Timeline";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import HistoryIcon from "@mui/icons-material/History";
-import DateRangeIcon from "@mui/icons-material/DateRange";
 import Analytics from "./contentEditor/Analytics";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [selectedTime, setSelectedTime] = useState("today");
   const [selectedSubCategory, setSelectedSubCategory] = useState("All");
-  const [startDate, setStartDate] = useState(dayjs().subtract(1, "month"));
-  const [endDate, setEndDate] = useState(dayjs());
   const [isLoading, setIsLoading] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const [statusCounts, setStatusCounts] = useState({});
+  const [errorData, setErrorData] = useState(""); // Added error state
 
-  const timeFilters = ["today", "yesterday", "monthYear"];
-  const subCategories = ["All", "Articles", "Videos", "Tutorials", "Webinars"];
+  const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
-  const categoryData = {
-    today: {
-      Articles: [
-        { name: "Total", count: 10 },
-        { name: "Posted", count: 5 },
-        { name: "Pending", count: 3 },
-        { name: "Verified", count: 1 },
-        { name: "Rejected", count: 1 },
-        { name: "Scheduled", count: 0 },
-      ],
-      Videos: [
-        { name: "Total", count: 20 },
-        { name: "Posted", count: 10 },
-        { name: "Pending", count: 5 },
-        { name: "Verified", count: 3 },
-        { name: "Rejected", count: 1 },
-        { name: "Scheduled", count: 1 },
-      ],
-      Tutorials: [
-        { name: "Total", count: 15 },
-        { name: "Posted", count: 7 },
-        { name: "Pending", count: 4 },
-        { name: "Verified", count: 2 },
-        { name: "Rejected", count: 1 },
-        { name: "Scheduled", count: 1 },
-      ],
-      Webinars: [
-        { name: "Total", count: 5 },
-        { name: "Posted", count: 2 },
-        { name: "Pending", count: 1 },
-        { name: "Verified", count: 1 },
-        { name: "Rejected", count: 0 },
-        { name: "Scheduled", count: 1 },
-      ],
-    },
-    yesterday: {
-      Articles: [
-        { name: "Total", count: 8 },
-        { name: "Posted", count: 4 },
-        { name: "Pending", count: 2 },
-        { name: "Verified", count: 1 },
-        { name: "Rejected", count: 1 },
-        { name: "Scheduled", count: 0 },
-      ],
-      Videos: [
-        { name: "Total", count: 18 },
-        { name: "Posted", count: 9 },
-        { name: "Pending", count: 4 },
-        { name: "Verified", count: 3 },
-        { name: "Rejected", count: 1 },
-        { name: "Scheduled", count: 1 },
-      ],
-      Tutorials: [
-        { name: "Total", count: 12 },
-        { name: "Posted", count: 6 },
-        { name: "Pending", count: 3 },
-        { name: "Verified", count: 2 },
-        { name: "Rejected", count: 0 },
-        { name: "Scheduled", count: 1 },
-      ],
-      Webinars: [
-        { name: "Total", count: 4 },
-        { name: "Posted", count: 2 },
-        { name: "Pending", count: 1 },
-        { name: "Verified", count: 1 },
-        { name: "Rejected", count: 0 },
-        { name: "Scheduled", count: 0 },
-      ],
-    },
-    monthYear: {
-      Articles: [
-        { name: "Total", count: 30 },
-        { name: "Posted", count: 15 },
-        { name: "Pending", count: 8 },
-        { name: "Verified", count: 4 },
-        { name: "Rejected", count: 2 },
-        { name: "Scheduled", count: 1 },
-      ],
-      Videos: [
-        { name: "Total", count: 40 },
-        { name: "Posted", count: 20 },
-        { name: "Pending", count: 10 },
-        { name: "Verified", count: 6 },
-        { name: "Rejected", count: 2 },
-        { name: "Scheduled", count: 2 },
-      ],
-      Tutorials: [
-        { name: "Total", count: 25 },
-        { name: "Posted", count: 12 },
-        { name: "Pending", count: 6 },
-        { name: "Verified", count: 4 },
-        { name: "Rejected", count: 1 },
-        { name: "Scheduled", count: 2 },
-      ],
-      Webinars: [
-        { name: "Total", count: 10 },
-        { name: "Posted", count: 5 },
-        { name: "Pending", count: 2 },
-        { name: "Verified", count: 2 },
-        { name: "Rejected", count: 0 },
-        { name: "Scheduled", count: 1 },
-      ],
-    },
-  };
+  const subCategories = ["All", "Article", "StepbyStepGuide", "Webinar"];
+
+  const [categoryData, setCategoryData] = useState([]);
+
+  // Fetch curator details on component mount
+  useEffect(() => {
+    const fetchCuratorDetails = async () => {
+      try {
+        const response = await axios.get(
+          `  ${BackendServername}/posts/curatordetails`,
+          {
+            withCredentials: true,
+          }
+        );
+        setCategoryData(response.data.data);
+        console.log(response.data.data);
+      } catch (err) {
+        setErrorData(err.response?.data?.message || "Error fetching posts");
+      }
+    };
+
+    fetchCuratorDetails();
+  }, []);
+
+  // Calculate status counts based on selected tab
+  useEffect(() => {
+    // Filter data based on selected category
+    const filteredItems =
+      selectedSubCategory === "All"
+        ? categoryData
+        : categoryData.filter(
+            (item) => item.contentData === selectedSubCategory
+          );
+
+    setFilteredData(filteredItems);
+
+    console.log(filteredData);
+    // Compute status counts based on filtered data
+    const counts = {
+      Total: filteredItems.length,
+      Posted: filteredItems.filter((item) => item.status === "approved").length,
+      Pending: filteredItems.filter((item) => item.status === "pending").length,
+      Rejected: filteredItems.filter((item) => item.status === "rejected")
+        .length,
+      Draft: filteredItems.filter((item) => item.status === "draft").length,
+    };
+
+    setStatusCounts(counts);
+    console.log("Updated Status Counts:", counts);
+  }, [selectedSubCategory, categoryData]); // Added categoryData dependency
 
   // Function to get appropriate card color based on category name
   const getCardColor = (name) => {
@@ -292,17 +105,13 @@ const Dashboard = () => {
           bg: "linear-gradient(135deg, #f46b45 0%, #eea849 100%)",
           hover: "linear-gradient(135deg, #eea849 0%, #f46b45 100%)",
         };
-      case "Verified":
-        return {
-          bg: "linear-gradient(135deg, #009FFD 0%, #2A2A72 100%)",
-          hover: "linear-gradient(135deg, #2A2A72 0%, #009FFD 100%)",
-        };
+
       case "Rejected":
         return {
           bg: "linear-gradient(135deg, #CB356B 0%, #BD3F32 100%)",
           hover: "linear-gradient(135deg, #BD3F32 0%, #CB356B 100%)",
         };
-      case "Scheduled":
+      case "Draft":
         return {
           bg: "linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)",
           hover: "linear-gradient(135deg, #d04ed6 0%, #834d9b 100%)",
@@ -315,40 +124,32 @@ const Dashboard = () => {
     }
   };
 
-  const getFilteredData = () => {
-    if (selectedSubCategory === "All") {
-      return Object.values(categoryData[selectedTime])
-        .flat()
-        .reduce((acc, item) => {
-          let existing = acc.find((el) => el.name === item.name);
-          if (existing) {
-            existing.count += item.count;
-          } else {
-            acc.push({ ...item });
-          }
-          return acc;
-        }, []);
-    }
-    return categoryData[selectedTime][selectedSubCategory] || [];
-  };
-
-  // Helper function to determine which category type a card belongs to
-  const getCategoryTypeForCard = (data, categoryName) => {
-    if (selectedSubCategory !== "All") {
-      return selectedSubCategory;
-    }
-
-    // For "All" subcategory, we need to find which type this belongs to
-    // This is a simplified approach - in real app, you'd track this in the data structure
-    const categoryTypes = ["Articles", "Videos", "Tutorials", "Webinars"];
-    return "All Categories";
+  const handleTabClick = (sub) => {
+    setSelectedSubCategory(sub);
   };
 
   const handleRefresh = () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
+    // Refetch data
+    const fetchCuratorDetails = async () => {
+      try {
+        const response = await axios.get(
+          ` ${BackendServername}/posts/curatordetails`,
+          {
+            withCredentials: true,
+          }
+        );
+        setCategoryData(response.data.data);
+      } catch (err) {
+        setErrorData(err.response?.data?.message || "Error fetching posts");
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 800);
+      }
+    };
+
+    fetchCuratorDetails();
   };
 
   // Add loading effect
@@ -358,7 +159,7 @@ const Dashboard = () => {
       setIsLoading(false);
     }, 800);
     return () => clearTimeout(timer);
-  }, [selectedTime, selectedSubCategory]);
+  }, [selectedSubCategory]);
 
   // Card animation variants for framer-motion
   const cardVariants = {
@@ -373,6 +174,29 @@ const Dashboard = () => {
       },
     }),
   };
+
+  // Prepare status cards data
+  const statusCardsData = [
+    { status: "Total", count: statusCounts.Total || 0 },
+    { status: "Posted", count: statusCounts.Posted || 0 },
+    { status: "Pending", count: statusCounts.Pending || 0 },
+    { status: "Rejected", count: statusCounts.Rejected || 0 },
+    { status: "Draft", count: statusCounts.Draft || 0 },
+  ];
+
+  const analyticsData = {
+    approvedData: categoryData.filter((e) => e.status === "approved"),
+    pendingData: categoryData.filter((e) => e.status === "pending"),
+    draftData: categoryData.filter((e) => e.status === "draft"),
+    rejectedData: categoryData.filter((e) => e.status === "rejected"),
+  };
+
+  const analyticsArray = [
+    { name: "Approved", value: analyticsData.approvedData.length },
+    { name: "Pending", value: analyticsData.pendingData.length },
+    { name: "Draft", value: analyticsData.draftData.length },
+    { name: "Rejected", value: analyticsData.rejectedData.length },
+  ];
 
   return (
     <>
@@ -403,142 +227,10 @@ const Dashboard = () => {
                     <RefreshIcon />
                   </IconButton>
                 </Tooltip>
-                {/* <Tooltip title="Filter Options">
-                  <IconButton color="primary">
-                    <FilterListIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Export Data">
-                  <IconButton color="primary">
-                    <DownloadIcon />
-                  </IconButton>
-                </Tooltip> */}
               </Box>
             </Box>
 
             <Divider sx={{ mb: 3 }} />
-
-            <Box
-              display="flex"
-              justifyContent="center"
-              gap={2}
-              mb={3}
-              sx={{ flexWrap: "wrap" }}
-            >
-              <Button
-                startIcon={<CalendarTodayIcon />}
-                variant={selectedTime === "today" ? "contained" : "outlined"}
-                onClick={() => {
-                  setSelectedTime("today");
-                  setSelectedSubCategory("All");
-                }}
-                sx={{
-                  borderRadius: "12px",
-                  px: 3,
-                  py: 1,
-                  fontWeight: "bold",
-                  boxShadow: selectedTime === "today" ? 3 : 0,
-                  transition: "all 0.3s",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                Today
-              </Button>
-              <Button
-                startIcon={<HistoryIcon />}
-                variant={
-                  selectedTime === "yesterday" ? "contained" : "outlined"
-                }
-                onClick={() => {
-                  setSelectedTime("yesterday");
-                  setSelectedSubCategory("All");
-                }}
-                sx={{
-                  borderRadius: "12px",
-                  px: 3,
-                  py: 1,
-                  fontWeight: "bold",
-                  boxShadow: selectedTime === "yesterday" ? 3 : 0,
-                  transition: "all 0.3s",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                Yesterday
-              </Button>
-              <Button
-                startIcon={<DateRangeIcon />}
-                variant={
-                  selectedTime === "monthYear" ? "contained" : "outlined"
-                }
-                onClick={() => {
-                  setSelectedTime("monthYear");
-                  setSelectedSubCategory("All");
-                }}
-                sx={{
-                  borderRadius: "12px",
-                  px: 3,
-                  py: 1,
-                  fontWeight: "bold",
-                  boxShadow: selectedTime === "monthYear" ? 3 : 0,
-                  transition: "all 0.3s",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                Month/Year
-              </Button>
-            </Box>
-
-            {/* {selectedTime === "monthYear" && (
-              <Box
-                display="flex"
-                justifyContent="center"
-                gap={2}
-                my={3}
-                sx={{ flexWrap: "wrap" }}
-              >
-                <DatePicker
-                  views={["year", "month", "day"]}
-                  label="Start Date"
-                  value={startDate}
-                  onChange={(newValue) => setStartDate(newValue)}
-                  renderInput={(params) => <TextField {...params} />}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "12px",
-                      transition: "all 0.3s",
-                      "&:hover": {
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                      },
-                    },
-                  }}
-                />
-                <DatePicker
-                  views={["year", "month", "day"]}
-                  label="End Date"
-                  value={endDate}
-                  onChange={(newValue) => setEndDate(newValue)}
-                  renderInput={(params) => <TextField {...params} />}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "12px",
-                      transition: "all 0.3s",
-                      "&:hover": {
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                      },
-                    },
-                  }}
-                />
-              </Box>
-            )} */}
 
             <Paper
               elevation={1}
@@ -565,51 +257,19 @@ const Dashboard = () => {
                   },
                 }}
               >
-                {subCategories.map((sub, index) => (
+                {subCategories.map((sub) => (
                   <Tab
-                    key={index}
-                    label={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        {sub}
-                        {sub !== "All" && (
-                          <Chip
-                            size="small"
-                            label={categoryData[selectedTime][sub].reduce(
-                              (sum, item) =>
-                                item.name === "Total" ? sum + item.count : sum,
-                              0
-                            )}
-                            sx={{
-                              height: 20,
-                              fontSize: "0.7rem",
-                              background:
-                                selectedSubCategory === sub
-                                  ? "#1976D2"
-                                  : "#e0e0e0",
-                              color: selectedSubCategory === sub ? "#fff" : "",
-                            }}
-                          />
-                        )}
-                      </Box>
-                    }
+                    key={sub}
+                    label={`${sub}`}
                     value={sub}
+                    onClick={() => handleTabClick(sub)}
                     sx={{
                       borderRadius: "10px 10px 0 0",
                       fontWeight: "medium",
                       transition: "all 0.3s",
                       textTransform: "none",
-                      "&.Mui-selected": {
-                        fontWeight: "bold",
-                      },
-                      "&:hover": {
-                        backgroundColor: "rgba(25, 118, 210, 0.1)",
-                      },
+                      "&.Mui-selected": { fontWeight: "bold" },
+                      "&:hover": { backgroundColor: "rgba(25, 118, 210, 0.1)" },
                     }}
                   />
                 ))}
@@ -617,7 +277,7 @@ const Dashboard = () => {
             </Paper>
 
             <Grid container spacing={3} justifyContent="center">
-              {getFilteredData().map((category, index) => (
+              {statusCardsData.map((category, index) => (
                 <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
                   <motion.div
                     initial="hidden"
@@ -632,7 +292,7 @@ const Dashboard = () => {
                         height: "100%",
                         borderRadius: "16px",
                         boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                        background: getCardColor(category.name).bg,
+                        background: getCardColor(category.status).bg,
                         color: "white",
                         position: "relative",
                         overflow: "hidden",
@@ -640,7 +300,7 @@ const Dashboard = () => {
                         opacity: isLoading ? 0.7 : 1,
                         "&:hover": {
                           boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-                          background: getCardColor(category.name).hover,
+                          background: getCardColor(category.status).hover,
                         },
                       }}
                     >
@@ -658,7 +318,7 @@ const Dashboard = () => {
                             fontWeight="bold"
                             sx={{ mb: 1, opacity: 0.9 }}
                           >
-                            {category.name}
+                            {category.status}
                           </Typography>
 
                           <Chip
@@ -748,7 +408,7 @@ const Dashboard = () => {
       </LocalizationProvider>
 
       <Box sx={{ mt: 5 }}>
-        <Analytics />
+        <Analytics data={analyticsArray} />
       </Box>
     </>
   );

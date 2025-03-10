@@ -6,9 +6,9 @@ const isAccountVerified = require("../../middlewares/isAccountVerified.js")
 
 const articleRouter = express.Router();
 
-articleRouter.put("/updatearticle/:id", upload.single("thumbnail"), isAuthenticated, updateArticleController);
 articleRouter.post("/addarticle", upload.single("thumbnail"), isAuthenticated,isAccountVerified, addarticlecontroller);
 articleRouter.get("/getarticle",isAuthenticated, getAllArticles);
+articleRouter.put("/updatearticle/:id", upload.single("thumbnail"), isAuthenticated, updateArticleController);
   
 
 module.exports = articleRouter;
