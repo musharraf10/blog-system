@@ -8,14 +8,12 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
-  // { name: "Feed", href: "/subscriber/feed", icon: HomeIcon },
-  // { name: "Trending", href: "/subscriber/trendingcontent", icon: MdContentPaste },
   { name: "Webinars", href: "/subscriber/webinars", icon: FaUsersCog },
-  // { name: "Shorts", href: "/subscriber/shorts", icon: MdPayment },
   { name: "Video Tutorials", href: "/subscriber/stepbystepguide", icon: FaUserEdit },
   { name: "Bookmarks", href: "/subscriber/bookmarks", icon: FaCalendarPlus },
-  { name: "Upcoming Events", href: "/subscriber/upcomingevents", icon: FaTags },
-  { name: "Pricing", href: "subscriber/pricing", icon: MdPayment },
+  { name: "Upcoming Events", href: "upcomingevents", icon: FaTags },
+  { name: "Settings", href: "/subscriber/settings", icon: Cog6ToothIcon },
+  { name: "Pricing", href: "/subscriber/pricing", icon: MdPayment },  // Added Pricing link here
 ];
 
 export default function SubscriberDashboard() {
@@ -28,6 +26,18 @@ export default function SubscriberDashboard() {
         <PrivateNavbar />
       </div>
 
+      {/* Mobile Sidebar Toggle Button */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 bg-white/80 p-2 rounded-full shadow-md"
+        onClick={() => setSidebarOpen(true)}
+      >
+        {/* Three-line icon for toggle */}
+        <div className="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
+        <div className="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
+        <div className="w-6 h-0.5 bg-gray-700"></div>
+      </button>
+
+      {/* Mobile Sidebar */}
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
           <Transition.Child
@@ -84,62 +94,46 @@ export default function SubscriberDashboard() {
                     );
                   })}
                 </nav>
-                <div className="mt-auto mb-6">
-                  <Link
-                    to="/subscriber/settings"
-                    className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
-                      location.pathname === "/subscriber/settings"
-                        ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
-                        : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
-                    }`}
-                  >
-                    <Cog6ToothIcon
-                      className={`h-5 w-5 mr-3 flex-shrink-0 ${
-                        location.pathname === "/subscriber/settings" ? "text-[#1565C0]" : "text-gray-500"
-                      }`}
-                    />
-                    <span className="truncate">Settings</span>
-                  </Link>
-                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
         </Dialog>
       </Transition.Root>
 
-      <div className="flex">
-        <aside className="hidden lg:flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen fixed top-16 shadow-md border-r border-blue-100">
-          <Link to="/subscriber" className="mb-8 flex items-center justify-center">
-            <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
-              <FaBlog className="h-6 w-auto text-white" />
-            </div>
-            <span className="ml-3 text-xl font-semibold text-gray-800">Subscriber Panel</span>
-          </Link>
-          <nav className="space-y-1.5">
-            {navigation.map(({ name, href, icon: Icon }) => {
-              const isActive =
-                href !== "/subscriber" && (location.pathname === href || location.pathname.startsWith(href + "/"));
-              return (
-                <Link
-                  key={name}
-                  to={href}
-                  className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
-                      : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
-                  }`}
-                >
-                  <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
-                  <span className="truncate">{name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </aside>
-        <div className="flex-1 p-8 mt-16 lg:ml-80 bg-gray-50 min-h-screen">
-          <Outlet />
-        </div>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex w-80 flex-col bg-gradient-to-b from-white to-blue-50 p-5 h-screen fixed top-16 shadow-md border-r border-blue-100">
+        <Link to="/subscriber" className="mb-8 flex items-center justify-center">
+          <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
+            <FaBlog className="h-6 w-auto text-white" />
+          </div>
+          <span className="ml-3 text-xl font-semibold text-gray-800">Subscriber Panel</span>
+        </Link>
+        <nav className="space-y-1.5">
+          {navigation.map(({ name, href, icon: Icon }) => {
+            const isActive =
+              href !== "/subscriber" && (location.pathname === href || location.pathname.startsWith(href + "/"));
+            return (
+              <Link
+                key={name}
+                to={href}
+                className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${
+                  isActive
+                    ? "bg-gradient-to-r from-[#1565C0]/10 to-[#42A5F5]/20 text-[#1565C0] font-medium border-l-4 border-[#1565C0] shadow-sm"
+                    : "text-gray-700 hover:bg-white/90 hover:shadow-sm"
+                }`}
+              >
+                <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? "text-[#1565C0]" : "text-gray-500"}`} />
+                <span className="truncate">{name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 p-8 mt-16 lg:ml-80 bg-gray-50 min-h-screen">
+        <Outlet />
       </div>
     </>
-);
+  );
 }

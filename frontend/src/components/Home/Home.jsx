@@ -17,7 +17,8 @@ import {
 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query";
 import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
-
+import {Link} from "react-router-dom"
+import Pricing from "../Plans/Pricing"
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All")
   const [isVisible, setIsVisible] = useState(false)
@@ -380,29 +381,7 @@ export default function HomePage() {
 
           {/* Action Buttons */}
           <div style={{ display: isMobile ? "none" : "flex", gap: "1rem", alignItems: "center" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                background: "#f0f4f8",
-                borderRadius: "20px",
-                padding: "0.3rem 0.8rem",
-              }}
-            >
-              <Search size={16} color="#666" />
-              <input
-                type="text"
-                placeholder="Search..."
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#333",
-                  padding: "0.3rem 0.5rem",
-                  outline: "none",
-                  width: "120px",
-                }}
-              />
-            </div>
+           
            {user ?<a
               href={`${user}`}
               style={{
@@ -423,8 +402,8 @@ export default function HomePage() {
               }}
             >
               DashBoard
-            </a> : <a
-              href="/login"
+            </a> : <Link
+              to="/login"
               style={{
                 color: primaryColor,
                 background: "white",
@@ -443,9 +422,9 @@ export default function HomePage() {
               }}
             >
               Sign In
-            </a>}
+            </Link>}
             <a
-              href="#"
+              href="#pricing"
               style={{
                 color: "white",
                 background: primaryColor,
@@ -881,8 +860,8 @@ export default function HomePage() {
             </div>
 
             <div style={{ textAlign: "center", marginTop: "3rem" }}>
-              <a
-                href="#"
+              <Link
+                to="/login"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -908,7 +887,7 @@ export default function HomePage() {
                 }}
               >
                 Explore All Content <ArrowRight size={18} />
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -1040,8 +1019,8 @@ export default function HomePage() {
             </div>
 
             <div style={{ textAlign: "center", marginTop: "3rem" }}>
-              <a
-                href="#"
+              <Link
+                to="/login"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -1067,13 +1046,13 @@ export default function HomePage() {
                 }}
               >
                 View All Webinars <ArrowRight size={18} />
-              </a>
+              </Link>
             </div>
           </div>
         </section>
 
         {/* Subscription Plans */}
-        <section
+        {/* <section
           id="pricing"
           style={{
             padding: "4rem 1rem",
@@ -1200,8 +1179,8 @@ export default function HomePage() {
                     ))}
                   </ul>
 
-                  <a
-                    href="#"
+                  <Link
+                    to="/login"
                     style={{
                       display: "block",
                       textAlign: "center",
@@ -1225,13 +1204,20 @@ export default function HomePage() {
                     }}
                   >
                     {plan.ctaText}
-                  </a>
+                  </Link>
                 </div>
               ))}
             </div>
           </div>
+        </section> */}
+        <section id="pricing"
+          style={{
+            padding: "4rem 1rem",
+            background: "#f8f9fa",
+            color: "#333",
+          }}>
+        <Pricing />
         </section>
-
         {/* Testimonials */}
         <section
           id="testimonials"

@@ -45,7 +45,7 @@ webinarRouter.get("/", async (req, res) => {
 webinarRouter.get("/upcomingevents",async (req, res) => {
     try {
       const upcomingdata = await Webinar.find();
-      console.log(upcomingdata)
+      // console.log(upcomingdata)
       res.json(upcomingdata);
     } catch (error) {
       res.status(500).json({ error: "Server error" });

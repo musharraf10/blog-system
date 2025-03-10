@@ -14,41 +14,21 @@ import axios from "axios";
 
 import { loadStripe } from '@stripe/stripe-js';
 import { motion } from "framer-motion";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const PostsList = () => {
-  const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLetter, setSelectedLetter] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
   const [page, setPage] = useState(1);
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
   const [planName, setPlanName] = useState("");
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
-  const [openMenuId, setOpenMenuId] = useState(null)
-  const navigate = useNavigate()
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const navigate = useNavigate();
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
-  // Slick Carousel Settings
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3, // Show 3 posts at a time on large screens
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 2 }
-      },
-      {
-        breakpoint: 768,
-        settings: { slidesToShow: 1 }
-      }
-    ]
-  };
 
   const getPlan = async () => {
     try {
@@ -56,8 +36,8 @@ const PostsList = () => {
         withCredentials: true,
       });
 
-      console.log("Fetched Plan:", response.data.plan);
-      setPlanName(response.data.plan?.planName || "basic");
+      console.log("Fetched Plan:", response.data.data);
+      setPlanName(response.data.data);
     } catch (error) {
       console.error("Error fetching plan:", error);
     }
@@ -68,22 +48,9 @@ const PostsList = () => {
   }, []);
 
   useEffect(() => {
-    setIsUserSubscribed(planName !== "basic");
+    setIsUserSubscribed(planName);
   }, [planName]);
 
-
-  useEffect(() => {
-      function handleClickOutside(event) {
-        if (openMenuId && !event.target.closest(".menu-dots")) {
-          setOpenMenuId(null)
-        }
-      }
-  
-      document.addEventListener("mousedown", handleClickOutside)
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside)
-      }
-    }, [openMenuId])
 
   const handleContent = async (postId, price) => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -113,32 +80,49 @@ const PostsList = () => {
   const showHeaderFooter = location.pathname.includes("/posts");
 
   const { isError, isLoading, data, error, isSuccess, refetch } = useQuery({
-    queryKey: ["lists-posts", { ...filters, page }],
+    queryKey: ["lists-posts", { page }],
     queryFn: () =>
       fetchAllPosts(),
   });
+
+  useEffect(() => {
+    if (data?.posts) {
+      let results = data.posts;
+      
+      // Apply search filter
+      if (searchTerm) {
+        results = results.filter(post =>
+          post.refId?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      // Apply first letter filter
+      if (selectedLetter) {
+        results = results.filter(post =>
+          post.refId?.title?.startsWith(selectedLetter)
+        );
+      }
+
+      setFilteredResults(results);
+    }
+  }, [searchTerm, selectedLetter, data]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  console.log("Data", data)
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setFilters({ ...filters, title: searchTerm });
-    setPage(1);
-    refetch();
-  };
+  // Get unique first letters of posts
+  const uniqueLetters = [...new Set(data?.posts?.map(post => post.refId?.title?.[0]?.toUpperCase() || ""))].sort();
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
     refetch();
   };
 
+  // Fixed clearFilters function - removed reference to setFilters
   const clearFilters = () => {
-    setFilters({});
     setSearchTerm("");
+    setSelectedLetter("");
     setPage(1);
     refetch();
   };
@@ -158,22 +142,6 @@ const PostsList = () => {
       }
       setOpenMenuId(null)
     }
-
-    const toggleMenu = (postId, e) => {
-      e.stopPropagation()
-      e.preventDefault()
-      console.log("Toggle menu for post:", postId)
-      setOpenMenuId(openMenuId === postId ? null : postId)
-    }
-  const toggleBookmark = (postId, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setBookmarkedPosts((prev) =>
-      prev.includes(postId)
-        ? prev.filter((id) => id !== postId)
-        : [...prev, postId]
-    );
-  };
 
   const isPremiumPost = (post) => {
     return post.price > 0;
@@ -236,8 +204,9 @@ const PostsList = () => {
     return <div className="pagination">{buttons}</div>;
   };
 
-  const premiumPosts = data?.posts?.filter(isPremiumPost);
-  const nonPremiumPosts = data?.posts?.filter(post => !isPremiumPost(post));
+  // Added null checks for filteredResults
+  const premiumPosts = filteredResults?.filter(isPremiumPost) || [];
+  const nonPremiumPosts = filteredResults?.filter(post => !isPremiumPost(post)) || [];
 
   return (
     <>
@@ -246,10 +215,10 @@ const PostsList = () => {
         <div className="container px-4 mx-auto max-w-6xl">
           <div className="pt-16 pb-8">
             <motion.h1
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4"
+              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 text-center"
             >
               Discover Our Latest Content
             </motion.h1>
@@ -262,10 +231,9 @@ const PostsList = () => {
               Explore our collection of articles, tutorials, and resources to help you stay informed and inspired.
             </motion.p>
           </div>
-          {/* Search Bar */}
           <div className="relative flex items-center justify-center mt-6">
             <form
-              onSubmit={handleSearchSubmit}
+              onSubmit={(e) => e.preventDefault()}
               className="relative mb-5 flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-100 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
             >
               <FaSearch className="absolute left-4 text-blue-600 text-lg animate-pulse" />
@@ -274,7 +242,7 @@ const PostsList = () => {
                 placeholder="Search for content..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="w-full py-3 pl-12 pr-12  text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
+                className="w-full py-3 pl-12 pr-12 text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
               />
               {searchTerm && (
                 <button
@@ -288,6 +256,29 @@ const PostsList = () => {
             </form>
           </div>
 
+          {/* Letter Filter */}
+          <div className="flex flex-wrap gap-2 justify-center my-4">
+            {uniqueLetters.map(letter => (
+              <button
+                key={letter}
+                className={`px-3 py-1 rounded-full text-sm font-semibold transition-all ${
+                  selectedLetter === letter ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+                }`}
+                onClick={() => setSelectedLetter(letter)}
+              >
+                {letter}
+              </button>
+            ))}
+            {selectedLetter && (
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded-full text-sm font-semibold"
+                onClick={clearFilters}
+              >
+                Clear Filter
+              </button>
+            )}
+          </div>
+
           {/* Error and Loading States */}
           {isError && <AlertMessage type="error" message="Something happened" />}
 
@@ -295,7 +286,7 @@ const PostsList = () => {
             <div className="loading-container">
               <div className="loading-spinner"></div>
             </div>
-          ) : data?.posts?.length <= 0 ? (
+          ) : filteredResults.length === 0 ? (
             <NoDataFound text="No Posts Found" />
           ) : (
             <>
@@ -337,87 +328,10 @@ const PostsList = () => {
                       <div className="post-image-container" style={{ position: "relative" }}>
                           <img
                               className="post-image"
-                              src={post.refId.thumbnail || "/default-image.jpg"}
+                              src={post.refId?.thumbnail || "/default-image.jpg"}
                               alt={post?.price || "Post image"}
                               style={{ width: "100%", height: "200px", objectFit: "cover" }}
                           />
-                          {/* three dots */}
-                        <div
-                          className="menu-dots"
-                          style={{ position: "absolute", top: "10px", right: "10px", zIndex: 10 }}
-                        >
-                          <button
-                            onClick={(e) => toggleMenu(post._id, e)}
-                            style={{
-                              width: "32px",
-                              height: "32px",
-                              borderRadius: "50%",
-                              backgroundColor: "rgba(255, 255, 255, 0.9)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              border: "none",
-                              cursor: "pointer",
-                              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                            }}
-                          >
-                            <FaEllipsisV style={{ color: "#2563EB" }} />
-                          </button>
-
-                          {openMenuId === post._id && (
-                            <div
-                              style={{
-                                position: "absolute",
-                                right: "0",
-                                top: "40px",
-                                width: "150px",
-                                backgroundColor: "white",
-                                borderRadius: "8px",
-                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                                zIndex: 999,
-                                border: "1px solid #e5e7eb",
-                              }}
-                            >
-                              <div
-                                onClick={(e) => handleEditPost(post._id, e)}
-                                style={{
-                                  padding: "10px 15px",
-                                  borderBottom: "1px solid #e5e7eb",
-                                  cursor: "pointer",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "8px",
-                                }}
-                              >
-                                <FaEdit style={{ color: "#2563EB" }} />
-                                <span>Edit</span>
-                              </div>
-                              <div
-                                onClick={(e) => handleDeletePost(post._id, e)}
-                                style={{
-                                  padding: "10px 15px",
-                                  cursor: "pointer",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "8px",
-                                }}
-                              >
-                                <FaTrash style={{ color: "#EF4444" }} />
-                                <span>Delete</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-
-
-                        {/* <button
-                          className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
-                          onClick={(e) => toggleBookmark(post._id, e)}
-                          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                        >
-                          <FaBookmark />
-                        </button> */}
                       </div>
 
                       {isPremium && !isUserSubscribed && (
@@ -482,77 +396,10 @@ const PostsList = () => {
                           <div className="post-image-container" style={{ position: "relative" }}>
                             <img
                               className="post-image"
-                              src={post?.refId?.thumbnail}
+                              src={post?.refId?.thumbnail || "/default-image.jpg"}
                               alt={post?.price || "Post image"}
                               style={{ width: "100%", height: "200px", objectFit: "cover" }}
                             />
-                            {/* 3 Dots */}
-                            <div
-                              className="menu-dots"
-                              style={{ position: "absolute", top: "10px", right: "10px", zIndex: 10 }}
-                            >
-                              <button
-                                onClick={(e) => toggleMenu(post._id, e)}
-                                style={{
-                                  width: "32px",
-                                  height: "32px",
-                                  borderRadius: "50%",
-                                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                }}
-                              >
-                                <FaEllipsisV style={{ color: "#2563EB" }} />
-                              </button>
-
-                              {openMenuId === post._id && (
-                                <div
-                                  style={{
-                                    position: "absolute",
-                                    right: "0",
-                                    top: "40px",
-                                    width: "150px",
-                                    backgroundColor: "white",
-                                    borderRadius: "8px",
-                                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                                    zIndex: 999,
-                                    border: "1px solid #e5e7eb",
-                                  }}
-                                >
-                                  <div
-                                    onClick={(e) => handleEditPost(post._id, e)}
-                                    style={{
-                                      padding: "10px 15px",
-                                      borderBottom: "1px solid #e5e7eb",
-                                      cursor: "pointer",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "8px",
-                                    }}
-                                  >
-                                    <FaEdit style={{ color: "#2563EB" }} />
-                                    <span>Edit</span>
-                                  </div>
-                                  <div
-                                    onClick={(e) => handleDeletePost(post._id, e)}
-                                    style={{
-                                      padding: "10px 15px",
-                                      cursor: "pointer",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "8px",
-                                    }}
-                                  >
-                                    <FaTrash style={{ color: "#EF4444" }} />
-                                    <span>Delete</span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
                             
                           </div>
                           {isPremiumPost(post) && !isUserSubscribed && (

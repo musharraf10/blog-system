@@ -281,11 +281,13 @@ export const Webinars = () => {
                         </div>
                       )}
                       <div className="post-image-container">
+                        <Link to={post.refId.link}>
                           <img
                               className="post-image"
                               src={post.refId.thumbnail || "/default-image.jpg"}
                               alt={post?.price || "Post image"}
                           />
+                        </Link>
                         {/* <button
                           className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
                           onClick={(e) => toggleBookmark(post._id, e)}

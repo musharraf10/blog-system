@@ -119,25 +119,22 @@ connectDB();
 // calculateEarnings(); 
 
 cron.schedule(
-  "59 23 * * *",
+  "0 8 * * *",  // Runs at 8:00 AM IST
   async () => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    if (today.getMonth() !== tomorrow.getMonth()) {
-      calculateEarnings();
+    try {
+      await calculateEarnings();
+      console.log("Earnings calculated successfully.");
+    } catch (err) {
+      console.error("Error calculating earnings:", err);
     }
   },
   {
     scheduled: true,
-    timezone: "America/New_York",
+    timezone: "Asia/Kolkata",  // Indian Standard Time (IST)
   }
 );
 
 
-calculateEarnings()
-  .then(() => console.log("Earnings calculated successfully."))
-  .catch((err) => console.error("Error calculating earnings:", err));
 
 
 const app = express();
