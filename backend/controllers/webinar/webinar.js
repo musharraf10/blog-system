@@ -2,7 +2,7 @@ const Webinar = require("../../models/webinar/webinar.js");
 const Post = require("../../models/Post/Post.js");
 const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
-const sendWebinarNotification = require("../../utils/webinersNotification.js")
+const sendWebinarNotification = require("../../utils/webinersNotification.js");
 
 const addWebinarController = async (req, res) => {
   try {
@@ -28,7 +28,7 @@ const addWebinarController = async (req, res) => {
 
     await newWebinar.save();
     await createPost.save();
-
+    console.log("hj");
     // Notify followers
     const user = await User.findById(req.user).populate("followers");
     user.followers.forEach(async (follower) => {
@@ -62,7 +62,9 @@ const updateWebinarController = async (req, res) => {
     const post = await Post.findById(id).populate("refId");
 
     if (!post || !post.refId) {
-      return res.status(404).json({ status: "error", message: "Webinar post not found." });
+      return res
+        .status(404)
+        .json({ status: "error", message: "Webinar post not found." });
     }
 
     post.refId.set({
@@ -100,9 +102,13 @@ const updateWebinarController = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating webinar:", error);
-    return res.status(500).json({ status: "error", message: "Failed to update webinar. Please try again." });
+    return res
+      .status(500)
+      .json({
+        status: "error",
+        message: "Failed to update webinar. Please try again.",
+      });
   }
 };
 
-
-module.exports = {addWebinarController, updateWebinarController};
+module.exports = { addWebinarController, updateWebinarController };

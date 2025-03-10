@@ -53,8 +53,9 @@ const AdminRoutes = () => {
             </AuthRoute>
           }
         >
-          {/* <Route index element={<Dashboard />} /> */}
           <Route index element={<ContentPart/>} />
+        
+          <Route path="content-management" element={<ContentPart/>} />
           <Route path="user-management" element={<UserManagement/>} />
           <Route path="payment-management" element={<PaymentsDashboard/>} />
           <Route path="profile" element={<AccountSummaryDashboard />} />

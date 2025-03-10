@@ -30,7 +30,9 @@ VideoGuideRouter.post("/addguide", (req, res, next) => {
       console.log("req.files.thumbnailImage:", req.files.thumbnail);
       next(); 
     });
-  }, isAuthenticated, isAccountVerified, addStepbyStepGuide); 
+  }, isAuthenticated,
+  //  isAccountVerified, 
+   addStepbyStepGuide); 
 
 // VideoGuideRouter.put(
 //     "/updateguide/:id",
@@ -69,7 +71,8 @@ VideoGuideRouter.put(
         next();
       });
     },
-    isAuthenticated, isAccountVerified,
+    isAuthenticated,
+    //  isAccountVerified,
     updateStepbyStepGuide
 );
   

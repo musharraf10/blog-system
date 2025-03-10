@@ -17,7 +17,7 @@ postRouter.post(
   isAuthenticated,
   roleCheck(["curator", "admin"]),
   checkUserPlan,
-  isAccountVerified,
+  // isAccountVerified,
   upload.single("file"), 
   // upload.single("image"),
   postController.createPost

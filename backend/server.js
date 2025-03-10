@@ -8,6 +8,11 @@
 
 
 
+
+
+
+
+
 // const postRouter = require("./router/post/postsRouter");
 // const usersRouter = require("./router/user/usersRouter");
 // const categoriesRouter = require("./router/category/categoriesRouter");
@@ -164,6 +169,7 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
 app.use("/api/v1/article", articleRouter);
 app.use("/api/v1/webinar", webinarRouter);
+
 
 
 
