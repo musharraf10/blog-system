@@ -1,12 +1,18 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 const asyncHandler = require("express-async-handler");
 const Payment = require("../../models/Payment/Payment");
 const Plan = require("../../models/Plan/Plan");
 const Post = require("../../models/Post/Post");
 const User = require("../../models/User/User");
 const { response } = require("express");
+const Stripe = require("stripe")
+
+
+
+
 
 const stripePaymentController = {
+  // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
   createCheckoutSession: asyncHandler(async (req, res) => {
     const { subscriptionPlanId, billingCycle, postId } = req.body;
     let sessionConfig = {
@@ -82,33 +88,33 @@ const stripePaymentController = {
 
   free: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    const plan = await Plan.findOne({ planName: "Free" }); 
-    
+    const plan = await Plan.findOne({ planName: "Free" });
+
     if (!user) throw new Error("User not found");
     if (!plan) throw new Error("Free plan not found");
-  
+
     if (!plan.activeSubscribers.includes(user._id)) {
       console.log("Adding user to free plan");
       plan.activeSubscribers.push(user._id);
     }
-    console.log("User has selected free plan",user._id);
+    console.log("User has selected free plan", user._id);
     user.hasSelectedPlan = true;
     user.plan = plan._id;
-  
+
     await plan.save();
     await user.save();
-  
+
     res.json({ status: true, message: "User updated to free plan" });
   }),
 
   CurrentUserPlan: asyncHandler(async (req, res) => {
     try {
       const user = await User.findById(req.user._id).populate("plan");
-  
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       res.status(200).json({ plan: user.plan });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
@@ -121,16 +127,24 @@ const stripePaymentController = {
     res.json({ payments });
   }),
 
-  getPlanId: asyncHandler(async(req, res) =>{
-    const {planId} = req.params;
-    if(!planId){
-      return res.status(404).json({message : "Plan Not Found"})
+  getPlanId: asyncHandler(async (req, res) => {
+    const { planId } = req.params;
+    if (!planId) {
+      return res.status(404).json({ message: "Plan Not Found" })
     }
 
     const plan = await Plan.findById(planId);
 
-    res.status(200).json({response : plan})
-  })
+    res.status(200).json({ response: plan })
+  }),
+
+
+
+
+
+
+
+
 };
 
 module.exports = stripePaymentController;

@@ -7,9 +7,12 @@ const User = require("../../models/User/User");
 const sendAccVerificationEmail = require("../../utils/sendAccVerificationEmail");
 const sendPasswordEmail = require("../../utils/sendPasswordEmail");
 const { console } = require("inspector");
+const Stripe = require('stripe')
 
 
 //-----User Controller---
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 
 const CreateToken = (user = null) => {
   if (!user) return null;
@@ -35,17 +38,27 @@ const userController = {
     //Hash the password
     // console.log(password)
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const customer = await stripe.customers.create({
+      email
+    }, {
+      apikey: process.env.STRIPE_SECRET_KEY
+    })
     //Register the user
     const userRegistered = await User.create({
       username,
       email,
       password: hashedPassword,
     });
+    // token create 
+    const token = CreateToken(userRegistered);
     //send the response
     res.status(201).json({
       status: "success",
       message: "User registered successfully",
       userRegistered,
+      token: token,
+      stripCustomerId: customer.id,
     });
   }),
   // ! Login
@@ -56,6 +69,7 @@ const userController = {
       if (!user) {
         return res.status(401).json({ message: "User Not Found" });
       }
+
       //generate token
       const token = jwt.sign({ id: user?._id, role: user?.role }, process.env.JWT_SECRET);
       //set the token into cookie
@@ -66,6 +80,12 @@ const userController = {
         maxAge: 24 * 60 * 60 * 1000, //1 day
       });
 
+      const customer = stripe.customers.create({
+        email
+      }, {
+        apikey: process.env.STRIPE_SECRET_KEY
+      })
+
       //send the response
       res.json({
         status: "success",
@@ -73,7 +93,9 @@ const userController = {
         username: user?.username,
         email: user?.email,
         _id: user?._id,
-        role: user?.role
+        role: user?.role,
+        stripCustomerId: customer.id,
+        token,
       });
     })(req, res, next);
   }),
@@ -504,7 +526,7 @@ const userController = {
           token
         });
       } else {
-        const generatePassword = () => Math.random().toString(36).slice(-8); // ✅ Generates a secure random password
+        const generatePassword = () => Math.random().toString(36).slice(-8);
         const hashedPassword = await bcrypt.hash(generatePassword(), 10);
 
         const newUser = new User({

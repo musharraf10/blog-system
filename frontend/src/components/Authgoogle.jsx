@@ -10,12 +10,16 @@ const Oauth = () => {
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      const auth = new getAuth(app);
+      const auth = getAuth(app); // ✅ No "new" here, just getAuth(app)
+
       const result = await signInWithPopup(auth, provider);
+
+      const token = await result.user.getIdToken(); // ✅ Fetch Firebase token
 
       const form = {
         username: result.user.displayName,
         email: result.user.email,
+        token, // ✅ Send the token
       };
 
       const resp = await axios.post(

@@ -29,27 +29,27 @@ const Login = () => {
     }),
     // submit
     onSubmit: (values) => {
-      console.log(values);
       userMutation
         .mutateAsync(values)
-        .then(() => {
-          // redirect
-          navigate('/');
+        .then((res) => {
+          localStorage.setItem('token', res.data.token); 
+          navigate('/'); 
         })
         .catch((err) => console.log(err));
     },
   });
   console.log(userMutation);
+  
   return (
     <div className="flex flex-wrap pb-24">
-      <div className="w-full  p-4">
-        <div className="flex flex-col justify-center py-24 max-w-md mx-auto h-full">
+      <div className="w-full p-4">
+        <div className="flex flex-col justify-center h-full max-w-md py-24 mx-auto">
           <form onSubmit={formik.handleSubmit}>
             <Link
               to="/register"
-              className="inline-block text-gray-500 hover: transition duration-200 mb-8"
+              className="inline-block mb-8 text-gray-500 transition duration-200 hover:"
             >
-              <span>Don't have an account?</span> {''}
+              <span>Dont have an account?</span> {''}
               <span />
               <span className="font-bold font-heading">Register</span>
             </Link>
@@ -69,30 +69,30 @@ const Login = () => {
               />
             )}
             <label
-              className="block text-sm font-medium mb-2"
+              className="block mb-2 text-sm font-medium"
               htmlFor="textInput1"
             >
               Username
             </label>
             <input
-              className="w-full rounded-full p-4 outline-none border border-gray-100 shadow placeholder-gray-500 focus:ring focus:ring-orange-200 transition duration-200 mb-4"
+              className="w-full p-4 mb-4 placeholder-gray-500 transition duration-200 border border-gray-100 rounded-full shadow outline-none focus:ring focus:ring-orange-200"
               type="text"
               placeholder="Enter username"
               {...formik.getFieldProps('username')}
             />
             {/* error */}
             {formik.touched.username && formik.errors.username && (
-              <div className="text-red-500 mt-1">{formik.errors.username}</div>
+              <div className="mt-1 text-red-500">{formik.errors.username}</div>
             )}
             <label
-              className="block text-sm font-medium mb-2"
+              className="block mb-2 text-sm font-medium"
               htmlFor="textInput2"
             >
               Password
             </label>
-            <div className="flex items-center gap-1 w-full rounded-full p-4 border border-gray-100 shadow mb-8">
+            <div className="flex items-center w-full gap-1 p-4 mb-8 border border-gray-100 rounded-full shadow">
               <input
-                className="outline-none flex-1 placeholder-gray-500 "
+                className="flex-1 placeholder-gray-500 outline-none "
                 id="textInput2"
                 type="password"
                 placeholder="Enter password"
@@ -118,11 +118,11 @@ const Login = () => {
 
             {/* error */}
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 mt-1">{formik.errors.password}</div>
+              <div className="mt-1 text-red-500">{formik.errors.password}</div>
             )}
 
             <button
-              className="h-14 inline-flex items-center justify-center py-4 px-6 text-white font-bold font-heading rounded-full bg-orange-500 w-full text-center border border-orange-600 shadow hover:bg-orange-600 focus:ring focus:ring-orange-200 transition duration-200 mb-8"
+              className="inline-flex items-center justify-center w-full px-6 py-4 mb-8 font-bold text-center text-white transition duration-200 bg-orange-500 border border-orange-600 rounded-full shadow h-14 font-heading hover:bg-orange-600 focus:ring focus:ring-orange-200"
               type="submit"
             >
               Login
@@ -130,7 +130,7 @@ const Login = () => {
 
             {/* login with google */}
             <p
-              className="h-14 inline-flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-white w-full text-center border border-gray-100 shadow hover:bg-gray-50 focus:ring focus:ring-orange-200 transition duration-200"
+              className="inline-flex items-center justify-center w-full gap-2 px-6 py-4 text-center transition duration-200 bg-white border border-gray-100 rounded-full shadow h-14 hover:bg-gray-50 focus:ring focus:ring-orange-200"
               type="submit"
             >
               <svg

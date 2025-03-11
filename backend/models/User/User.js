@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     googleId: {
       type: String,
-      required: false, 
+      required: false,
     },
     role: {
       type: String,
@@ -73,6 +73,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: () =>
         new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1), // Sets to the first day of the next month
+    },
+    stripeCustomerId: {
+      type: String,
+      // required: true,
     },
     plan: {
       type: mongoose.Schema.Types.ObjectId,
