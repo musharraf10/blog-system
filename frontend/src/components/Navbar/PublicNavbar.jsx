@@ -37,8 +37,8 @@ export default function PublicNavbar() {
               <div className="hidden md:flex space-x-10 text-base font-medium">
                 {[
                   { name: "Home", path: "/" },
-                  { name: "Latest Posts", path: "/posts" },
-                  { name: "Creators Ranking", path: "/ranking" },
+                  // { name: "Latest Posts", path: "/posts" },
+                  // { name: "Creators Ranking", path: "/ranking" },
                 ].map(({ name, path }) => (
                   <Link
                     key={path}
@@ -91,8 +91,8 @@ export default function PublicNavbar() {
             <div className="space-y-2 pb-4 pt-2">
               {[
                 { name: "Home", path: "/" },
-                { name: "Latest Posts", path: "/posts" },
-                { name: "Creators Ranking", path: "/ranking" },
+                // { name: "Latest Posts", path: "/posts" },
+                // { name: "Creators Ranking", path: "/ranking" },
               ].map(({ name, path }) => (
                 <Disclosure.Button
                   key={path}

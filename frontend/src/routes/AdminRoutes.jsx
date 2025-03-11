@@ -33,8 +33,12 @@ import UpdateWebinar from "../components/Posts/UpdateWebinar";
 import ResetPassword from "../components/Subscribers/ResetPassword";
 import PlanDetails from "../components/Plans/PlanDetails";
 import StepByStepGuide from "../components/Posts/StepByStepGuide";
-
-
+import SettingsAdmin from "../components/Admin/SettingsPage";
+import GuideDetails from "../components/Posts/GuideDetails";
+import { Webinars } from "../components/Webinar/Webinars";
+import { BookmarkPost } from "../components/Posts/BookmarkPost";
+import ViewGuide from "../components/Posts/ViewGuide"
+import UpdateGuide from "../components/Posts/UpdateGuide"
 
 
 
@@ -49,7 +53,8 @@ const AdminRoutes = () => {
             </AuthRoute>
           }
         >
-          <Route index element={<Dashboard />} />
+          <Route index element={<ContentPart/>} />
+        
           <Route path="content-management" element={<ContentPart/>} />
           <Route path="user-management" element={<UserManagement/>} />
           <Route path="payment-management" element={<PaymentsDashboard/>} />
@@ -64,28 +69,31 @@ const AdminRoutes = () => {
           <Route path="posts" element={<DashboardPosts />} />
           <Route path="update-post/:postId" element={<UpdatePost />} />
           <Route path="upload-profile-photo" element={<UploadProfilePic />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<SettingsAdmin />} />
           <Route path="add-email" element={<AddEmailComponent />} />
           <Route path="my-followings" element={<MyFollowing />} />
           <Route path="my-followers" element={<MyFollowers />} />
           <Route path="my-earnings" element={<MyEarnings />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="latestposts" element={<PostsList />} />
+          <Route path="feed/webinars" element={<Webinars />} />
+          <Route path="stepbystepguide" element={<ViewGuide />} />
+          <Route path="guide/:guideId" element={<GuideDetails />} />
+          <Route path="feed/articles" element={<PostsList />} />
+          <Route path="bookmarks" element={<BookmarkPost />} />
+
          
           <Route path="plan-details" element={<PlanDetails />} />
           <Route path="add-category" element={<AddCategory />} />
          
         </Route>
-        <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
-        <Route
-            path="account-verification/:verifyToken"
-            element={<AccountVerifiedComponent />}
-          />
            <Route path="reset-password/:verifyToken" element={<ResetPassword/>}/>
         <Route
             path="/account-verification/:verifyToken"
             element={<AccountVerifiedComponent />}
           />
+              <Route path="/update-post/Article/:id"element={<UpdateNewPost/>}/>
+                  <Route path="/update-post/Webinar/:id"element={<UpdateWebinar/>}/>
+                  <Route path="/update-post/StepbyStepGuide/:id"element={<UpdateGuide/>}/>
       </Routes>
     );
   };

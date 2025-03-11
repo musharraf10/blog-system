@@ -11,13 +11,12 @@ planRouter.post("/create", isAuthenticated, roleCheck(["admin"]), planController
 // List All Plans
 planRouter.get("/", planController.lists);
 
-// Get Single Plan
+// planRouter
+
 planRouter.get("/:planId", planController.getPlan);
 
-// Update Plan (Only Admins)
 planRouter.patch("/:planId", isAuthenticated, roleCheck(["admin"]), planController.update);
 
-// Delete Plan (Only Admins)
 planRouter.delete("/:planId", isAuthenticated, roleCheck(["admin"]), planController.delete);
 
 module.exports = planRouter;

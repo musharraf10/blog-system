@@ -1,24 +1,36 @@
 const asyncHandler = require("express-async-handler");
 const Post = require("../../models/Post/Post");
 const Comment = require("../../models/Comment/Comment");
+const Notification = require("../../models/Notification/Notification");
+const {sendCommentNotification} = require("../../utils/commentNotification")
 
 const commentsController = {
   create: asyncHandler(async (req, res) => {
     const { postId, content, parentCommentId } = req.body;
-    const post = await Post.findById(postId);
+
+    const post = await Post.findById(postId).populate("author");
     if (!post) throw new Error("Post not found");
-    
+
     const commentCreated = await Comment.create({
-      content,
-      author: req.user,
-      post: postId,
-      status: "pending", // Moderation
-      parentComment: parentCommentId || null, // Nested comments support
+        content,
+        author: req.user,
+        post: postId,
+        parentComment: parentCommentId || null,
     });
-    
+
     await Post.findByIdAndUpdate(postId, { $push: { comments: commentCreated._id } });
+
+    await Notification.create({
+        userId: post.author._id,
+        postId: postId,
+        message: `Your post has a new comment: "${content}".`,
+    });
+
+    sendCommentNotification(post.author.email, postId, content);
+
     res.json({ message: "Comment submitted for review", commentCreated });
   }),
+
 
   delete: asyncHandler(async (req, res) => {
     const { commentId } = req.params;

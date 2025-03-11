@@ -17,7 +17,7 @@ postRouter.post(
   isAuthenticated,
   roleCheck(["curator", "admin"]),
   checkUserPlan,
-  isAccountVerified,
+  // isAccountVerified,
   upload.single("file"), 
   // upload.single("image"),
   postController.createPost
@@ -25,7 +25,12 @@ postRouter.post(
 
 
 // List all approved posts
-postRouter.get("/", postController.fetchAllPosts);
+postRouter.get("/", postController.fetchAllArticles);
+
+postRouter.get("/curatordetails",isAuthenticated,postController.curatorDetails);
+
+
+postRouter.get("/allwebiners", postController.fetchAllWebiners);
 
 postRouter.get("/pendingposts", postController.pendingPosts);
 
@@ -34,16 +39,22 @@ postRouter.patch("/updatestatus/:postId", postController.updateStatus);
 
 
 ///gettingposts in conetnetmaganement in adminpanel
-
+postRouter.get("/ownerposts", isAuthenticated,postController.ownerposts)
 postRouter.get("/getallposts", postController.getallpostsinadmincontroller);
 postRouter.put("/updatepoststatus/:id", postController.updatePostStatus );
 postRouter.get("/getallpublishedposts", postController.getallpublishedpostscontroller );
 postRouter.get("/managecontent/getpost",isAuthenticated,postController.getallpost);
 postRouter.delete("/managecontent/deletepost/:id",postController.deletepost);
-postRouter.put("/managecontent/updatepost/:id",postController.updatepost);
-postRouter.put("/managecontent/getpost/:id",postController.getonepost);
+postRouter.get("/managecontent/getpost/:id", postController.getonepost);
 postRouter.get("/bookmarked", isAuthenticated, postController.getBookmarkedPosts);
 postRouter.get("/:postId", isAuthenticated, optionalAuth, postController.getPost);
+
+postRouter.get('/articles/count', isAuthenticated, postController.getArticleCount)
+postRouter.get('/webinars/count', isAuthenticated, postController.getWebinarCount    )
+postRouter.get('/guides/count', isAuthenticated, postController.getStepbyStepGuideCount)
+
+postRouter.put("/approveall", isAuthenticated, postController.approveAll)
+postRouter.put("/rejectall", isAuthenticated,  postController.rejectedAll)
 
 postRouter.post("/:postId/bookmark", isAuthenticated, postController.BookMarkPost);
 postRouter.post("/:postId/unbookmark", isAuthenticated, postController.unBookMarkPost);

@@ -8,6 +8,11 @@
 
 
 
+
+
+
+
+
 // const postRouter = require("./router/post/postsRouter");
 // const usersRouter = require("./router/user/usersRouter");
 // const categoriesRouter = require("./router/category/categoriesRouter");
@@ -100,7 +105,6 @@ const stripePaymentRouter = require("./router/stripePayment/stripePaymentRouter"
 const earningsRouter = require("./router/earnings/earningsRouter");
 const notificationRouter = require("./router/notification/notificationRouter");
 const commentRouter = require("./router/comments/commentRouter");
-
 const trendingRouter = require("./router/TrendingSubscribe/trendingRoutes")
 
 
@@ -112,8 +116,7 @@ const trendingRouter = require("./router/TrendingSubscribe/trendingRoutes")
 const articleRouter = require("./router/article/articleRouter");
 const webinarRouter = require("./router/webinar/webinar");
 const VideoGuideRouter = require("./router/StepbyStepRouter/StepbyStepRouter");
-const playlistRouter = require("./router/playlist/playlist"); // Added playlist router import
-const UpcomingEventRouter = require("./router/UpcomingEvents/UpcomingEvent");
+// const PlaylistRouter = require("./router/Playlist/Playlistrouter"); 
 
 
 // Connect to Database
@@ -121,18 +124,18 @@ connectDB();
 // calculateEarnings(); 
 
 cron.schedule(
-  "59 23 * * *",
+  "0 8 * * *",  // Runs at 8:00 AM IST
   async () => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    if (today.getMonth() !== tomorrow.getMonth()) {
-      calculateEarnings();
+    try {
+      await calculateEarnings();
+      console.log("Earnings calculated successfully.");
+    } catch (err) {
+      console.error("Error calculating earnings:", err);
     }
   },
   {
     scheduled: true,
-    timezone: "America/New_York",
+    timezone: "Asia/Kolkata",  // Indian Standard Time (IST)
   }
 );
 
@@ -166,8 +169,8 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/trending", trendingRouter);
 app.use("/api/v1/article", articleRouter);
 app.use("/api/v1/webinar", webinarRouter);
-app.use("/api/v1/playlist", playlistRouter); // Add playlist routes here
-app.use("/api/v1/events",UpcomingEventRouter);
+
+
 
 
 

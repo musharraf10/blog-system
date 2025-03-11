@@ -89,6 +89,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FaBookmark } from "react-icons/fa";
 import { fetchBookmarkedPostsAPI } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 
 const BookmarkPost = () => {
 
@@ -100,6 +101,14 @@ const BookmarkPost = () => {
     queryKey: ["bookmarked-posts"],
     queryFn: fetchBookmarkedPostsAPI,
   });
+
+  const {data } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+  });
+
+let userRole = data?.role;
+
 
   // Loading state
   if (isLoading) {
@@ -141,13 +150,13 @@ const BookmarkPost = () => {
           <div
             key={post._id}
             className="bg-white border border-gray-200 rounded-2xl shadow-lg transition-all duration-300 transform hover:shadow-2xl hover:-translate-y-2"
-          >
+          > {console.log("Post", post)}
             <Link to={`/posts/${post._id}`} className="relative block">
               <img
-                // src={post.image}
-                // alt={post.title}
+                src={post.refId.thumbnail}
+                alt={post.refId.title}
                 // className="w-full h-48 object-cover"
-                // loading="lazy"
+                loading="lazy"
                 // src="https://images.pexels.com/photos/30638768/pexels-photo-30638768/free-photo-of-taj-mahal-at-sunrise-iconic-indian-landmark.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                 // alt={post.title}
                 className="w-full h-48 object-cover rounded-t-2xl"
@@ -167,7 +176,7 @@ const BookmarkPost = () => {
               </p>
               <div className="flex justify-end mt-4">
             <Link
-              to={`/posts/${post._id}`}
+              to={`/${userRole}/${post.contentData === 'StepbyStepGuide' ? 'guide' : 'posts'}/${post._id}`}
               className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               View More

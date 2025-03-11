@@ -32,7 +32,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { IoMdNotifications } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { fetchNotificationsAPI } from "../../APIServices/notifications/nofitificationsAPI";
 import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
 
@@ -58,7 +58,7 @@ const NotificationCounts = () => {
   );
 
   return (
-    <Link to={`/subscriber/notifications`}>
+    <Link to={`/${userRole}/notifications`}>
       <div className="relative inline-block">
         <div className="p-2 rounded-md bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white hover:bg-gradient-to-r hover:from-[#1E40AF] hover:to-[#2563EB] hover:text-black transition-all duration-300 ease-in-out shadow-md flex items-center justify-center">
           <IoMdNotifications className="text-2xl" />

@@ -10,14 +10,14 @@ export default function PostDetailsModal({ post, show, onHide }) {
         <Modal.Title>Post Details</Modal.Title>
       </Modal.Header>
       <Modal.Body className="postdetailsmodalbody">
-        <p><strong>Title:</strong> {post.title || "Untitled"}</p>
+        <p><strong>Title:</strong> {post.refId?.title || "Untitled"}</p>
         <p><strong>Author:</strong> {post.author?.username || "Unknown"}</p>
-        <p><strong>Description:</strong> {post.description || "No description available"}</p>
+        <p><strong>Description:</strong> {post.refId?.description || "No description available"}</p>
         <p><strong>Status:</strong> {post.status || "N/A"}</p>
          
         {post.image && (
           <div className="card">
-            <img className="imginmodal" src={post.image} alt="Post" style={{  borderRadius: "10px" }} />
+            <img className="imginmodal" src={post.refId.thumbnail} alt="Post" style={{  borderRadius: "10px" }} />
           </div>
         )}  
        
@@ -26,10 +26,10 @@ export default function PostDetailsModal({ post, show, onHide }) {
 
         {post.status === "approved" && (
           <>
-            <p><strong>Published Date ;</strong>
+            <p><strong>Published Date :</strong>
             
              {/* {post.publishedDate ? new Date(post.publishedDate).toLocaleDateString() : "Unknown"} */}
-             {new Date(post.publisheddate).toLocaleDateString("en-GB")}
+             {new Date(post.updatedAt).toLocaleDateString("en-GB")}
              
              
              </p>

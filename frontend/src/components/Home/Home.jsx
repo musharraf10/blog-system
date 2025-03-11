@@ -1,48 +1,56 @@
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 // import Image from "next/image"
 import {
-  Search,
   ChevronRight,
   Play,
   FileText,
   Video,
   Calendar,
-  CheckCircle,
   ArrowRight,
   Mail,
   BookOpen,
   Menu,
   X,
-} from "lucide-react"
-import { Link } from "react-router-dom"
-
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { checkAuthStatusAPI } from "../../APIServices/users/usersAPI";
+import { Link } from "react-router-dom";
+import Pricing from "../Plans/Pricing";
 export default function HomePage() {
-  const [activeCategory, setActiveCategory] = useState("All")
-  const [isVisible, setIsVisible] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const { isLoading, data, refetch } = useQuery({
+    queryKey: ["user-auth"],
+    queryFn: checkAuthStatusAPI,
+  });
+
+  const user = data?.role;
 
   useEffect(() => {
-    setIsVisible(true)
+    setIsVisible(true);
 
     // Check if we're on mobile
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+      setIsMobile(window.innerWidth < 768);
+    };
 
     // Initial check
-    checkIfMobile()
+    checkIfMobile();
 
     // Add event listener for window resize
-    window.addEventListener("resize", checkIfMobile)
+    window.addEventListener("resize", checkIfMobile);
 
     // Cleanup
-    return () => window.removeEventListener("resize", checkIfMobile)
+    return () => window.removeEventListener("resize", checkIfMobile);
   }, [])
 
   // Primary color from screenshot
-  const primaryColor = "#2E86DE"
+  const primaryColor = "#2E86DE";
 
   // Navigation sections
   const navSections = [
@@ -52,58 +60,68 @@ export default function HomePage() {
     { id: "pricing", label: "Pricing" },
     { id: "testimonials", label: "Testimonials" },
     { id: "contact", label: "Contact" },
-  ]
+  ];
 
   // Featured content data
   const featuredContent = [
     {
       id: 1,
       title: "Sustainable Living: 10 Easy Tips",
-      excerpt: "Discover practical ways to reduce your carbon footprint with these simple lifestyle changes.",
+      excerpt:
+        "Discover practical ways to reduce your carbon footprint with these simple lifestyle changes.",
       type: "article",
       author: "Jane Doe",
       date: "May 15, 2024",
-      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1374&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1374&auto=format&fit=crop",
       category: "Sustainable Living",
     },
     {
       id: 2,
       title: "Advanced DIY Home Renovation",
-      excerpt: "Learn professional techniques for transforming your living space without breaking the bank.",
+      excerpt:
+        "Learn professional techniques for transforming your living space without breaking the bank.",
       type: "video",
       author: "John Smith",
       date: "May 12, 2024",
-      image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1470&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1470&auto=format&fit=crop",
       category: "DIY Projects",
     },
     {
       id: 3,
       title: "Gourmet Cooking Masterclass",
-      excerpt: "Elevate your culinary skills with expert techniques from renowned chefs.",
+      excerpt:
+        "Elevate your culinary skills with expert techniques from renowned chefs.",
       type: "webinar",
       author: "Chef Maria Rodriguez",
       date: "May 20, 2024",
-      image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1470&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1470&auto=format&fit=crop",
       category: "Gourmet Cooking",
     },
     {
       id: 4,
       title: "Financial Independence: Investment Strategies",
-      excerpt: "Build wealth and secure your future with these proven investment approaches.",
+      excerpt:
+        "Build wealth and secure your future with these proven investment approaches.",
       type: "guide",
       author: "Michael Chen",
       date: "May 10, 2024",
-      image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1471&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1471&auto=format&fit=crop",
       category: "Finance",
     },
     {
       id: 5,
       title: "Mindfulness Meditation for Beginners",
-      excerpt: "Start your journey to inner peace with guided meditation practices.",
+      excerpt:
+        "Start your journey to inner peace with guided meditation practices.",
       type: "video",
       author: "Sarah Johnson",
       date: "May 8, 2024",
-      image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1470&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1470&auto=format&fit=crop",
       category: "Wellness",
     },
     {
@@ -113,10 +131,11 @@ export default function HomePage() {
       type: "article",
       author: "David Wilson",
       date: "May 5, 2024",
-      image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1632&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1632&auto=format&fit=crop",
       category: "Sustainable Living",
     },
-  ]
+  ];
 
   // Upcoming webinars
   const upcomingWebinars = [
@@ -126,7 +145,8 @@ export default function HomePage() {
       date: "May 20, 2024",
       time: "7:00 PM EST",
       host: "Chef Maria Rodriguez",
-      image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1470&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1470&auto=format&fit=crop",
     },
     {
       id: 2,
@@ -134,7 +154,8 @@ export default function HomePage() {
       date: "May 25, 2024",
       time: "2:00 PM EST",
       host: "Architect Thomas Lee",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1470&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1470&auto=format&fit=crop",
     },
     {
       id: 3,
@@ -142,9 +163,10 @@ export default function HomePage() {
       date: "June 2, 2024",
       time: "5:30 PM EST",
       host: "Emma Williams",
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1528&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1528&auto=format&fit=crop",
     },
-  ]
+  ];
 
   // Subscription plans
   const subscriptionPlans = [
@@ -190,10 +212,17 @@ export default function HomePage() {
       isPopular: false,
       ctaText: "Save & Join",
     },
-  ]
+  ];
 
   // Categories
-  const categories = ["All", "Sustainable Living", "DIY Projects", "Gourmet Cooking", "Finance", "Wellness"]
+  const categories = [
+    "All",
+    "Sustainable Living",
+    "DIY Projects",
+    "Gourmet Cooking",
+    "Finance",
+    "Wellness",
+  ];
 
   // Testimonials
   const testimonials = [
@@ -224,7 +253,7 @@ export default function HomePage() {
       avatar:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1374&auto=format&fit=crop&crop=faces&faceindex=1",
     },
-  ]
+  ];
 
   // Content types
   const contentTypes = [
@@ -248,11 +277,13 @@ export default function HomePage() {
       title: "Webinars",
       description: "Scheduled live video sessions with chat/Q&A",
     },
-  ]
+  ];
 
   // Filter content by category
   const filteredContent =
-    activeCategory === "All" ? featuredContent : featuredContent.filter((item) => item.category === activeCategory)
+    activeCategory === "All"
+      ? featuredContent
+      : featuredContent.filter((item) => item.category === activeCategory);
 
   return (
     <div
@@ -287,7 +318,13 @@ export default function HomePage() {
         >
           <div style={{ display: "flex", alignItems: "center" }}>
             <h1
-              style={{ fontSize: "1.5rem", fontWeight: "700", margin: 0, color: primaryColor, letterSpacing: "0.5px" }}
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "700",
+                margin: 0,
+                color: primaryColor,
+                letterSpacing: "0.5px",
+              }}
             >
               Nicheflare
             </h1>
@@ -310,7 +347,15 @@ export default function HomePage() {
 
           {/* Navigation */}
           <nav style={{ display: isMobile ? "none" : "block" }}>
-            <ul style={{ display: "flex", listStyle: "none", gap: "1.5rem", margin: 0, padding: 0 }}>
+            <ul
+              style={{
+                display: "flex",
+                listStyle: "none",
+                gap: "1.5rem",
+                margin: 0,
+                padding: 0,
+              }}
+            >
               {navSections.map((section) => (
                 <li key={section.id}>
                   <a
@@ -323,10 +368,10 @@ export default function HomePage() {
                       padding: "0.5rem 0",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = primaryColor
+                      e.currentTarget.style.color = primaryColor;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#333"
+                      e.currentTarget.style.color = "#333";
                     }}
                   >
                     {section.label}
@@ -335,6 +380,84 @@ export default function HomePage() {
               ))}
             </ul>
           </nav>
+
+          {/* Action Buttons - Desktop */}
+          <div
+            style={{
+              display: isMobile ? "none" : "flex",
+              gap: "1rem",
+              alignItems: "center",
+            }}
+          >
+            {user ? (
+              <a
+                href={`${user}`}
+                style={{
+                  color: primaryColor,
+                  background: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  border: `1px solid ${primaryColor}`,
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f0f4f8";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white";
+                }}
+              >
+                DashBoard
+              </a>
+            ) : (
+              <Link
+                to="/login"
+                style={{
+                  color: primaryColor,
+                  background: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  border: `1px solid ${primaryColor}`,
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f0f4f8";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white";
+                }}
+              >
+                Sign In
+              </Link>
+            )}
+            <a
+              href="#pricing"
+              style={{
+                color: "white",
+                background: primaryColor,
+                padding: "0.5rem 1rem",
+                borderRadius: "4px",
+                textDecoration: "none",
+                fontWeight: "600",
+                transition: "all 0.3s ease",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#2476c7";
+                e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = primaryColor;
+                e.currentTarget.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)";
+              }}
+            >
+              Subscribe
+            </a>
+          </div>
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
@@ -347,11 +470,26 @@ export default function HomePage() {
                 background: "white",
                 boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
                 display: isMobile ? "block" : "none",
+                zIndex: 100,
               }}
             >
-              <ul style={{ display: "flex", flexDirection: "column", listStyle: "none", margin: 0, padding: "1rem" }}>
+              <ul
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  listStyle: "none",
+                  margin: 0,
+                  padding: "1rem",
+                }}
+              >
                 {navSections.map((section) => (
-                  <li key={section.id} style={{ padding: "0.75rem 0", borderBottom: "1px solid #f0f0f0" }}>
+                  <li
+                    key={section.id}
+                    style={{
+                      padding: "0.75rem 0",
+                      borderBottom: "1px solid #f0f0f0",
+                    }}
+                  >
                     <a
                       href={`#${section.id}`}
                       style={{
@@ -366,80 +504,70 @@ export default function HomePage() {
                     </a>
                   </li>
                 ))}
+                {/* Mobile Action Buttons */}
+                <li
+                  style={{
+                    padding: "1rem 0",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.75rem",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  {user ? (
+                    <a
+                      href={`${user}`}
+                      style={{
+                        color: primaryColor,
+                        background: "white",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "4px",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        border: `1px solid ${primaryColor}`,
+                        textAlign: "center",
+                      }}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      DashBoard
+                    </a>
+                  ) : (
+                    <Link
+                      to="/login"
+                      style={{
+                        color: primaryColor,
+                        background: "white",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "4px",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        border: `1px solid ${primaryColor}`,
+                        textAlign: "center",
+                      }}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                  <a
+                    href="#pricing"
+                    style={{
+                      color: "white",
+                      background: primaryColor,
+                      padding: "0.5rem 1rem",
+                      borderRadius: "4px",
+                      textDecoration: "none",
+                      fontWeight: "600",
+                      textAlign: "center",
+                    }}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Subscribe
+                  </a>
+                </li>
               </ul>
             </div>
           )}
-
-          {/* Action Buttons */}
-          <div style={{ display: isMobile ? "none" : "flex", gap: "1rem", alignItems: "center" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                background: "#f0f4f8",
-                borderRadius: "20px",
-                padding: "0.3rem 0.8rem",
-              }}
-            >
-              {/* <Search size={16} color="#666" />
-              <input
-                type="text"
-                placeholder="Search..."
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#333",
-                  padding: "0.3rem 0.5rem",
-                  outline: "none",
-                  width: "120px",
-                }}
-              /> */}
-            </div>
-            <Link
-              to="/login"
-              style={{
-                color: primaryColor,
-                background: "white",
-                padding: "0.5rem 1rem",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontWeight: "600",
-                border: `1px solid ${primaryColor}`,
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f0f4f8"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "white"
-              }}
-            >
-              Sign In
-            </Link>
-            <a
-              href="#pricing"
-              style={{
-                color: "white",
-                background: primaryColor,
-                padding: "0.5rem 1rem",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontWeight: "600",
-                transition: "all 0.3s ease",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#2476c7"
-                e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = primaryColor
-                e.currentTarget.style.boxShadow = "0 2px 5px rgba(0,0,0,0.1)"
-              }}
-            >
-              Subscribe
-            </a>
-          </div>
         </div>
       </header>
 
@@ -498,8 +626,9 @@ export default function HomePage() {
                 margin: "0 auto 2rem",
               }}
             >
-              Unlock exclusive articles, videos, and interactive guides curated by experts. Elevate your skills with
-              premium content you wont find anywhere else.
+              Unlock exclusive articles, videos, and interactive guides curated
+              by experts. Elevate your skills with premium content you won't
+              find anywhere else.
             </p>
             <div
               style={{
@@ -526,12 +655,14 @@ export default function HomePage() {
                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-3px)"
-                  e.currentTarget.style.boxShadow = "0 6px 15px rgba(0,0,0,0.2)"
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 15px rgba(0,0,0,0.2)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)"
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)"
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(0,0,0,0.15)";
                 }}
               >
                 Start Your Free Trial <ChevronRight size={18} />
@@ -551,10 +682,10 @@ export default function HomePage() {
                   transition: "all 0.3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.3)"
+                  e.currentTarget.style.background = "rgba(255,255,255,0.3)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.2)"
+                  e.currentTarget.style.background = "rgba(255,255,255,0.2)";
                 }}
               >
                 Watch Demo <Play size={18} />
@@ -590,7 +721,9 @@ export default function HomePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(250px, 1fr))",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "1.5rem",
               }}
             >
@@ -610,14 +743,16 @@ export default function HomePage() {
                     border: "1px solid #f0f0f0",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)"
-                    e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.12)"
-                    e.currentTarget.style.borderColor = "#e0e0e0"
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.12)";
+                    e.currentTarget.style.borderColor = "#e0e0e0";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)"
-                    e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.08)"
-                    e.currentTarget.style.borderColor = "#f0f0f0"
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 15px rgba(0,0,0,0.08)";
+                    e.currentTarget.style.borderColor = "#f0f0f0";
                   }}
                 >
                   <div
@@ -635,10 +770,19 @@ export default function HomePage() {
                   >
                     {type.icon}
                   </div>
-                  <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: "600", color: "#333" }}>
+                  <h3
+                    style={{
+                      margin: "0 0 0.5rem 0",
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#333",
+                    }}
+                  >
                     {type.title}
                   </h3>
-                  <p style={{ margin: "0", color: "#666" }}>{type.description}</p>
+                  <p style={{ margin: "0", color: "#666" }}>
+                    {type.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -697,7 +841,11 @@ export default function HomePage() {
                 style={{
                   display: "flex",
                   gap: "0.5rem",
-                  flexWrap: "wrap",
+                  flexWrap: isMobile ? "nowrap" : "wrap",
+                  overflowX: isMobile ? "auto" : "visible",
+                  width: isMobile ? "100%" : "auto",
+                  paddingBottom: isMobile ? "0.5rem" : "0",
+                  WebkitOverflowScrolling: "touch",
                 }}
               >
                 {categories.map((category) => (
@@ -705,7 +853,8 @@ export default function HomePage() {
                     key={category}
                     onClick={() => setActiveCategory(category)}
                     style={{
-                      background: activeCategory === category ? primaryColor : "#e9ecef",
+                      background:
+                        activeCategory === category ? primaryColor : "#e9ecef",
                       color: activeCategory === category ? "white" : "#333",
                       border: "none",
                       padding: "0.5rem 1rem",
@@ -713,6 +862,8 @@ export default function HomePage() {
                       cursor: "pointer",
                       fontWeight: "500",
                       transition: "all 0.3s ease",
+                      whiteSpace: isMobile ? "nowrap" : "normal",
+                      flexShrink: 0,
                     }}
                   >
                     {category}
@@ -724,7 +875,9 @@ export default function HomePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "repeat(auto-fill, minmax(300px, 1fr))",
                 gap: "1.5rem",
               }}
             >
@@ -737,14 +890,17 @@ export default function HomePage() {
                     overflow: "hidden",
                     boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                     transition: "all 0.3s ease",
+                    width: "100%",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)"
-                    e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)"
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)"
-                    e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)"
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 10px rgba(0,0,0,0.1)";
                   }}
                 >
                   <div style={{ position: "relative" }}>
@@ -768,10 +924,10 @@ export default function HomePage() {
                           item.type === "article"
                             ? primaryColor
                             : item.type === "video"
-                              ? `${primaryColor}cc`
-                              : item.type === "webinar"
-                                ? `${primaryColor}dd`
-                                : `${primaryColor}bb`,
+                            ? `${primaryColor}cc`
+                            : item.type === "webinar"
+                            ? `${primaryColor}dd`
+                            : `${primaryColor}bb`,
                         color: "white",
                         padding: "0.3rem 0.8rem",
                         borderRadius: "4px",
@@ -792,6 +948,7 @@ export default function HomePage() {
                         marginBottom: "0.5rem",
                         display: "flex",
                         justifyContent: "space-between",
+                        flexWrap: "wrap",
                       }}
                     >
                       <span>{item.category}</span>
@@ -823,9 +980,13 @@ export default function HomePage() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: "0.5rem",
                       }}
                     >
-                      <div style={{ fontSize: "0.9rem", color: "#666" }}>By {item.author}</div>
+                      <div style={{ fontSize: "0.9rem", color: "#666" }}>
+                        By {item.author}
+                      </div>
                       <a
                         href="#"
                         style={{
@@ -838,10 +999,10 @@ export default function HomePage() {
                           transition: "gap 0.3s ease",
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.gap = "0.5rem"
+                          e.currentTarget.style.gap = "0.5rem";
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.gap = "0.3rem"
+                          e.currentTarget.style.gap = "0.3rem";
                         }}
                       >
                         Read More <ChevronRight size={16} />
@@ -869,14 +1030,16 @@ export default function HomePage() {
                   boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#2476c7"
-                  e.currentTarget.style.gap = "0.7rem"
-                  e.currentTarget.style.boxShadow = "0 6px 15px rgba(0,0,0,0.2)"
+                  e.currentTarget.style.background = "#2476c7";
+                  e.currentTarget.style.gap = "0.7rem";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 15px rgba(0,0,0,0.2)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = primaryColor
-                  e.currentTarget.style.gap = "0.5rem"
-                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)"
+                  e.currentTarget.style.background = primaryColor;
+                  e.currentTarget.style.gap = "0.5rem";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 10px rgba(0,0,0,0.1)";
                 }}
               >
                 Explore All Content <ArrowRight size={18} />
@@ -929,7 +1092,9 @@ export default function HomePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(350px, 1fr))",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "repeat(auto-fill, minmax(350px, 1fr))",
                 gap: "1.5rem",
               }}
             >
@@ -945,29 +1110,19 @@ export default function HomePage() {
                     transition: "all 0.3s ease",
                     display: "flex",
                     gap: "1rem",
+                    flexDirection: isMobile ? "column" : "row",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)"
-                    e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)"
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)"
-                    e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)"
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 10px rgba(0,0,0,0.1)";
                   }}
                 >
-                  {/* <img
-                    src={webinar.image || "/placeholder.svg"}
-                    alt={webinar.title}
-                    width={180}
-                    height={100}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  /> */}
-
                   <div>
                     <h3
                       style={{
@@ -980,10 +1135,18 @@ export default function HomePage() {
                     >
                       {webinar.title}
                     </h3>
-                    <div style={{ fontSize: "0.9rem", color: "#666", marginBottom: "0.3rem" }}>
+                    <div
+                      style={{
+                        fontSize: "0.9rem",
+                        color: "#666",
+                        marginBottom: "0.3rem",
+                      }}
+                    >
                       {webinar.date} at {webinar.time}
                     </div>
-                    <div style={{ fontSize: "0.9rem", color: "#666" }}>Hosted by {webinar.host}</div>
+                    <div style={{ fontSize: "0.9rem", color: "#666" }}>
+                      Hosted by {webinar.host}
+                    </div>
                     <a
                       href="#"
                       style={{
@@ -996,12 +1159,12 @@ export default function HomePage() {
                         transition: "all 0.3s ease",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "#2476c7"
-                        e.currentTarget.style.textDecoration = "underline"
+                        e.currentTarget.style.color = "#2476c7";
+                        e.currentTarget.style.textDecoration = "underline";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.color = primaryColor
-                        e.currentTarget.style.textDecoration = "none"
+                        e.currentTarget.style.color = primaryColor;
+                        e.currentTarget.style.textDecoration = "none";
                       }}
                     >
                       Register Now
@@ -1028,14 +1191,14 @@ export default function HomePage() {
                   transition: "all 0.3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = primaryColor
-                  e.currentTarget.style.color = "white"
-                  e.currentTarget.style.borderColor = "transparent"
+                  e.currentTarget.style.background = primaryColor;
+                  e.currentTarget.style.color = "white";
+                  e.currentTarget.style.borderColor = "transparent";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent"
-                  e.currentTarget.style.color = primaryColor
-                  e.currentTarget.style.borderColor = primaryColor
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = primaryColor;
+                  e.currentTarget.style.borderColor = primaryColor;
                 }}
               >
                 View All Webinars <ArrowRight size={18} />
@@ -1045,7 +1208,7 @@ export default function HomePage() {
         </section>
 
         {/* Subscription Plans */}
-        <section
+        {/* <section
           id="pricing"
           style={{
             padding: "4rem 1rem",
@@ -1202,8 +1365,17 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </section> */}
+        <section
+          id="pricing"
+          style={{
+            padding: "4rem 1rem",
+            background: "#f8f9fa",
+            color: "#333",
+          }}
+        >
+          <Pricing />
         </section>
-
         {/* Testimonials */}
         <section
           id="testimonials"
@@ -1248,7 +1420,9 @@ export default function HomePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(300px, 1fr))",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "repeat(auto-fit, minmax(300px, 1fr))",
                 gap: "2rem",
               }}
             >
@@ -1263,12 +1437,14 @@ export default function HomePage() {
                     transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)"
-                    e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)"
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)"
-                    e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)"
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 10px rgba(0,0,0,0.1)";
                   }}
                 >
                   <div
@@ -1314,8 +1490,12 @@ export default function HomePage() {
                     />
 
                     <div>
-                      <div style={{ fontWeight: "600" }}>{testimonial.name}</div>
-                      <div style={{ fontSize: "0.9rem", color: "#666" }}>{testimonial.role}</div>
+                      <div style={{ fontWeight: "600" }}>
+                        {testimonial.name}
+                      </div>
+                      <div style={{ fontSize: "0.9rem", color: "#666" }}>
+                        {testimonial.role}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1372,8 +1552,8 @@ export default function HomePage() {
                 opacity: 0.9,
               }}
             >
-              Join thousands of subscribers who are elevating their skills with our exclusive content. Start your free
-              7-day trial today.
+              Join thousands of subscribers who are elevating their skills with
+              our exclusive content. Start your free 7-day trial today.
             </p>
 
             <a
@@ -1393,12 +1573,12 @@ export default function HomePage() {
                 boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-3px)"
-                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.3)"
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.3)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)"
-                e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.2)"
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.2)";
               }}
             >
               Start Your Free Trial <ArrowRight size={20} />
@@ -1448,7 +1628,8 @@ export default function HomePage() {
                 color: "#666",
               }}
             >
-              Get weekly updates on new content, upcoming webinars, and exclusive offers
+              Get weekly updates on new content, upcoming webinars, and
+              exclusive offers
             </p>
 
             <form
@@ -1458,6 +1639,7 @@ export default function HomePage() {
                 maxWidth: "500px",
                 margin: "0 auto",
                 flexDirection: isMobile ? "column" : "row",
+                width: "100%",
               }}
             >
               <input
@@ -1470,12 +1652,14 @@ export default function HomePage() {
                   border: "1px solid #ddd",
                   outline: "none",
                   fontSize: "1rem",
+                  width: "100%",
+                  boxSizing: "border-box",
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = primaryColor
+                  e.currentTarget.style.borderColor = primaryColor;
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#ddd"
+                  e.currentTarget.style.borderColor = "#ddd";
                 }}
               />
               <button
@@ -1490,14 +1674,15 @@ export default function HomePage() {
                   fontWeight: "600",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: isMobile ? "center" : "flex-start",
                   gap: "0.5rem",
                   transition: "all 0.3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#2476c7"
+                  e.currentTarget.style.background = "#2476c7";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = primaryColor
+                  e.currentTarget.style.background = primaryColor;
                 }}
               >
                 Subscribe <Mail size={18} />
@@ -1524,7 +1709,9 @@ export default function HomePage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(200px, 1fr))",
+              gridTemplateColumns: isMobile
+                ? "1fr"
+                : "repeat(auto-fit, minmax(200px, 1fr))",
               gap: "2rem",
               marginBottom: "3rem",
             }}
@@ -1548,7 +1735,8 @@ export default function HomePage() {
                   marginBottom: "1.5rem",
                 }}
               >
-                Premium niche content for enthusiasts and professionals. Elevate your skills with expert knowledge.
+                Premium niche content for enthusiasts and professionals. Elevate
+                your skills with expert knowledge.
               </p>
               <div
                 style={{
@@ -1572,10 +1760,12 @@ export default function HomePage() {
                       color: "white",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "rgba(255,255,255,0.3)"
+                      e.currentTarget.style.background =
+                        "rgba(255,255,255,0.3)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "rgba(255,255,255,0.2)"
+                      e.currentTarget.style.background =
+                        "rgba(255,255,255,0.2)";
                     }}
                   >
                     <span style={{ fontSize: "1.2rem" }}>{social}</span>
@@ -1613,10 +1803,10 @@ export default function HomePage() {
                         transition: "color 0.3s ease",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "white"
+                        e.currentTarget.style.color = "white";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "rgba(255,255,255,0.8)"
+                        e.currentTarget.style.color = "rgba(255,255,255,0.8)";
                       }}
                     >
                       {section.label}
@@ -1655,10 +1845,10 @@ export default function HomePage() {
                         transition: "color 0.3s ease",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "white"
+                        e.currentTarget.style.color = "white";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "rgba(255,255,255,0.8)"
+                        e.currentTarget.style.color = "rgba(255,255,255,0.8)";
                       }}
                     >
                       {category}
@@ -1687,11 +1877,25 @@ export default function HomePage() {
                   margin: 0,
                 }}
               >
-                <li style={{ marginBottom: "0.8rem", color: "rgba(255,255,255,0.8)" }}>
+                <li
+                  style={{
+                    marginBottom: "0.8rem",
+                    color: "rgba(255,255,255,0.8)",
+                  }}
+                >
                   Email: support@nicheflare.com
                 </li>
-                <li style={{ marginBottom: "0.8rem", color: "rgba(255,255,255,0.8)" }}>Phone: +1 (555) 123-4567</li>
-                <li style={{ color: "rgba(255,255,255,0.8)" }}>Address: 123 Content Street, Digital City, DC 10101</li>
+                <li
+                  style={{
+                    marginBottom: "0.8rem",
+                    color: "rgba(255,255,255,0.8)",
+                  }}
+                >
+                  Phone: +1 (555) 123-4567
+                </li>
+                <li style={{ color: "rgba(255,255,255,0.8)" }}>
+                  Address: 123 Content Street, Digital City, DC 10101
+                </li>
               </ul>
             </div>
           </div>
@@ -1702,43 +1906,47 @@ export default function HomePage() {
               paddingTop: "2rem",
               display: "flex",
               justifyContent: "space-between",
-              flexWrap: "wrap",
+              flexDirection: isMobile ? "column" : "row",
               gap: "1rem",
               color: "rgba(255,255,255,0.7)",
               fontSize: "0.9rem",
             }}
           >
-            <div>&copy; {new Date().getFullYear()} Nicheflare. All rights reserved.</div>
+            <div>
+              &copy; {new Date().getFullYear()} Nicheflare. All rights reserved.
+            </div>
             <div
               style={{
                 display: "flex",
                 gap: "1.5rem",
+                flexWrap: "wrap",
               }}
             >
-              {["Terms of Service", "Privacy Policy", "Cookie Policy"].map((policy, index) => (
-                <a
-                  key={index}
-                  href="#"
-                  style={{
-                    color: "rgba(255,255,255,0.7)",
-                    textDecoration: "none",
-                    transition: "color 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "white"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "rgba(255,255,255,0.7)"
-                  }}
-                >
-                  {policy}
-                </a>
-              ))}
+              {["Terms of Service", "Privacy Policy", "Cookie Policy"].map(
+                (policy, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    style={{
+                      color: "rgba(255,255,255,0.7)",
+                      textDecoration: "none",
+                      transition: "color 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "white";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+                    }}
+                  >
+                    {policy}
+                  </a>
+                )
+              )}
             </div>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
-

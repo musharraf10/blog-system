@@ -1,19 +1,20 @@
 import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Cog6ToothIcon, HomeIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags } from "react-icons/fa";
-import { MdContentPaste } from "react-icons/md";
+import { FaBlog, FaUserEdit, FaCalendarPlus, FaTags,FaBookmark } from "react-icons/fa";
+import { MdContentPaste,MdPayment } from "react-icons/md";
+import { BsFileEarmarkText, BsCardList, BsCollection } from "react-icons/bs";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import PrivateNavbar from "../Navbar/PrivateNavbar";
 
 const navigation = [
   { name: "Dashboard", href: "/curator", icon: HomeIcon },
-  // { name: "Content Editor", href: "/curator/editor", icon: MdContentPaste },
-  // { name: "Create Post", href: "/curator/create-post", icon: FaUserEdit },
-  { name: "ContentDashBoard", href: "/curator/DashBoard", icon: MdContentPaste },
-  // { name: "Analytics", href: "/curator/Analytics", icon: MdContentPaste },
-  // { name: "Schedule Post", href: "/curator/schedule-post", icon: FaCalendarPlus },
-  // { name: "Manage Categories", href: "/curator/AddCategory", icon: FaTags }
+  { name: "ContentDashBoard", href: "/curator/manage-content", icon: MdContentPaste },
+  { name: "Webinars", href: "/curator/webinars", icon: BsCollection },
+  { name: "Step-by-Step Guides", href: "/curator/stepbystepguide", icon: BsCardList },
+  { name: "Articles", href: "/curator/articles", icon: BsFileEarmarkText },
+  { name: "Bookmarks", href: "/curator/bookmarks", icon: FaBookmark},
+   { name: "Pricing", href: "/curator/pricing", icon: MdPayment },
 ];
 
 export default function CuratorDashboard() {
@@ -57,7 +58,7 @@ export default function CuratorDashboard() {
                 >
                   <XMarkIcon className="h-6 w-6 text-gray-700" />
                 </button>
-                <Link to="/" className="mb-8 flex items-center justify-center">
+                <Link to="/curator" className="mb-8 flex items-center justify-center">
                   <div className="bg-gradient-to-r from-[#1565C0] to-[#42A5F5] p-2.5 rounded-lg shadow-md">
                     <FaBlog className="h-6 w-auto text-white" />
                   </div>
@@ -135,12 +136,7 @@ export default function CuratorDashboard() {
               );
             })}
           </nav>
-          {/* <div className="mt-auto mb-[30%]">
-            <Link to="/curator/settings" className="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md">
-              <Cog6ToothIcon className="h-6 w-6 mr-3 text-gray-500" /> Settings
-            </Link>
-          </div> */}
-          <div className="mt-2 mb-6">
+          <div className="mt-auto mb-6">
             <Link
               to="/curator/settings"
               className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap ${location.pathname === "/curator/settings"
@@ -155,7 +151,6 @@ export default function CuratorDashboard() {
               <span className="truncate">Settings</span>
             </Link>
           </div>
-
         </aside>
 
         {/* Main Content */}

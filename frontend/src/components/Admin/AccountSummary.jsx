@@ -268,13 +268,12 @@ const AccountSummaryDashboard = () => {
   const totalFollowing = data?.user?.following?.length || 0;
   const userPosts = data?.user?.posts?.length || 0;
 
-  let totalViews = 0;
+  let totalViews = hasPlan;
   let totalLikes = 0;
   let totalComments = 0;
   let totalDislikes = 0;
 
   data?.user?.posts?.forEach((post) => {
-    totalViews += post.viewers.length;
     totalLikes += post.likes.length;
     totalDislikes += post.dislikes.length;
     totalComments += post.comments.length;
@@ -287,14 +286,11 @@ const AccountSummaryDashboard = () => {
   const totalEarnings = earnings?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
 
   const stats = [
-    { icon: <FaEye />, label: "Views", value: totalViews, bgColor: "bg-blue-500", key: "views" },
+    { icon: <FaEye />, label: totalViews ? "Active" : "Inactive", value: "Plan", bgColor: "bg-blue-500", key: "plan" },
     { icon: <FaDollarSign />, label: "Earnings", value: `$${totalEarnings.toFixed(2)}`, bgColor: "bg-green-500", key: "earnings" },
     { icon: <FaUsers />, label: "Followers", value: totalFollowers, bgColor: "bg-purple-500", key: "followers" },
-    { icon: <FaThumbsUp />, label: "Likes", value: totalLikes, bgColor: "bg-yellow-500", key: "likes" },
-    { icon: <FaThumbsDown />, label: "Dislikes", value: totalDislikes, bgColor: "bg-red-500", key: "dislikes" },
     { icon: <FaUsers />, label: "Following", value: totalFollowing, bgColor: "bg-indigo-500", key: "following" },
-    { icon: <FaFlag />, label: "Posts", value: userPosts, bgColor: "bg-pink-500", key: "posts" },
-    { icon: <FaCommentDots />, label: "Comments", value: totalComments, bgColor: "bg-teal-500", key: "comments" },
+    
   ];
 
   const verificationTokenMutation = useMutation({
@@ -369,11 +365,7 @@ const AccountSummaryDashboard = () => {
         {activeTab === "followers" && <MyFollowers/>}
         {activeTab === "following" && <MyFollowing/>}
         {activeTab === "earnings" && <MyEarnings/>}
-        {activeTab === "posts" && <DashboardPosts/>}
-        {activeTab === "views" && <p>My Post Views</p>}
-        {activeTab === "likes" && <p>My Likes</p>}
-        {activeTab === "dislikes" && <p>My Dislikes</p>}
-        {activeTab === "comments" && <p>My Comments</p>}
+
       </div>
     </div>
   );

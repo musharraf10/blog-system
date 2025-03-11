@@ -57,7 +57,7 @@ const UserManagementTable = () => {
         setUsers(response.data.users);
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching users:', error);+
       showSnackbar('Failed to fetch users.');
     }
   };

@@ -5,58 +5,39 @@ import { deletePostAPI, fetchAllPosts } from "../../APIServices/posts/postsAPI";
 import { Link } from "react-router-dom";
 import NoDataFound from "../Alert/NoDataFound";
 import AlertMessage from "../Alert/AlertMessage";
-import { FaSearch, FaBookmark, FaLock, FaCrown } from "react-icons/fa";
+import { FaSearch, FaBookmark, FaLock, FaCrown,FaEllipsisV, FaEdit, FaTrash } from "react-icons/fa";
 import { MdClear } from "react-icons/md";
 import truncateString from "../../utils/truncateString";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import PublicNavbar from "../Navbar/PublicNavbar";
 import axios from "axios";
 
 import { loadStripe } from '@stripe/stripe-js';
 import { motion } from "framer-motion";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const PostsList = () => {
-  const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLetter, setSelectedLetter] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
   const [page, setPage] = useState(1);
   const [isUserSubscribed, setIsUserSubscribed] = useState(false);
   const [planName, setPlanName] = useState("");
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
-
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const navigate = useNavigate();
   const BackendServername = import.meta.env.VITE_BACKENDSERVERNAME;
 
-  // Slick Carousel Settings
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3, // Show 3 posts at a time on large screens
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 2 }
-      },
-      {
-        breakpoint: 768,
-        settings: { slidesToShow: 1 }
-      }
-    ]
-  };
 
   const getPlan = async () => {
     try {
-      const response = await axios.get(`${BackendServername}/users/fetchplan`, {
+      const response = await axios.get(`${BackendServername}/users/currentplan`, {
         withCredentials: true,
       });
 
-      console.log("Fetched Plan:", response.data.plan);
-      setPlanName(response.data.plan?.planName || "Free");
+      console.log("Fetched Plan:", response.data.data);
+      setPlanName(response.data.data);
     } catch (error) {
       console.error("Error fetching plan:", error);
     }
@@ -67,8 +48,9 @@ const PostsList = () => {
   }, []);
 
   useEffect(() => {
-    setIsUserSubscribed(planName !== "Free");
+    setIsUserSubscribed(planName);
   }, [planName]);
+
 
   const handleContent = async (postId, price) => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -98,48 +80,68 @@ const PostsList = () => {
   const showHeaderFooter = location.pathname.includes("/posts");
 
   const { isError, isLoading, data, error, isSuccess, refetch } = useQuery({
-    queryKey: ["lists-posts", { ...filters, page }],
+    queryKey: ["lists-posts", { page }],
     queryFn: () =>
-      fetchAllPosts({ ...filters, title: searchTerm, page, limit: 9 }),
+      fetchAllPosts(),
   });
+
+  useEffect(() => {
+    if (data?.posts) {
+      let results = data.posts;
+      
+      // Apply search filter
+      if (searchTerm) {
+        results = results.filter(post =>
+          post.refId?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      // Apply first letter filter
+      if (selectedLetter) {
+        results = results.filter(post =>
+          post.refId?.title?.startsWith(selectedLetter)
+        );
+      }
+
+      setFilteredResults(results);
+    }
+  }, [searchTerm, selectedLetter, data]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setFilters({ ...filters, title: searchTerm });
-    setPage(1);
-    refetch();
-  };
+  // Get unique first letters of posts
+  const uniqueLetters = [...new Set(data?.posts?.map(post => post.refId?.title?.[0]?.toUpperCase() || ""))].sort();
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
     refetch();
   };
 
+  // Fixed clearFilters function - removed reference to setFilters
   const clearFilters = () => {
-    setFilters({});
     setSearchTerm("");
+    setSelectedLetter("");
     setPage(1);
     refetch();
   };
 
   const postMutation = useMutation({
-    mutationKey: ["delete-post"],
-    mutationFn: deletePostAPI,
-  });
-
-  const toggleBookmark = (postId, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setBookmarkedPosts((prev) =>
-      prev.includes(postId)
-        ? prev.filter((id) => id !== postId)
-        : [...prev, postId]
-    );
-  };
+      mutationKey: ["delete-post"],
+      mutationFn: deletePostAPI,
+      onSuccess: () => {
+        refetch()
+      },
+    })
+  
+  const handleDeletePost = (postId, e) => {
+      e.stopPropagation()
+      if (window.confirm("Are you sure you want to delete this post?")) {
+        postMutation.mutate(postId)
+      }
+      setOpenMenuId(null)
+    }
 
   const isPremiumPost = (post) => {
     return post.price > 0;
@@ -202,8 +204,9 @@ const PostsList = () => {
     return <div className="pagination">{buttons}</div>;
   };
 
-  const premiumPosts = data?.posts?.filter(isPremiumPost);
-  const nonPremiumPosts = data?.posts?.filter(post => !isPremiumPost(post));
+  // Added null checks for filteredResults
+  const premiumPosts = filteredResults?.filter(isPremiumPost) || [];
+  const nonPremiumPosts = filteredResults?.filter(post => !isPremiumPost(post)) || [];
 
   return (
     <>
@@ -212,10 +215,10 @@ const PostsList = () => {
         <div className="container px-4 mx-auto max-w-6xl">
           <div className="pt-16 pb-8">
             <motion.h1
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4"
+              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 text-center"
             >
               Discover Our Latest Content
             </motion.h1>
@@ -228,10 +231,9 @@ const PostsList = () => {
               Explore our collection of articles, tutorials, and resources to help you stay informed and inspired.
             </motion.p>
           </div>
-          {/* Search Bar */}
           <div className="relative flex items-center justify-center mt-6">
             <form
-              onSubmit={handleSearchSubmit}
+              onSubmit={(e) => e.preventDefault()}
               className="relative mb-5 flex items-center w-full max-w-lg bg-gradient-to-r from-blue-50 to-blue-100 rounded-full shadow-lg border border-gray-300 transition-all focus-within:border-blue-600 focus-within:shadow-xl"
             >
               <FaSearch className="absolute left-4 text-blue-600 text-lg animate-pulse" />
@@ -240,7 +242,7 @@ const PostsList = () => {
                 placeholder="Search for content..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="w-full py-3 pl-12 pr-12  text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
+                className="w-full py-3 pl-12 pr-12 text-gray-700 placeholder-gray-500 bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-all"
               />
               {searchTerm && (
                 <button
@@ -254,6 +256,29 @@ const PostsList = () => {
             </form>
           </div>
 
+          {/* Letter Filter */}
+          <div className="flex flex-wrap gap-2 justify-center my-4">
+            {uniqueLetters.map(letter => (
+              <button
+                key={letter}
+                className={`px-3 py-1 rounded-full text-sm font-semibold transition-all ${
+                  selectedLetter === letter ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+                }`}
+                onClick={() => setSelectedLetter(letter)}
+              >
+                {letter}
+              </button>
+            ))}
+            {selectedLetter && (
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded-full text-sm font-semibold"
+                onClick={clearFilters}
+              >
+                Clear Filter
+              </button>
+            )}
+          </div>
+
           {/* Error and Loading States */}
           {isError && <AlertMessage type="error" message="Something happened" />}
 
@@ -261,7 +286,7 @@ const PostsList = () => {
             <div className="loading-container">
               <div className="loading-spinner"></div>
             </div>
-          ) : data?.posts?.length <= 0 ? (
+          ) : filteredResults.length === 0 ? (
             <NoDataFound text="No Posts Found" />
           ) : (
             <>
@@ -272,26 +297,43 @@ const PostsList = () => {
                   const isBookmarked = bookmarkedPosts.includes(post._id);
 
                   return (
-                    <div key={post._id} className="post-card bg-white">
+                    <div key={post._id} className="post-card bg-white"
+                    style={{
+                      position: "relative",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      border: "1px solid #e5e7eb",
+                    }}>
                       {isPremium && (
-                        <div className="premium-badge">
+                        <div className="premium-badge"
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          left: "10px",
+                          background: "#2563EB",
+                          color: "white",
+                          padding: "4px 8px",
+                          borderRadius: "20px",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                          zIndex: 5,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "5px",
+                        }}>
                           <FaCrown />
                         </div>
                       )}
-                      <div className="post-image-container">
-                        <img
-                          className="post-image"
-                          src={post?.refId.thumbnail}
-                          alt={post?.price || "Post image"}
-                        />
-                        {/* <button
-                          className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
-                          onClick={(e) => toggleBookmark(post._id, e)}
-                          aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                        >
-                          <FaBookmark />
-                        </button> */}
+                      <div className="post-image-container" style={{ position: "relative" }}>
+                          <img
+                              className="post-image"
+                              src={post.refId?.thumbnail || "/default-image.jpg"}
+                              alt={post?.price || "Post image"}
+                              style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                          />
                       </div>
+
                       {isPremium && !isUserSubscribed && (
                         <div className="premium-overlay">
                           <FaLock className="premium-lock-icon" />
@@ -311,9 +353,9 @@ const PostsList = () => {
                         className="block"
                       >
                         <div className="post-content">
-                          <h3 className="post-title">
-                            {post?.refId.title || "Untitled Post"}
-                          </h3>
+                        <h3 className="post-title">
+                           {post?.refId?.title || "Untitled Post"}
+                        </h3>
                           <p className="post-excerpt">
                             {truncateString(post?.description || "", 120)}
                           </p>
@@ -328,7 +370,7 @@ const PostsList = () => {
                             <span className={`post-status ${
                               post?.status === 'published' ? 'status-published' : 'status-draft'
                             }`}>
-                              {post?.status}
+                              {post?.contentData}
                             </span>
                           </div>
                         </div>
@@ -346,23 +388,19 @@ const PostsList = () => {
                     {premiumPosts?.map((post) => {
                       const isBookmarked = bookmarkedPosts.includes(post._id);
                       return (
-                        <div key={post._id} className="post-card bg-white">
-                          <div className="premium-badge">
-                            <FaCrown /> Premium
+                        <div key={post._id} className="post-card bg-white" style={{position: "relative"}}
+                        >
+                          <div className="absolute top-2 left-2 p-1 text-yellow-500 z-10">
+                            <FaCrown />
                           </div>
-                          <div className="post-image-container">
+                          <div className="post-image-container" style={{ position: "relative" }}>
                             <img
                               className="post-image"
-                              src={post?.image}
+                              src={post?.refId?.thumbnail || "/default-image.jpg"}
                               alt={post?.price || "Post image"}
+                              style={{ width: "100%", height: "200px", objectFit: "cover" }}
                             />
-                            <button
-                              className={`bookmark-button ${isBookmarked ? 'active' : ''}`}
-                              onClick={(e) => toggleBookmark(post._id, e)}
-                              aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                            >
-                              <FaBookmark />
-                            </button>
+                            
                           </div>
                           {isPremiumPost(post) && !isUserSubscribed && (
                             <div className="premium-overlay">
@@ -380,7 +418,7 @@ const PostsList = () => {
                           )}
                           <Link to={`/posts/${post._id}`} className="block">
                             <div className="post-content">
-                              <h3 className="post-title">{post?.title || "Untitled post"}</h3>
+                              <h3 className="post-title">{post?.refId?.title || "Untitled post"}</h3>
                               <p className="post-excerpt">
                                 {truncateString(post?.description || "", 120)}
                               </p>
@@ -392,6 +430,11 @@ const PostsList = () => {
                                     day: 'numeric'
                                   })}
                                 </span>
+                                <span className={`post-status ${
+                                    post?.status === 'published' ? 'status-published' : 'status-draft'
+                                  }`}>
+                                    {post?.contentData}
+                               </span>
                               </div>
                             </div>
                           </Link>

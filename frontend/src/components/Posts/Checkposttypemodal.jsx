@@ -38,8 +38,8 @@ export default function Checkposttypemodal({
         return <VideocamIcon className="content-icon" style={{ color: '#EF4444' }} />;
       case 'stepbystepguide':
         return <LibraryBooksIcon className="content-icon" style={{ color: '#10B981' }} />;
-      case 'videotutorial':
-        return <PlayCircleIcon className="content-icon" style={{ color: '#F59E0B' }} />;
+      // case 'videotutorial':
+      //   return <PlayCircleIcon className="content-icon" style={{ color: '#F59E0B' }} />;
       default:
         return <HelpOutlineIcon className="content-icon" style={{ color: '#9CA3AF' }} />;
     }
@@ -115,10 +115,10 @@ export default function Checkposttypemodal({
                 {getContentIcon('stepbystepguide')}
                 Step By Step guide
               </MenuItem>
-              <MenuItem value="videotutorial">
+              {/* <MenuItem value="videotutorial">
                 {getContentIcon('videotutorial')}
                 Video Tutorial
-              </MenuItem>
+              </MenuItem> */}
             </Select>
           </FormControl>
           

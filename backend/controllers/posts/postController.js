@@ -137,7 +137,7 @@ const postController = {
   }),
   getonepost:asyncHandler(async(req,res)=>{
     try{
-      const post = await Post.findById(req.params.id)
+      const post = await Post.findById(req.params.id).populate("refId")
       if(!post){
         return res.status(404).json({status:"error",message:"Post not found"})
         }
@@ -147,28 +147,33 @@ const postController = {
       console.log(err);
     }
   }),
-  updatepost: asyncHandler(async (req, res) => {
-    try {
-      const post = await Post.findByIdAndUpdate(
-        req.params.id, 
-        req.body
-      );
-      if (!post) {
-        return res.status(404).json({ status: "error", message: "Post not found" });
-      }
-      res.json({ message: "Updated Successfully", post });
-    } catch (err) {
-      console.error("Error Updating post:", err);
-      res.status(500).json({ status: "error", message: "Internal Server Error" });
-    }
-  }),
   
   
   approvePost: asyncHandler(async (req, res) => {
-    const postId = req.params.postId;
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId).populate("author");
+    if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+    }
+
     await Post.findByIdAndUpdate(postId, { status: "approved" });
+
+    await Notification.create({
+        userId: post.author._id,
+        postId: postId,
+        message: `Your post "${post.title}" has been approved by the admin.`,
+    });
+
+    sendNotificatiomMsg(
+        post.author.email,
+        "Post Approved",
+        `Hello ${post.author.username},\n\nGreat news! Your post "${post.title}" has been approved by the admin and is now live.\n\nCheck it out on the platform!`
+    );
+
     res.json({ message: "Post approved successfully" });
   }),
+
 
   reportPost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
@@ -180,10 +185,48 @@ const postController = {
   }),
 
   //!list all posts
-  fetchAllPosts: asyncHandler(async (req, res) => {
+  fetchAllArticles: asyncHandler(async (req, res) => {
     const { category, title, page = 1, limit = 300 } = req.query;
     //Basic filter
-    let filter = { status: "approved" };
+    let filter = { status: "approved", contentData : "Article" };
+    // let filter = {};
+    if (category) {
+      filter.category = category;
+    }
+    if (title) {
+      filter.description = { $regex: title, $options: "i" }; //case insensitive
+    }
+
+    const posts = await Post.find(filter)
+      .populate("author")
+      .populate("refId")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+    //total posts
+    const totalPosts = await Post.countDocuments(filter);
+    res.json({
+      status: "success",
+      message: " Approved Post fetched successfully",
+      posts,
+      currentPage: page,
+      perPage: limit,
+      totalPages: Math.ceil(totalPosts / limit),
+    });
+  }),
+
+  ownerposts : asyncHandler(async(req,res) =>{
+    const id = req.user;
+
+    const posts = await Post.find({author:id})
+
+    res.status(200).json({data : posts})
+  }),
+
+  fetchAllWebiners: asyncHandler(async (req, res) => {
+    const { category, title, page = 1, limit = 300 } = req.query;
+    //Basic filter
+    let filter = { status: "approved", contentData : "Webinar" };
     // let filter = {};
     if (category) {
       filter.category = category;
@@ -212,8 +255,7 @@ const postController = {
 
   getallpostsinadmincontroller: asyncHandler(async (req, res) => {
     try {
-      const postsdata = await Post.find({});
-      // .populate("author")
+      const postsdata = await Post.find({}).populate("author");
       // .populate({
       //   path: "comments",
       //   populate: {
@@ -236,13 +278,7 @@ const postController = {
   getallpublishedpostscontroller: asyncHandler(async (req, res) => {
     try {
       const postsdata = await Post.find({ status: "approved" })
-        .populate("author")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "author",
-          },
-        }).populate("refId");
+        .populate("author").populate("refId");
 
       res.status(200).json({
         status: "success",
@@ -254,6 +290,75 @@ const postController = {
       res.status(500).json({ status: "error", message: error.message });
     }
   }),
+//Updated 3/7/25
+    getArticleCount: asyncHandler(async (req, res) => {
+      const articleCount = await Post.countDocuments({ contentData: "Article" });
+      res.status(200).json({ count: articleCount });
+    }),
+
+    getWebinarCount: asyncHandler(async (req, res) => {
+      const webinarCount = await Post.countDocuments({ contentData: "Webinar" });
+      res.status(200).json({ count: webinarCount });
+    }),
+
+    getStepbyStepGuideCount: asyncHandler(async (req, res) => {
+      const guideCount = await Post.countDocuments({ contentData: "StepbyStepGuide" });
+      res.status(200).json({ count: guideCount });
+    }),
+
+
+    approveAll: asyncHandler(async (req, res) => {
+      // Fetch all posts that are pending approval
+      const posts = await Post.find({ status: { $ne: "approved" } }).populate("author");
+  
+      if (posts.length === 0) {
+          return res.status(404).json({ message: "No posts found for approval." });
+      }
+  
+      // Update all posts to "approved"
+      await Post.updateMany({}, { status: "approved" });
+  
+      // Send notifications and emails to all authors
+      const notifications = posts.map(post => ({
+          userId: post.author._id,
+          postId: post._id,
+          message: `Your post "${post.title}" has been approved by the admin.`,
+      }));
+  
+      await Notification.insertMany(notifications);
+  
+     
+  
+      res.status(200).json({ message: "All posts approved successfully!" });
+  }),
+  
+    
+  rejectedAll: asyncHandler(async (req, res) => {
+    
+    const posts = await Post.find({ status: { $ne: "rejected" } }).populate("author");
+
+    if (posts.length === 0) {
+        return res.status(404).json({ message: "No posts found for rejection." });
+    }
+
+    // Update all posts to "rejected"
+    await Post.updateMany({}, { status: "rejected" });
+
+    // Send notifications and emails to all authors
+    const notifications = posts.map(post => ({
+        userId: post.author._id,
+        postId: post._id,
+        message: `Your post "${post.title}" has been rejected by the admin.`,
+    }));
+
+    await Notification.insertMany(notifications);
+
+    res.status(200).json({ message: "All posts rejected successfully!" });
+}),
+
+
+
+  
 
   updatePostStatus: asyncHandler(async (req, res) => {
     try {
@@ -292,18 +397,20 @@ const postController = {
   //! get a post
   getPost: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
-    //check for login user
     const userId = req.user ? req.user : null;
 
     const postFound = await Post.findById(postId).populate({
       path: "comments",
       populate: {
         path: "author",
+        select: "profilePicture name", // Fetch only necessary fields
       },
-    });
+    }).populate("refId");
+
     if (!postFound) {
       throw new Error("Post not found");
     }
+
     if (userId) {
       await Post.findByIdAndUpdate(
         postId,
@@ -315,12 +422,14 @@ const postController = {
         }
       );
     }
+
     res.json({
       status: "success",
       message: "Post fetched successfully",
       postFound,
     });
-  }),
+}),
+
   //! delete
   delete: asyncHandler(async (req, res) => {
     const postId = req.params.postId;
@@ -443,6 +552,25 @@ const postController = {
     }
   },
 
+  // curatorDetails: asyncHandler(async (req, res) => {
+  //   try {
+  //     const userId = req.user;
+  //     console.log(userId)
+  //     if (!userId) {
+  //       return res.status(401).json({ message: "Unauthorized: No user ID provided" });
+  //     }
+  
+  //     console.log("Fetching posts for user:", userId);
+  
+  //     const posts = await Post.find({ author: userId }).populate("refId");
+  
+  //     res.json({ data: posts });
+  //   } catch (err) {
+  //     console.error("Error fetching user posts:", err);
+  //     res.status(500).json({ message: "Server Error" });
+  //   }
+  // }),
+
   like: asyncHandler(async (req, res) => {
     try {
       const postId = req.params.postId;
@@ -499,12 +627,30 @@ const postController = {
     });
   }),
 
+  curatorDetails: asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized: No user ID provided" });
+      }
+  
+      console.log("Fetching posts for user:", userId);
+  
+      const posts = await Post.find({ author: userId }).populate("refId");
+  
+      res.json({ data: posts });
+    } catch (err) {
+      console.error("Error fetching user posts:", err);
+      res.status(500).json({ message: "Server Error" });
+    }
+  }),
+
   BookMarkPost: asyncHandler(async (req, res) => {
     try {
       const { postId } = req.params;
       const userId = req.user;
 
-      const post = await Post.findById(postId);
+      const post = await Post.findById(postId).populate("refId");
       if (post?.bookmarkedBy?.includes(userId)) {
         return res.status(400).json({ message: "Post already bookmarked" });
       }
@@ -512,7 +658,7 @@ const postController = {
 
       await post.save();
 
-      res.json({
+      res.status(200).json({
         message: "Post Bookmarked",
       });
     } catch (error) {
@@ -531,7 +677,7 @@ const postController = {
 
     await post.save();
 
-    res.json({
+    res.status(200).json({
       message: "Post Unbookmarked",
     });
   }),
@@ -560,7 +706,7 @@ const postController = {
   getBookmarkedPosts: asyncHandler(async (req, res) => {
     try {
       const userId = req.user;
-      const posts = await Post.find({ bookmarkedBy: userId });
+      const posts = await Post.find({ bookmarkedBy: userId }).populate("refId")
       // console.log(posts);
 
       res.status(200).json({
@@ -572,6 +718,7 @@ const postController = {
       res.status(500).json({ message: "Server Error" });
     }
   }),
+  
 };
 
 module.exports = postController;
