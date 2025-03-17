@@ -361,10 +361,20 @@ const AccountSummaryDashboard = () => {
         ))}
       </div>
 
+
+
+
+
+
+
       <div className="bg-white p-4 shadow-md rounded-lg">
         {activeTab === "followers" && <MyFollowers/>}
         {activeTab === "following" && <MyFollowing/>}
         {activeTab === "earnings" && <MyEarnings/>}
+
+
+
+
 
       </div>
     </div>
