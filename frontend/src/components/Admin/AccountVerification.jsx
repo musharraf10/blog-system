@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
+
 import { useMutation } from "@tanstack/react-query";
+
 import { verifyUserAccountAPI } from "../../APIServices/users/usersAPI";
 import AlertMessage from "../Alert/AlertMessage";
+
 import { useQuery } from "@tanstack/react-query";
 
 const AccountVerifiedComponent = () => {
