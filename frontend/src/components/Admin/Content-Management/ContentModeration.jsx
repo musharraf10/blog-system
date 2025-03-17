@@ -35,11 +35,12 @@ import { getallpostsdata } from "../../../APIServices/posts/postsAPI";
 import PostDetailsModal from "./Postdetailmodal";
 import Dashboard from "../Dashboard/Dashboard";
 
+
 const FormContainer = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     padding: "10px",
     form: {
-      display: "block",
+     display: "block",
     },
   },
   [theme.breakpoints.up("md")]: {
@@ -51,6 +52,7 @@ const FormContainer = styled("div")(({ theme }) => ({
     },
   },
 }));
+
 
 const ContentForm = () => {
   const [selectedPostinadminpanelcmd, setselectedPostinadminpanelcdm] = useState(null);
