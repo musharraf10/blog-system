@@ -18,4 +18,5 @@ const authSlice = createSlice({
 export const { isAuthenticated, logout } = authSlice.actions;
 //Get the reducer
 const authReducer = authSlice.reducer;
+
 export default authReducer;
