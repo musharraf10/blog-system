@@ -7,7 +7,7 @@ const firebaseConfig = {
   projectId: "facebook-53a1f",
   storageBucket: "facebook-53a1f.firebasestorage.app",
   messagingSenderId: "457363223975",
-  appId: "1:457363223975:web:eb9f7af23376c344a93282",
+  appId:   "1:457363223975:web:eb9f7af23376c344a93282",
   measurementId: "G-M11C47603V"
 };
 

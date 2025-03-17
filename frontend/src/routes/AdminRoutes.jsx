@@ -5,11 +5,11 @@ import AdminDashboard from "../components/Admin/AdminDashboard";
 
 import {Routes, Route} from "react-router-dom";
 
-import AccountSummaryDashboard from "../components/Admin/AccountSummary";
+import  AccountSummaryDashboard from "../components/Admin/AccountSummary";
 import CreatePost from "../components/Posts/CreatePost"
 import DashboardPosts from "../components/Admin/DashboardPosts"
 import UpdatePost from "../components/Posts/UpdatePost"
-import UploadProfilePic from "../components/Admin/UploadProfilePic"
+import  UploadProfilePic from "../components/Admin/UploadProfilePic"
 import Settings from "../components/Admin/SettingsPage"
 import AddEmailComponent from "../components/Admin/UpdateEmail"
 import MyFollowing from "../components/Admin/MyFollowing"
