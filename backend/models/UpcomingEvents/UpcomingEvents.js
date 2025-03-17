@@ -8,6 +8,7 @@ const eventSchema = new mongoose.Schema({
   date: Date,
 });
 
+
 const Event = mongoose.model("Event", eventSchema);
 
 module.exports=Event;
