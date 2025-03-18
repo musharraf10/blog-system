@@ -5,10 +5,12 @@ import AdminRoutes from "./routes/AdminRoutes";
 import CuratorRoutes from "./routes/CuratorRoutes";
 
 import SubscriberRoutes from "./routes/SubscriberRoutes";
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 import PublicRoutes from "./routes/PublicRoutes";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 
 
 import "bootstrap/dist/js/bootstrap.bundle.min"
