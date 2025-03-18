@@ -10,6 +10,7 @@ const checkUserPlan = asyncHandler(async (req, res, next) => {
     if (!user.hasSelectedPlan) {
       return res.status(403).json({ message: "You must select a plan before accessing this feature" });
     }
+    
     next();
   } catch (error) {
     console.error("Error in checkUserPlan middleware:", error);
