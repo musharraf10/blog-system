@@ -10,5 +10,3 @@ export const createCommentAPI = async (data) => {
   return response.data;
 };
 
-
-// original

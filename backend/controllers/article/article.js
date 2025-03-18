@@ -17,7 +17,6 @@ const addarticlecontroller = async (req, res) => {
       });
     }
 
-    // Create new article
     const newArticle = new Article({
       title,
       description: content,
