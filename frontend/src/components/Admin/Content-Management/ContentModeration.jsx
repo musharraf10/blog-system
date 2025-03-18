@@ -63,8 +63,11 @@ const ContentForm = () => {
       const data = await getallpostsdata();
       console.log()
       setPublishedContent(data);
+
+
     };
     fetchData();
+    
   }, []);
 
   const handleOpenModalofpostsincmd = (post) => setselectedPostinadminpanelcdm(post);
